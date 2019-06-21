@@ -1,0 +1,15 @@
+[Unit]
+Description=Basset App
+Requires=postgresql.service
+After=postgresql.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory={{basset_dir}}
+ExecStart={{basset_dir}}start.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

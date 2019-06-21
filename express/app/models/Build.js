@@ -1,0 +1,360 @@
+const { Model } = require('objection');
+
+const BaseModel = require('./BaseModel');
+const {
+  snapshotsPending,
+  snapshotsNeedApproving,
+  snapshotsNoDiffs,
+  snapshotsApproved,
+} = require('../integrations/github/status');
+const Snapshot = require('./Snapshot');
+const SnapshotDiff = require('./SnapshotDiff');
+const BuildAsset = require('./BuildAsset');
+const { getPRs, getPR } = require('../integrations/github/pr');
+const { notifySnapshotsNeedApproving } = require('../integrations/slack/slack');
+const { queueCompareSnapshots } = require('../tasks/queueCompareSnapshots');
+const { queueTask, tasks } = require('../tasks/queueTask');
+
+class Build extends BaseModel {
+  async $beforeInsert(context) {
+    const build = await Build.query()
+      .max('number as last')
+      .where('organizationId', this.organizationId)
+      .andWhere('projectId', this.projectId)
+      .first();
+    this.number = (build.last || 0) + 1;
+    return super.$beforeInsert(context);
+  }
+
+  static get tableName() {
+    return 'build';
+  }
+
+  async canRead(user) {
+    return user.organizations.map(o => o.id).includes(this.organizationId);
+  }
+
+  async canEdit(user) {
+    return this.canRead(user);
+  }
+
+  async canDelete(user) {
+    return true;
+  }
+
+  async canCreate(user) {
+    return true;
+  }
+
+  static async create(data) {
+    return Build.query().insert(data);
+  }
+
+  static authorizationFilter(user) {
+    return this.query().whereIn(
+      'organizationId',
+      user.organizations.map(o => o.id),
+    );
+  }
+
+  async notifyPending(project = null) {
+    if (!project) {
+      project = await this.$relatedQuery('project');
+    }
+    if (project.hasSCM) {
+      snapshotsPending(project, this);
+    }
+  }
+
+  async notifyApproved(trx, project = null) {
+    if (!project) {
+      project = await this.$relatedQuery('project');
+    }
+    if (project.hasSCM) {
+      snapshotsApproved(project, this);
+    }
+    await this.$query(trx).update({
+      buildVerified: true,
+    });
+  }
+
+  async notifyChanges(modifiedSnapshotCount, project = null) {
+    if (!project) {
+      project = await this.$relatedQuery('project');
+    }
+    if (project.hasSCM) {
+      snapshotsNeedApproving(project, this);
+    }
+    if (project.hasSlack) {
+      notifySnapshotsNeedApproving(modifiedSnapshotCount, project, this);
+    }
+  }
+
+  async notifyNoChanges(trx = null, project = null) {
+    if (!project) {
+      project = await this.$relatedQuery('project');
+    }
+    await this.$query(trx).update({
+      buildVerified: true,
+    });
+    if (project.hasSCM) {
+      snapshotsNoDiffs(project, this);
+    }
+  }
+
+  async getPreviousBuild(project = null) {
+    if (!project) {
+      project = await this.$relatedQuery('project');
+    }
+    let isPR = false;
+    let baseSHA = null;
+    let baseBuild = null;
+
+    if (project.hasSCM && this.commitSha && this.branch) {
+      this.notifyPending(project);
+
+      const pullRequests = await getPRs({
+        owner: project.repoOwner,
+        repo: project.repoName,
+        token: project.repoToken,
+        sha: this.commitSha,
+      });
+      if (pullRequests && pullRequests.length > 0) {
+        isPR = true;
+
+        const pullRequestEntry = pullRequests[0];
+        const pullRequestUrl = pullRequestEntry.pull_request.url;
+        const pullRequestData = await getPR({
+          url: pullRequestUrl,
+          token: project.repoToken,
+        });
+        //baseBranch = pullRequestData.base.ref;
+        baseSHA = pullRequestData.base.sha;
+      }
+    }
+    const baseQuery = Build.query()
+      .where('buildVerified', true)
+      .whereNotNull('completedAt')
+      .orderBy('completedAt', 'desc')
+      .first();
+
+    if (isPR) {
+      baseBuild = await baseQuery.clone().where('branch', this.branch);
+
+      if (!baseBuild && baseSHA) {
+        baseBuild = await baseQuery.clone().where('commitSha', baseSHA);
+      }
+    }
+    if (!baseBuild) {
+      baseBuild = await baseQuery
+        .clone()
+        .where('branch', project.defaultBranch);
+    }
+    if (!baseBuild && !isPR) {
+      baseBuild = await baseQuery.clone().where('branch', this.branch);
+    }
+
+    return baseBuild;
+  }
+
+  async compareSnapshots() {
+    await this.$query().update({
+      submittedAt: Build.knex().fn.now(),
+    });
+    const snapshots = await this.$relatedQuery('snapshots');
+    const messages = [];
+    for await (const snapshot of snapshots) {
+      let previousApprovedSnapshot;
+      if (this.previousBuildId) {
+        previousApprovedSnapshot = await Snapshot.query()
+          .where('title', snapshot.title)
+          .where('width', snapshot.width)
+          .where('browser', snapshot.browser)
+          .whereNot('id', snapshot.id)
+          .where('buildId', this.previousBuildId)
+          .where(builder => {
+            builder
+              .where('approved', true)
+              .orWhere('diff', false)
+              .orWhere('flake', true);
+          })
+          .first();
+        if (previousApprovedSnapshot && previousApprovedSnapshot.flake) {
+          // always use the previousApproved for a flake
+          // this way we're always using the approved/new diff the flake compared against
+          previousApprovedSnapshot = await previousApprovedSnapshot.$relatedQuery(
+            'previousApproved',
+          );
+        }
+      }
+      const messageData = {
+        id: snapshot.id,
+        title: snapshot.title,
+        sourceLocation: snapshot.sourceLocation,
+        hideSelectors: snapshot.hideSelectors,
+        selector: snapshot.selector,
+        width: snapshot.width,
+        browser: snapshot.browser,
+        buildId: this.id,
+        organizationId: this.organizationId,
+        projectId: this.projectId,
+      };
+      if (previousApprovedSnapshot) {
+        await snapshot.$query().update({
+          previousApprovedId: previousApprovedSnapshot.id,
+        });
+        messageData['compareSnapshot'] = previousApprovedSnapshot.imageLocation;
+      }
+      const snapshotFlakes = await snapshot
+        .$relatedQuery('snapshotFlakes')
+        .map(flake => flake.sha);
+      messageData['flakeShas'] = snapshotFlakes;
+
+      messages.push(messageData);
+    }
+    console.log('comparing snapshots');
+    await queueCompareSnapshots(messages);
+  }
+
+  async started() {
+    await this.notifyPending();
+    await queueTask(tasks.monitorBuild(this.id));
+  }
+
+  async groupDiffs(trx = null) {
+    const matches = await SnapshotDiff.query(trx)
+      .select('sha')
+      .where('buildId', this.id)
+      .groupBy('sha')
+      .having(Build.knex().raw('count(*) > 1'))
+      .map(diff => diff.sha);
+
+    for await (const [index, sha] of matches.entries()) {
+      const group = index + 1;
+      await this.$relatedQuery('snapshotDiffs', trx)
+        .update({ group })
+        .where('sha', sha);
+    }
+  }
+
+  async compared(trx = null) {
+    await this.$query(trx).update({
+      completedAt: Build.knex().fn.now(),
+    });
+    const modifiedSnapshotCount = await Snapshot.getModifiedFromBuild(
+      trx,
+      this.id,
+    );
+
+    if (modifiedSnapshotCount > 0) {
+      await this.notifyChanges(modifiedSnapshotCount);
+    } else {
+      await this.notifyNoChanges(trx);
+    }
+  }
+
+  async createAssets(project, assets) {
+    for await (const [relativePath, sha] of Object.entries(assets)) {
+      const asset = await project
+        .$relatedQuery('assets')
+        .where('sha', sha)
+        .first();
+
+      await BuildAsset.create({
+        relativePath,
+        assetId: asset.id,
+        buildId: this.id,
+        organizationId: this.organizationId,
+      });
+    }
+  }
+
+  static get relationMappings() {
+    const Organization = require('./Organization');
+    const OrganizationMember = require('./OrganizationMember');
+    const Project = require('./Project');
+    return {
+      previousBuild: {
+        relation: Model.HasOneRelation,
+        modelClass: Build,
+        join: {
+          from: 'build.previousBuildId',
+          to: 'build.id',
+        },
+      },
+      organizationMembers: {
+        relation: Model.HasManyRelation,
+        modelClass: OrganizationMember,
+        join: {
+          from: 'build.organizationId',
+          to: 'organizationMember.organizationId',
+        },
+      },
+      organization: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Organization,
+        join: {
+          from: 'build.organizationId',
+          to: 'organization.id',
+        },
+      },
+      project: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Project,
+        join: {
+          from: 'build.projectId',
+          to: 'project.id',
+        },
+      },
+      snapshots: {
+        relation: Model.HasManyRelation,
+        modelClass: Snapshot,
+        join: {
+          from: 'build.id',
+          to: 'snapshot.buildId',
+        },
+      },
+      snapshotDiffs: {
+        relation: Model.HasManyRelation,
+        modelClass: SnapshotDiff,
+        join: {
+          from: 'build.id',
+          to: 'snapshotDiff.buildId',
+        },
+      },
+      buildAssets: {
+        relation: Model.HasManyRelation,
+        modelClass: BuildAsset,
+        join: {
+          from: 'build.id',
+          to: 'buildAsset.buildId',
+        },
+      },
+    };
+  }
+
+  static get jsonSchema() {
+    return {
+      type: 'object',
+      required: [],
+      properties: {
+        id: { type: 'integer' },
+        branch: { type: 'string', minLength: 1, maxLength: 255 },
+        commitSha: { type: 'string', minLength: 1, maxLength: 255 },
+        commitMessage: { type: 'string' },
+        committerName: { type: 'string', minLength: 1, maxLength: 255 },
+        committerEmail: { type: 'string', minLength: 1, maxLength: 255 },
+        committerDate: { type: 'string' },
+        authorName: { type: 'string', minLength: 1, maxLength: 255 },
+        authorEmail: { type: 'string', minLength: 1, maxLength: 255 },
+        authorDate: { type: 'string' },
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' },
+        completedAt: { type: 'string, null' },
+        cancelledAt: { type: 'string, null' },
+      },
+    };
+  }
+}
+
+module.exports = Build;

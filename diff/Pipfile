@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+boto3 = "*"
+botocore = "*"
+numpy = "*"
+opencv-python-headless = "*"
+pep8 = "*"
+pika = "*"
+requests = "*"
+selenium = "*"
+
+[requires]
+python_version = "3.6"

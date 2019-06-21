@@ -1,0 +1,15 @@
+[Unit]
+Description=Basset Worker
+Requires=postgresql.service
+After=postgresql.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory={{basset_dir}}
+ExecStart={{basset_dir}}worker.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

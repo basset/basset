@@ -1,0 +1,204 @@
+- name: stat nvm
+  stat:
+    path: /home/ubuntu/.nvm
+  register: nvm_stat
+
+- name: create nvm directory
+  file:
+    path: /home/ubuntu/.nvm
+    group: ubuntu
+    owner: ubuntu
+    mode: 0755
+    recurse: yes
+    state: directory
+  when: not nvm_stat.stat.exists
+
+- name: download nvm script
+  get_url:
+    dest: /home/ubuntu/.nvm
+    url: https://raw.githubusercontent.com/creationix/nvm/v0.34.0/nvm.sh
+
+- name: update nvm permissions
+  file:
+    path: /home/ubuntu/.nvm
+    group: ubuntu
+    owner: ubuntu
+    mode: 0755
+    recurse: yes
+    state: directory
+
+- name: ensure ~/.bashrc exists
+  copy:
+    content: ""
+    dest: "/home/ubuntu/.bashrc"
+    force: no
+
+- name: add nvm to ~/.bashrc
+  lineinfile:
+    path: "/home/ubuntu/.bashrc"
+    line: "source ~/.nvm/nvm.sh"
+
+- name: stat node
+  stat: path="/home/ubuntu/.nvm/versions/node/v10.14.1"
+  register: node_stat
+
+- name: install node
+  shell: "source /home/ubuntu/.nvm/nvm.sh && nvm install v10.14.1 && nvm use v10.14.1"
+  args:
+     executable: /bin/bash
+  when: not node_stat.stat.exists
+
+- name: add psql repo key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+
+- name: add psql repo
+  apt_repository:
+    update_cache: yes
+    repo: "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main"
+    filename: pgdg
+
+- name: install packages
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - build-essential
+      - postgresql-10
+      - libxslt1-dev
+      - libffi-dev
+      - libjpeg-dev
+      - libxml2-dev
+      - libyaml-dev
+      - libpq-dev
+      - python-psycopg2
+      - nginx-full
+      - zip
+
+- name: Systemctl enable psql
+  service:
+    name: postgresql
+    enabled: yes
+    state: restarted
+
+- name: Systemctl enable nginx
+  service:
+    name: nginx
+    enabled: yes
+
+- name: Systemctl create basset
+  template:
+    src: basset.service.j2
+    dest: /etc/systemd/system/basset.service
+
+- name: Systemctl enable basset
+  shell: systemctl daemon-reload && systemctl enable basset
+
+- name: Systemctl create basset worker
+  template:
+    src: basset-worker.service.j2
+    dest: /etc/systemd/system/basset-worker.service
+
+- name: Systemctl enable basset-worker
+  shell: systemctl daemon-reload && systemctl enable basset-worker
+
+- name: Configure nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-enabled/default
+
+- name: Create basset database
+  become: yes
+  become_user: postgres
+  postgresql_db:
+    name: basset
+    encoding: UTF-8
+
+- name: Create postgresql user basset
+  become: yes
+  become_user: postgres
+  postgresql_user:
+    db: basset
+    name: basset
+    password: "{{db_password}}"
+    priv: ALL
+
+
+- name: stat basset folder
+  stat:
+    path: /var/basset/
+  register: basset_stat
+
+- name: Create basset folder
+  file:
+    path: /var/basset
+    group: ubuntu
+    owner: ubuntu
+    mode: 0755
+    recurse: yes
+    state: directory
+  when: not basset_stat.stat.exists
+
+# - name: install basset
+#   git:
+#     repo:
+#     dest: /var/basset/
+#     clone: no
+
+- name: install basset
+  unarchive:
+    src: /home/basset/dev/basset/express/app.zip
+    dest: /var/basset
+    owner: ubuntu
+    group: ubuntu
+
+- name: Install basset packages
+  shell: "source /home/ubuntu/.nvm/nvm.sh && npm install ci"
+  become_user: ubuntu
+  become: yes
+  args:
+    executable: /bin/bash
+    chdir: /var/basset
+
+- name: Migrate database
+  shell: >
+    DB_HOST=localhost
+    DB_USERNAME=basset
+    DB_PASSWORD={{db_password}}
+    /home/ubuntu/.nvm/versions/node/v10.14.1/bin/node commands/migrate.js
+  register: migrated_db
+  changed_when: migrated_db.rc
+  ignore_errors: yes
+  args:
+    chdir: /var/basset/
+
+- name: Move restore db
+  copy:
+    src: /home/basset/dev/basset/basset.sql
+    dest: /home/ubuntu/basset.dump.sql
+    owner: postgres
+    group: postgres
+
+- name: Restore database
+  become: yes
+  become_user: postgres
+  command: psql -f /home/ubuntu/basset.dump.sql basset
+  when: restore_db
+
+- name: Remove db script
+  file:
+    path: /home/ubuntu/basset.dump.sql
+    state: absent
+
+- name: Create default user
+  shell: >
+    DB_HOST=localhost
+    DB_USERNAME=basset
+    DB_PASSWORD={{db_password}}
+    /home/ubuntu/.nvm/versions/node/v10.14.1/bin/node commands/create-user.js {{user_email}} {{user_password}} {{org_name}}
+  register: user_created
+  changed_when: user_created.rc
+  ignore_errors: yes
+  args:
+    chdir: /var/basset/
+  when: create_user

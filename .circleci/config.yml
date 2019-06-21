@@ -1,0 +1,98 @@
+version: 2.1
+
+jobs:
+  build_and_test_backend:
+    working_directory: ~/basset/express
+    docker:
+      - image: circleci/node:10.14.1
+        environment:
+          DB_HOST: localhost
+          DB_NAME: bassettest
+          DB_USERNAME: basset
+          NODE_ENV: test
+          BASSET_URL: http://localhost:3000
+          BASSET_PRIVATE: 0
+      - image: circleci/postgres:10
+        environment:
+          POSTGRES_USER: basset
+          POSTGRES_DB: bassettest
+    steps:
+      - checkout:
+          path: ~/basset
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install-npm
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Unit test backend
+          command: npm run test:unit -- -i
+
+  build_and_test_frontend:
+    working_directory: ~/basset/react
+    docker:
+      - image: circleci/node:10.14.1
+    steps:
+      - checkout:
+          path: ~/basset
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install-npm
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run: npm run test -- -i
+
+  build_and_test_diff:
+    working_directory: ~/basset/diff
+    docker:
+      - image: circleci/python:3.6.7-browsers
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
+          BASSET_URL: http://localhost:3000
+          S3_ENDPOINT: 'none'
+    steps:
+      - checkout:
+          path: ~/basset
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - restore_cache:
+          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          command: |
+            sudo pip install pipenv
+            pipenv install
+      - save_cache:
+          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ".venv"
+            - "/usr/local/bin"
+            - "/usr/local/lib/python3.6/site-packages"
+      - run:
+          command: |
+            mkdir tests/images/
+      - run:
+          command: |
+            pipenv run python -m unittest discover tests -v
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_and_test_backend
+      - build_and_test_frontend
+      - build_and_test_diff
+

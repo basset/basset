@@ -1,0 +1,11 @@
+token              = "TOKEN" # set here since it's used in 2 places
+domain_name        = "app.basset.io"
+zone               = "basset.io." # eg basset.io.
+cname              = "basset"
+assets_bucket      = "asset"
+screenshots_bucket = "screenshots"
+ecr_name           = "basset_render_diff"
+compute_name       = "basset_render_diff"
+batch_queue_name   = "basset_render_diff"
+definition_name    = "basset_render_diff"
+key_name           = "basset_key"

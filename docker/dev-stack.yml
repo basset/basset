@@ -1,0 +1,32 @@
+version: '3.1'
+networks:
+  default:
+    external:
+      name: basset-network
+services:
+  postgres:
+    image: postgres:10
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: basset
+      POSTGRES_USER: basset
+      POSTGRES_DB: basset
+    volumes:
+      - ./.docker/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 9000:8080
+
+  maildump:
+    image: ball6847/maildump
+    container_name: maildump
+    volumes:
+      - ./maildump.db:/maildump.db
+    ports:
+      - 1080:1080
+      - 1025:1025

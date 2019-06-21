@@ -1,0 +1,32 @@
+{
+  "builders": [{
+    "type": "amazon-ebs",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+        "root-device-type": "ebs"
+      },
+      "owners": ["099720109477"],
+      "most_recent": true
+    },
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_name": "basset-app-{{timestamp}}"
+  }],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get install -y python-minimal"
+      ]
+    },
+    {
+      "type": "ansible",
+      "playbook_file": "../playbook/basset_ami.yml",
+      "extra_arguments": [
+        "-vv", "--extra-vars", "db_password={{user `db_password`}} user_email={{user `user_email`}} user_password={{user `user_password`}} org_name={{user `org_name`}}"
+      ]
+    }
+  ]
+}
