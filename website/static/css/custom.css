@@ -1,0 +1,44 @@
+/* your custom css */
+.headerWrapper.wrapper {
+  width: 100%;
+  max-width: 100%!important;
+  margin: 0;
+  padding: 0;
+}
+.fixedHeaderContainer {
+  padding: 12px 24px 12px;
+}
+.fixedHeaderContainer a {
+  height: 45px;
+}
+
+.navigationSlider .slidingNav ul {
+  margin-top: 70px;
+}
+.fixedHeaderContainer header img {
+  margin-right: 12px;
+}
+
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
+}
+
+@media only screen and (min-width: 1024px) {
+  .navigationSlider {
+    height: 45px;
+    display: flex;
+    align-items: center;
+  }
+  .navigationSlider .slidingNav ul {
+    margin: 0
+  }
+}
+
+@media only screen and (max-width: 1023px) {
+
+}
+
+@media only screen and (min-width: 1400px) {
+}
+
+@media only screen and (min-width: 1500px) {
+}
