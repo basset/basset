@@ -19,7 +19,7 @@ title: Installation
     ```shell-session
     docker build --tag=basset .
     docker run --network="basset-network" --name="basset" basset
-    docker exec -t basset node ./commands/migrate
+    docker exec -t basset node ./commands/migrate.js
     ```
 
 6. Navigate to the `diff` folder:

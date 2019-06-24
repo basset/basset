@@ -1,9 +1,0 @@
-export const setError = 'app/user/setError';
-export const setRequestError = 'app/user/setRequestError';
-export const login = 'app/user/login';
-export const logout = 'app/user/logout';
-export const isLoading = 'app/user/isLoading';
-export const doneLoading = 'app/user/doneLoading';
-export const isUpdating = 'app/user/isUpdating';
-export const doneUpdating = 'app/user/doneUpdating';
-export const updateUser = 'app/user/updateUser';

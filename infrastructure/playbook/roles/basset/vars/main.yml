@@ -1,8 +1,8 @@
 ---
-create_user:
+create_user: yes
 db_password:
 user_email:
 user_password:
 org_name:
 basset_dir: /var/basset/
-restore_db: yes
+restore_db: no

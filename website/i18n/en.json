@@ -14,11 +14,11 @@
       "environmental-variables": {
         "title": "Environmental variables"
       },
+      "getting-started": {
+        "title": "Prerequisites"
+      },
       "installation": {
         "title": "Installation"
-      },
-      "prerequisites": {
-        "title": "Prerequisites"
       }
     },
     "links": {

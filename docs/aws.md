@@ -15,11 +15,12 @@ The following infrastructure is required to run basset on AWS:
 * Batch for running the rendering and diffing
   * Batch is setup to use Spot Fleet with m3.large, m4.large, m4a.large, c4.large and c5.large with 90% discount
 
-## Instructions
+## Configure and deploy
 
 1. Ensure your aws credentials are setup
 2. Follow step 1 - 2 from [Local installation](installation.md)
 3. Update the file at `infrastructure/packer/vars.json`
+   > Modify the file at `infrastructure/playbook/roles/basset/vars/main.yml` if you are restoring from a database dump.
 4. Navigate to the `express` folder and run:
 
     ```shell-session
@@ -41,16 +42,16 @@ The following infrastructure is required to run basset on AWS:
     terraform apply
     ```
 
-9. Get the ECR url from your AWS management console or from your terraform data files
-10. Navigate to the `diff` folder:
-11. Edit the Docker to setup your environment [variables](environmental-variables.md)
-12. Login to ECR by running:
+9. Get the ECR url and ECR name from your AWS management console or from your terraform data files
+10. Login to ECR by running:
 
     ```shell-session
     aws ecr get-login --no-include-email --region region
     ```
 
-13. Run:
+11. Navigate to the `diff` folder:
+12. Edit the `Docker` file to setup your environment [variables](environmental-variables.md)
+13. While still in the `diff` folder run:
 
     ```shell-session
     DOCKER_ECR_NAME=ecr_name DOCKER_REPO_URL=ecr_repo_url \

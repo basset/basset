@@ -11,11 +11,11 @@
 // List of projects/orgs using your project for the users page.
 const users = [
   {
-    caption: 'User1',
+    caption: '7geese',
     // You will need to prepend the image path with your baseUrl
     // if it is not '/', like: '/test-site/img/image.jpg'.
-    image: '/img/undraw_open_source.svg',
-    infoLink: 'https://www.facebook.com',
+    image: 'https://40bgqrkkuuk2hpdzn5aqyy13-wpengine.netdna-ssl.com/wp-content/themes/7g/style/img/logo-full-grey.png',
+    infoLink: 'https://www.7geese.com',
     pinned: true,
   },
 ];
@@ -29,16 +29,15 @@ const siteConfig = {
   projectName: 'basset',
   organizationName: 'basset',
   headerLinks: [
-    {doc: 'prerequisites', label: 'Docs'},
-    {doc: 'api', label: 'API'},
-    {page: 'help', label: 'Help'},
-    {blog: true, label: 'Blog'},
+    { doc: 'getting-started', label: 'Docs' },
+    { doc: 'api', label: 'API' },
+    { blog: true, label: 'Blog' },
     { href: "https://github.com/basset/basset", label: "GitHub" },
   ],
   headerIcon: 'img/favicon.ico',
   footerIcon: 'img/favicon.ico',
   favicon: 'img/favicon.ico',
-
+  users,
   /* Colors for website */
   colors: {
     primaryColor: '#2190eb',
