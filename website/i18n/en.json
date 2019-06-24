@@ -5,33 +5,31 @@
     "previous": "Previous",
     "tagline": "Visual regression testing platform",
     "docs": {
-      "doc1": {
-        "title": "Latin-ish",
-        "sidebar_label": "Example Page"
+      "api": {
+        "title": "API"
       },
-      "doc2": {
-        "title": "document number 2"
+      "aws": {
+        "title": "Setup on AWS"
       },
-      "doc3": {
-        "title": "This is document number 3"
+      "environmental-variables": {
+        "title": "Environmental variables"
       },
-      "doc4": {
-        "title": "Other Document"
+      "installation": {
+        "title": "Installation"
       },
-      "doc5": {
-        "title": "Fifth Document"
+      "prerequisites": {
+        "title": "Prerequisites"
       }
     },
     "links": {
       "Docs": "Docs",
+      "API": "API",
       "Help": "Help",
       "Blog": "Blog",
       "GitHub": "GitHub"
     },
     "categories": {
-      "Docusaurus": "Docusaurus",
-      "First Category": "First Category",
-      "Second Category": "Second Category"
+      "Getting started": "Getting started"
     }
   },
   "pages-strings": {

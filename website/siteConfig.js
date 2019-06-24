@@ -29,7 +29,8 @@ const siteConfig = {
   projectName: 'basset',
   organizationName: 'basset',
   headerLinks: [
-    {doc: 'doc1', label: 'Docs'},
+    {doc: 'prerequisites', label: 'Docs'},
+    {doc: 'api', label: 'API'},
     {page: 'help', label: 'Help'},
     {blog: true, label: 'Blog'},
     { href: "https://github.com/basset/basset", label: "GitHub" },
@@ -53,12 +54,12 @@ const siteConfig = {
       "Rubik", "Arial", "sans-serif",
       ],
   },
-
+  usePrism: ['json', 'http', 'typescript'],
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
   copyright: `Copyright © ${new Date().getFullYear()} Basest`,
 
   highlight: {
-    theme: 'default',
+    theme: 'atelier-sulphurpool-light',
   },
 
   scripts: ['https://buttons.github.io/buttons.js'],
@@ -74,9 +75,6 @@ const siteConfig = {
   // Show documentation's last update time.
   enableUpdateTime: true,
 
-  // You may provide arbitrary config keys to be used as needed by your
-  // template. For example, if you need your repo's URL...
-  //   repoUrl: 'https://github.com/facebook/test-site',
   repoUrl: 'https://github.com/basset/basset',
 };
 
