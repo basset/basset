@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>basset Blog</title>
+        <link>https://basset.io/blog</link>
+        <description>The best place to stay up-to-date with the latest basset news and events.</description>
+        <lastBuildDate>Mon, 24 Jun 2019 06:00:00 GMT</lastBuildDate>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>Feed for Node.js</generator>
+        <image>
+            <title>basset Blog</title>
+            <url>https://basset.io/img/favicon.ico</url>
+            <link>https://basset.io/blog</link>
+        </image>
+        <copyright>Copyright © 2019 Basest</copyright>
+        <item>
+            <title><![CDATA[Version release 1.0.0-beta]]></title>
+            <link>https://basset.io/blog/2019/06/24/basset-beta.html</link>
+            <guid>https://basset.io/blog/2019/06/24/basset-beta.html</guid>
+            <pubDate>Mon, 24 Jun 2019 06:00:00 GMT</pubDate>
+            <description><![CDATA[<p>I started working on Basset a few months ago, I originally wanted to render jest snapshots to see the differences between common components. As I started out playing around with different libraries I saw there wasn't a out of the box solution for catching differences, at least one that would fit my needs.</p>
+]]></description>
+        </item>
+    </channel>
+</rss>
