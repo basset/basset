@@ -72,7 +72,7 @@ const siteConfig = {
   twitterImage: 'img/basset.svg',
 
   // Show documentation's last update time.
-  enableUpdateTime: true,
+  enableUpdateTime: false,
 
   repoUrl: 'https://github.com/basset/basset',
 };

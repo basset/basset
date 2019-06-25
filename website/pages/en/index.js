@@ -93,16 +93,18 @@ class Index extends React.Component {
     );
 
     const Description = () => (
-      <Block background="light" align="left">
-        {[
-          {
-            content: `Visual regression testing renders screenshots from static HTML generated snapshot through testing.
-               It is typically used in the continuous integration (CI) pipeline.
-               As future builds are created the screenshots are compared to the previous (baseline) screenshots to detect changes.
-               Basset uses a pixel-by-pixel comparison to detect these changes.`
-          }
-        ]}
-      </Block>
+      <Container
+        padding={["bottom", "top", "left", "right"]}
+        background="light"
+      >
+        <div className="align center">
+          Visual regression testing renders images (snapshots) from static HTML
+          generated through testing. It is typically used in a continuous
+          integration (CI) pipeline. As future builds are created the snapshots
+          are compared to the previous baseline snapshot to detect changes.
+          Basset uses a pixel-by-pixel comparison to detect these changes.
+        </div>
+      </Container>
     );
 
     const Features = () => (
@@ -112,19 +114,19 @@ class Index extends React.Component {
             image: `${baseUrl}img/undraw_decide_3iwx.svg`,
             imageAlign: "top",
             content:
-              "Track changes between your site builds. Approve differences to set them as your new baseline. Or set them as a **flake** to ignore them for future builds.",
+              "Track changes between your web application builds. Approve differences to set them as your new baseline. Or set them as a **flake** to ignore the change for future builds.",
             title: "Catch un-desired UI changes"
           },
           {
             content:
-              "Capture an entire page, or capture the element you only care about. With basset you can use CSS selectors when creating snapshots to capture an element.",
+              "Capture an entire page, or only capture an element that is relevant. You can use CSS selectors to capture elements, you can also use them to hide elements before they're rendered.",
             image: `${baseUrl}img/undraw_collection_u2np.svg`,
             imageAlign: "top",
-            title: "Capture a page or element"
+            title: "Capture or hide elements"
           },
           {
             content:
-              "Browsers render HTML differently. Some differences might be small but others might be large and unsightly. With basset you can view how the supported browsers renders pages.",
+              "Browsers render HTML differently. Some differences might be small but others might be large and unsightly. Basset can generate multiple snapshots from multiple browsers.",
             image: `${baseUrl}img/undraw_windows_q9m0.svg`,
             imageAlign: "top",
             align: "left",
@@ -150,7 +152,7 @@ class Index extends React.Component {
             content:
               "Basset is completely open source. You can download the source code and modify it, or make contributions that the community can use.",
             title: "Open source"
-          },
+          }
         ]}
       </Block>
     );
