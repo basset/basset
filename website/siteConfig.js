@@ -25,7 +25,7 @@ const siteConfig = {
   tagline: 'Visual regression testing platform',
   url: 'https://basset.io',
   baseUrl: '/',
-
+  cname: 'basset.io',
   projectName: 'basset',
   organizationName: 'basset',
   headerLinks: [
