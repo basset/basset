@@ -1,0 +1,10 @@
+{
+  "docs": {
+    "Getting started": [
+      "getting-started",
+      "installation",
+      "aws",
+      "environmental-variables"
+    ]
+  }
+}
