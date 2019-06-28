@@ -19,6 +19,12 @@
       },
       "installation": {
         "title": "Installation"
+      },
+      "node-client": {
+        "title": "node-client"
+      },
+      "usage": {
+        "title": "Using basset"
       }
     },
     "links": {
@@ -28,7 +34,8 @@
       "GitHub": "GitHub"
     },
     "categories": {
-      "Getting started": "Getting started"
+      "Getting started": "Getting started",
+      "Usage": "Usage"
     }
   },
   "pages-strings": {
