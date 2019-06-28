@@ -5,6 +5,10 @@
       "installation",
       "aws",
       "environmental-variables"
+    ],
+    "Usage": [
+      "usage",
+      "node-client"
     ]
   }
 }
