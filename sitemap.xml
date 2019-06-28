@@ -8,4 +8,6 @@
 <url> <loc>https://basset.io/docs/environmental-variables</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://basset.io/docs/environmental-variables" /> </url>
 <url> <loc>https://basset.io/docs/getting-started</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://basset.io/docs/getting-started" /> </url>
 <url> <loc>https://basset.io/docs/installation</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://basset.io/docs/installation" /> </url>
+<url> <loc>https://basset.io/docs/node-client</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://basset.io/docs/node-client" /> </url>
+<url> <loc>https://basset.io/docs/usage</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://basset.io/docs/usage" /> </url>
 </urlset>
