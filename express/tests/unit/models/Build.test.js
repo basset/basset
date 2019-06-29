@@ -51,7 +51,7 @@ describe('Build', () => {
 
     otherUser = await createUser('snapshot@snapshotmodel2.io');
     otherOrganization = await createOrganization('snapshotmodel2');
-    addUserToOrganization(otherOrganization.id, otherUser.id, true);
+    await addUserToOrganization(otherOrganization.id, otherUser.id, true);
     otherUser = await otherUser.$query().eager('organizations');
 
     project = await createProject('test', organization.id, {
