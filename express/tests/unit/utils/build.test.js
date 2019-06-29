@@ -120,6 +120,6 @@ describe('build utils', () => {
   });
   test('getAssetsPath', () => {
     const path = utils.getAssetsPath('path/to/test.json', '1234eacd');
-    expect(path).toBe('path/to/test.json/1234eacd.json');
+    expect(path).toBe('1234eacd.json');
   });
 });
