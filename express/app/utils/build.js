@@ -16,7 +16,7 @@ const getBuildId = req => {
 
 const getAssetsPath = (relativePath, sha) => {
   const ext = relativePath.split('.').slice(-1)[0];
-  return `${relativePath}/${sha}.${ext}`;
+  return `${sha}.${ext}`;
 };
 
 const getProject = async req => {
