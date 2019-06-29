@@ -8,7 +8,8 @@ const run = () => {
   if (settings.sqs.use) {
     const aws = require('aws-sdk');
     const sqs = new aws.SQS({ apiVersion: '2012-11-05' });
-    setImmediate(() => {
+    setInterval(() => {
+      console.log('checking for new messages');
       sqs.receiveMessage(
         {
           QueueUrl: settings.sqs.taskUrl,
@@ -23,11 +24,10 @@ const processSQSMessages = async (err, data) => {
   if (err) {
     console.error('Error retrieving messages', err);
   }
-  const aws = require('aws-sdk');
-  const sqs = new aws.SQS({ apiVersion: '2012-11-05' });
   if (data.Messages) {
+    const aws = require('aws-sdk');
+    const sqs = new aws.SQS({ apiVersion: '2012-11-05' });
     for await (message of data.Messages) {
-      console.log(`received message`);
       await processMessage(JSON.parse(message.Body));
       const deleteParams = {
         QueueUrl: settings.sqs.taskUrl,
