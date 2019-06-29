@@ -10,11 +10,11 @@ describe('build tasks', () => {
     organization = await createOrganization('builder');
     project = await createProject('tester', organization.id);
   });
-  test('monitorBuildStats error when 10 minutes have passed with 0 snapshots', async () => {
+  test('monitorBuildStats error when 20 minutes have passed with 0 snapshots', async () => {
     jest.useFakeTimers();
     let build = await createBuild('master', project);
     const date = new Date();
-    date.setMinutes(date.getMinutes() - 11);
+    date.setMinutes(date.getMinutes() - 21);
     build.__proto__.$beforeUpdate = () => {};
     await build.$query().update({
       updatedAt: date.toISOString(),
@@ -24,12 +24,12 @@ describe('build tasks', () => {
     expect(build.error).toBe(true);
   });
 
-  test('monitorBuildStats error when last snapshot is greater than 10 minutes from build updatedAt', async () => {
+  test('monitorBuildStats error when last snapshot is greater than 20 minutes from build updatedAt', async () => {
     jest.useFakeTimers();
     let build = await createBuild('master', project);
     await createSnapshot('test', build);
     const date = new Date();
-    date.setMinutes(date.getMinutes() - 11);
+    date.setMinutes(date.getMinutes() - 21);
     build.__proto__.$beforeUpdate = () => {};
     await build.$query().update({
       updatedAt: date.toISOString(),
@@ -54,7 +54,7 @@ describe('build tasks', () => {
     });
     jest.advanceTimersByTime(60000);
     const date = new Date();
-    date.setMinutes(date.getMinutes() - 11);
+    date.setMinutes(date.getMinutes() - 21);
     build.__proto__.$beforeUpdate = () => {};
     await build.$query().update({
       updatedAt: date.toISOString(),

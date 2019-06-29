@@ -1,6 +1,6 @@
 const Build = require('../models/Build');
 
-const buildTimeout = 10 * 60 * 1000; // 10 minutes
+const buildTimeout = 20 * 60 * 1000; // 20 minutes
 
 const monitorBuildStatus = async ({ buildId }) => {
   const build = await Build.query().findById(buildId);
@@ -26,8 +26,7 @@ const monitorBuildStatus = async ({ buildId }) => {
     return;
   }
   setTimeout(async () => {
-    await monitorBuildStatus(buildId);
-    console.log('ran it baby', buildId)
+    await monitorBuildStatus({ buildId });
   }, 60 * 1000); // 60 seconds
 };
 
