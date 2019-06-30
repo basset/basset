@@ -1,6 +1,8 @@
 import gql from 'graphql-tag';
+import snapshotFragment from '../fragments/snapshot.js';
 
 export default gql`
+  ${snapshotFragment}
   query modifiedSnapshotGroups($buildId: ID!, $limit: Int!, $offset: Int!, $first: Int!) {
     modifiedSnapshotGroups(buildId: $buildId, limit: $limit, offset: $offset) {
       totalCount
@@ -16,47 +18,7 @@ export default gql`
             edges {
               cursor
               node {
-                id
-                imageLocation
-                approved
-                approvedOn
-                title
-                width
-                browser
-                diff
-                approvedBy {
-                  user {
-                    id
-                    name
-                  }
-                }
-                previousApproved {
-                  id
-                  imageLocation
-                  approved
-                  approvedOn
-                  approvedBy {
-                    user {
-                      id
-                      name
-                    }
-                  }
-                }
-                snapshotDiff {
-                  snapshotFromId
-                  snapshotToId
-                  imageLocation
-                }
-                snapshotFlake {
-                  imageLocation
-                  ignoredCount
-                  createdBy {
-                    user {
-                      id
-                      name
-                    }
-                  }
-                }
+                ...snapshotFragment
               }
             }
           }

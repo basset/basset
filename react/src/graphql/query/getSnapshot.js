@@ -1,42 +1,11 @@
 import gql from 'graphql-tag';
+import snapshotFragment from '../fragments/snapshot.js';
 
 export default gql`
+  ${snapshotFragment}
   query snapshot($id: ID!) {
     snapshot(id: $id) {
-      id
-      buildId
-      projectId
-      organizationId
-      imageLocation
-      approved
-      approvedOn
-      title
-      width
-      browser
-      diff
-      approvedBy {
-        user {
-          id
-          name
-        }
-      }
-      previousApproved {
-        id
-        imageLocation
-        approved
-        approvedOn
-        approvedBy {
-          user {
-            id
-            name
-          }
-        }
-      }
-      snapshotDiff {
-        snapshotFromId
-        snapshotToId
-        imageLocation
-      }
+      ...snapshotFragment
     }
   }
 `;

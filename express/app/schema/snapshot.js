@@ -245,9 +245,8 @@ const resolvers = {
       return {
         totalCount: pageQuery
           .clone()
-          .countDistinct('group')
-          .first()
-          .then(r => parseInt(r.count) + 1),
+          .distinct('group')
+          .then(r => r.length),
         edges: pageQuery
           .clone()
           .distinct('group')

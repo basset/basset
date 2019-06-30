@@ -138,7 +138,7 @@ class SnapshotGroups extends React.PureComponent {
                     <LoadMoreButton
                       isLoadingMore={!!this.props.isLoadingMoreFromGroup[group]}
                       onLoadMore={() => this.props.onLoadMoreFromGroup(group)}
-                      label="Load more from group"
+                      label={group.group === null ? 'Load more' : 'Load more similar snapshots'}
                     />
                   </Box>
                 )}
