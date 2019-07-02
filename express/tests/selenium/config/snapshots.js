@@ -6,7 +6,7 @@ const mkdirp = require('mkdirp');
 const readline = require('readline');
 const rimraf = util.promisify(require('rimraf'));
 
-const Basset = require('../../../../node-client');
+const Basset = require('@getbasset/node-client');
 
 const BASSET_URL = 'http://localhost:3000';
 
