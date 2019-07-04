@@ -950,7 +950,7 @@ test('getSnapshot updates build, project and organization', async () => {
   projectActions.changeProject = jest.fn(() => () => {});
   buildActions.changeBuild = jest.fn(() => () => {});
   snapshotData.projectId = '10';
-  snapshotData.buidlId = '11';
+  snapshotData.buildId = '11';
   snapshotData.organizationId = '12';
   ApolloClient.query = jest.fn(() =>
     Promise.resolve({ data: { snapshot: snapshotData } }),
@@ -1148,6 +1148,7 @@ test('loadMoreFromGroup', async () => {
   expect(state.isLoadingMoreFromGroup['1']).toBe(false);
   expect(state.error).toBe('');
   expect(state.groups[0].snapshots.edges).toHaveLength(5);
+  expect(state.groups[0].snapshots.pageInfo.hasNextPage).toBe(true);
 });
 
 

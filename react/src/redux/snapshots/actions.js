@@ -75,10 +75,10 @@ export const addSnapshotsToGroup = (group, snapshots) => ({
   snapshots,
 });
 
-export const updateGroupSnapshotsPageInfo = (group, snapshots) => ({
+export const updateGroupSnapshotsPageInfo = (group, pageInfo) => ({
   type: actionTypes.updateGroupSnapshotsPageInfo,
   group,
-  snapshots,
+  pageInfo,
 });
 
 export const showMoreFromGroup = group => ({
@@ -286,7 +286,7 @@ export const loadMoreFromGroup = group => async (dispatch, getState) => {
 
     if (data.modifiedSnapshots) {
       dispatch(addSnapshotsToGroup(group, data.modifiedSnapshots.edges));
-      dispatch(updateGroupSnapshotsPageInfo(group, data.modifiedSnapshots.edges))
+      dispatch(updateGroupSnapshotsPageInfo(group, data.modifiedSnapshots.pageInfo))
     }
     dispatch(doneLoadingMoreFromGroup(group.group));
   } catch (error) {
