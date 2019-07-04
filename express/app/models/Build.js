@@ -128,11 +128,11 @@ class Build extends BaseModel {
           url: pullRequestUrl,
           token: project.repoToken,
         });
-        //baseBranch = pullRequestData.base.ref;
         baseSHA = pullRequestData.base.sha;
       }
     }
     const baseQuery = Build.query()
+      .where('projectId', this.projectId)
       .where('buildVerified', true)
       .whereNotNull('completedAt')
       .orderBy('completedAt', 'desc')
