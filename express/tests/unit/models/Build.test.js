@@ -205,6 +205,12 @@ describe('Build', () => {
       const newBuild = await createBuild('diffBranch', project);
       expect(await newBuild.getPreviousBuild(project)).toEqual(baseBuild);
     });
+
+    it('should only return previous build for the project', async () => {
+      const newBuild = await createBuild('diffBranch', project2);
+      const previousBuild = await newBuild.getPreviousBuild();
+      expect(previousBuild).toBeUndefined();
+    });
   });
 
   test('compareSnapshots', async () => {
