@@ -175,7 +175,7 @@ const handler = {
   }),
   [actionTypes.updateGroupSnapshotsPageInfo]: (
     state,
-    { group, snapshots },
+    { group, pageInfo },
   ) => ({
     ...state,
     groups: state.groups.map(g => {
@@ -186,7 +186,7 @@ const handler = {
             ...g.snapshots,
             pageInfo: {
               ...g.pageInfo,
-              ...snapshots.pageInfo,
+              ...pageInfo,
             },
           },
         };
