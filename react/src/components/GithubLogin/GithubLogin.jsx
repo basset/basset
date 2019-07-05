@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import { Button, Heading } from 'grommet';
 import { Github } from 'grommet-icons';
 
-const GithubLogin = ({ label, multiple }) => {
+const GithubLogin = ({ label, multiple, redirect }) => {
+  let href = "/oauth/github";
+  if (redirect) {
+    href = `${href}?redirect=${redirect}`;
+  }
   if (!__BASSET__.logins.github) {
     return null;
   }
@@ -16,7 +20,7 @@ const GithubLogin = ({ label, multiple }) => {
         color="dark-2"
         label={label}
         icon={<Github />}
-        href="/oauth/github"
+        href={href}
       />
       {multiple && (
         <Heading size="small" level="4" alignSelf="center">
@@ -29,7 +33,10 @@ const GithubLogin = ({ label, multiple }) => {
 
 GithubLogin.propTypes = {
   label: PropTypes.string.isRequired,
+  redirect: PropTypes.string,
   multiple: PropTypes.bool.isRequired,
 };
-
+GithubLogin.defaultProps = {
+  redirect: null,
+}
 export default GithubLogin;

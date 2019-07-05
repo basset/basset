@@ -1,6 +1,6 @@
 import organizations from './app/organizations/routes.js';
 import projects from './app/projects/routes.js';
-import verifyAuthenitcation from './app/verfiy-authenticated.js';
+import verifyAuthenticated from './app/verify-authenticated.js';
 
 export default [
   {
@@ -52,7 +52,7 @@ export default [
   },
   {
     path: '/',
-    action: verifyAuthenitcation,
+    action: verifyAuthenticated,
     children: [
       {
         path: '/',

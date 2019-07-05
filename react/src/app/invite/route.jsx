@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { getIsAuthenticated, getUser } from '../../redux/user/selectors.js';
-import { verify } from '../verfiy-authenticated.js';
+import { verify } from '../verify-authenticated.js';
 
 import Invite from './controller.jsx';
 
