@@ -56,8 +56,8 @@ const email = new Email({
 });
 
 const locals = {
-  website: 'http://basset.io',
-  unsubscribe: 'http://basset.io',
+  bassetWebsite: 'http://basset.io',
+  site: settings.site.url,
 };
 
 const sendInviteEmail = async invite => {
