@@ -206,8 +206,8 @@ describe('Build', () => {
       expect(await newBuild.getPreviousBuild(project)).toEqual(baseBuild);
     });
 
-    it('should only return previous build for the project', async () => {
-      const newBuild = await createBuild('diffBranch', project2);
+    it('should return undefined if no previous build is found', async () => {
+      const newBuild = await createBuild('diffBranch', otherProject);
       const previousBuild = await newBuild.getPreviousBuild();
       expect(previousBuild).toBeUndefined();
     });
