@@ -31,7 +31,7 @@ export default class LoginPage extends React.PureComponent {
     requestError: PropTypes.string.isRequired,
   };
 
-  defaultProps = {
+  static defaultProps = {
     redirect: null,
   }
 

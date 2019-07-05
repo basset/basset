@@ -24,7 +24,7 @@ test('local strategy', async () => {
 });
 
 describe('github strategy', () => {
-  it('should be disbabled if settings has it disabled', () => {
+  it('should be disabled if settings has it disabled', () => {
     jest.mock('../../../../app/settings', () => {
       const settings = require.requireActual('../../../../app/settings');
       settings.oauth.strategy.github.use = false;

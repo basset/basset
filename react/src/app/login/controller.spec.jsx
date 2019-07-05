@@ -47,11 +47,12 @@ describe('<Login />', () => {
     expect(queryByTestId('test-github')).toBeNull();
   });
   test('login with email and password', async () => {
+    const login = {
+      user: {},
+    }
     mockMutate = Promise.resolve({
       data: {
-        login: {
-          user: {},
-        },
+        login,
       },
     });
     const { getByTestId } = renderWithRedux(<Login {...PROPS} />);
@@ -70,9 +71,34 @@ describe('<Login />', () => {
     });
     fireEvent.submit(passwordInput);
     expect(ApolloClient.mutate).toHaveBeenCalled();
-    await wait(() => expect(userActions.login).toHaveBeenCalled());
+    await wait(() => expect(userActions.login).toHaveBeenCalledWith(login, ''));
   });
+  test('redirect', async () => {
+    const login = {
+      user: {}
+    }
+    mockMutate = Promise.resolve({
+      data: {
+        login,
+      },
+    });
+    const { getByTestId } = renderWithRedux(<Login {...PROPS} redirect="/organizations" />);
 
+    const emailInput = getByTestId('test-email');
+    fireEvent.change(emailInput, {
+      target: {
+        value: 'tester@basset.io',
+      },
+    });
+    const passwordInput = getByTestId('test-password');
+    fireEvent.change(passwordInput, {
+      target: {
+        value: 'password',
+      },
+    });
+    fireEvent.submit(passwordInput);
+    await wait(() => expect(userActions.login).toHaveBeenCalledWith(login, '/organizations'));
+  });
   test('empty email', async () => {
     const { container, getByTestId } = renderWithRedux(<Login {...PROPS} />);
 
