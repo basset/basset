@@ -89,7 +89,14 @@ server.applyMiddleware({
   cors: settings.cors,
 });
 
-app.get('/oauth/github', passport.authenticate('github'));
+const saveRedirect = (req, res, next) => {
+  if (req.query.redirect) {
+    req.session.redirect = req.query.redirect;
+  }
+  return next();
+}
+
+app.get('/oauth/github', saveRedirect, passport.authenticate('github'));
 
 app.get(
   '/oauth/github/callback',
@@ -113,7 +120,8 @@ app.get(
     })(req, res, next);
   },
   (req, res) => {
-    res.redirect('/');
+    res.redirect(req.session.redirect || '/');
+    req.session.redirect = '';
   },
 );
 

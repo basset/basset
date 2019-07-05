@@ -20,6 +20,7 @@ const BoxContainer = styled(Box)`
 export default class LoginPage extends React.PureComponent {
   static propTypes = {
     error: PropTypes.string.isRequired,
+    redirect: PropTypes.string,
     email: PropTypes.string.isRequired,
     emailError: PropTypes.string.isRequired,
     password: PropTypes.string.isRequired,
@@ -29,6 +30,10 @@ export default class LoginPage extends React.PureComponent {
     onSubmit: PropTypes.func.isRequired,
     requestError: PropTypes.string.isRequired,
   };
+
+  defaultProps = {
+    redirect: null,
+  }
 
   renderError = () => (
     <Box
@@ -55,7 +60,7 @@ export default class LoginPage extends React.PureComponent {
         <LogoContainer margin="medium">
           <Logo size="64px" />
         </LogoContainer>
-        <GithubLogin label="Login with Github" multiple />
+        <GithubLogin label="Login with Github" redirect={this.props.redirect} multiple />
         <BoxContainer
           elevation="small"
           height="medium"

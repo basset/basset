@@ -15,6 +15,10 @@ export class Login extends React.PureComponent {
     redirect: PropTypes.string,
   };
 
+  static defaultProps = {
+    redirect: null,
+  }
+
   state = {
     email: '',
     password: '',
@@ -118,6 +122,7 @@ export class Login extends React.PureComponent {
   render() {
     return (
       <LoginPage
+        redirect={this.props.redirect}
         error={this.state.error}
         requestError={this.state.requestError}
         email={this.state.email}

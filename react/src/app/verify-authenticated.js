@@ -4,12 +4,16 @@ import getUserQuery from '../graphql/query/getUser.js';
 import { loginUser } from '../redux/user/actions.js';
 import { getIsAuthenticated } from '../redux/user/selectors.js';
 
-export default async ({ next }, params, history, dispatch, getState) => {
+export default async ({ next, pathname }, params, history, dispatch, getState) => {
   let isAuthenticated = getIsAuthenticated(getState());
 
   const redirect = {
     redirect: '/login',
   };
+
+  if (pathname !== '/') {
+    redirect.redirect = `${redirect.redirect}?redirect=${pathname}`;
+  }
 
   if (!isAuthenticated) {
     await dispatch(verify());
