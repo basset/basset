@@ -403,7 +403,7 @@ describe('snapshot schema', () => {
           result.errors.some(
             e =>
               e.message ===
-              'This snapshot has already been set as a flake, you cannot approve it.',
+              'This snapshot has already been approved or does not require approving.',
           ),
         ).toBe(true);
       });

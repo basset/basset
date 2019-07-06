@@ -73,12 +73,17 @@ const loadBuilds = async items => {
   const select = [
     'Build.*',
     Build.relatedQuery('snapshots')
-      .where('approved', true)
       .where('diff', true)
+      .where(builder => {
+        builder.where('approved', true).orWhere(builder => {
+          builder.where('flake', true).whereNull('snapshotFlakeMatchedId');
+        });
+      })
       .count()
       .as('approvedSnapshots'),
     Build.relatedQuery('snapshots')
       .where('flake', true)
+      .whereNotNull('snapshotFlakeMatched')
       .count()
       .as('flakedSnapshots'),
     Build.relatedQuery('snapshots')
@@ -99,7 +104,10 @@ const loadBuilds = async items => {
       .from('snapshot')
       .whereRaw('snapshot.build_id = build.previous_build_id')
       .where(builder => {
-        builder.where('approved', true).orWhere('diff', false);
+        builder
+          .where('approved', true)
+          .orWhere('diff', false)
+          .orWhere('flake', true);
       })
       .whereNotExists(builder => {
         builder
@@ -156,8 +164,14 @@ const resolvers = {
       if (fields.includes('approvedSnapshots')) {
         select.push(
           Build.relatedQuery('snapshots')
-            .where('approved', true)
             .where('diff', true)
+            .where(builder => {
+              builder.where('approved', true).orWhere(builder => {
+                builder
+                  .where('flake', true)
+                  .whereNull('snapshotFlakeMatchedId');
+              });
+            })
             .count()
             .as('approvedSnapshots'),
         );

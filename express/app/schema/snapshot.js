@@ -21,6 +21,7 @@ enum SnapshotType {
   UNMODIFIED
   REMOVED
   FLAKE
+  NEW_FLAKE
 }
 type SnapshotFlake implements Node {
   id: ID!
@@ -146,14 +147,19 @@ const resolvers = {
           query
             .whereNotNull('snapshotDiff.id')
             .whereNotNull('previousApproved.id')
-            .whereNull('snapshotDiff.group')
-            .where('snapshot.flake', false);
+            .whereNull('snapshotDiff.group');
         } else if (type === 'UNMODIFIED') {
           query
             .whereNull('snapshotDiff.id')
             .whereNotNull('previousApproved.id');
         } else if (type === 'FLAKE') {
-          query.where('snapshot.flake', true);
+          query
+            .where('snapshot.flake', true)
+            .whereNotNull('snapshot.snapshotFlakeMatchedId');
+        } else if (type === 'NEW_FLAKE') {
+          query
+            .where('snapshot.flake', true)
+            .whereNull('snapshot.snapshotFlakeMatchedId');
         }
       }
 
@@ -328,8 +334,14 @@ const resolvers = {
         .joinRelation('previousApproved')
         .where('snapshot.buildId', group.buildId)
         .where('snapshotDiff.group', group.group)
-        .where('snapshot.approved', true)
         .where('snapshot.diff', true)
+        .where(builder => {
+          builder.where('snapshot.approved', true).orWhere(builder => {
+            builder
+              .where('snapshot.flake', true)
+              .whereNull('snapshot.snapshotFlakeMatchedId');
+          });
+        })
         .count()
         .first()
         .then(r => r.count);
@@ -342,8 +354,8 @@ const resolvers = {
         .joinRelation('snapshotDiff')
         .joinRelation('previousApproved')
         .where('snapshot.buildId', group.buildId)
-        .where('snapshot.flake', false)
-        .where('snapshotDiff.group', group.group);
+        .where('snapshotDiff.group', group.group)
+        .whereNull('snapshot.snapshotFlakeMatchedId');
 
       return paginateQuery(context, query, {
         ...args,
@@ -354,7 +366,9 @@ const resolvers = {
   Mutation: {
     addSnapshotFlake: async (root, { id }, context, info) => {
       const { user } = context.req;
-      const snapshot = await Snapshot.authorizationFilter(user).eager('build').findById(id);
+      const snapshot = await Snapshot.authorizationFilter(user)
+        .eager('build')
+        .findById(id);
 
       const member = await OrganizationMember.query()
         .where('userId', user.id)
@@ -389,6 +403,10 @@ const resolvers = {
         snapshot,
       );
 
+      await snapshot.$query().update({
+        flake: true,
+      });
+
       const flake = await SnapshotFlake.query().insertAndFetch({
         title: snapshot.title,
         width: snapshot.width,
@@ -407,7 +425,9 @@ const resolvers = {
     },
     approveSnapshot: async (root, { id }, context, info) => {
       const { user } = context.req;
-      const snapshot = await Snapshot.authorizationFilter(user).eager('build').findById(id);
+      const snapshot = await Snapshot.authorizationFilter(user)
+        .eager('build')
+        .findById(id);
 
       const member = await OrganizationMember.query()
         .where('userId', user.id)
@@ -431,15 +451,7 @@ const resolvers = {
 
       if (snapshot.approved || !snapshot.diff || snapshot.flake) {
         throw new Error(
-          'This snapshot has already been approved or doesnt require approving.',
-        );
-      }
-
-      const snapshotFlake = await snapshot.$relatedQuery('snapshotFlake');
-
-      if (snapshotFlake) {
-        throw new Error(
-          'This snapshot has already been set as a flake, you cannot approve it.'
+          'This snapshot has already been approved or does not require approving.',
         );
       }
 
@@ -475,12 +487,10 @@ const resolvers = {
       const approvedOn = Snapshot.knex().fn.now();
 
       const ids = await Snapshot.query()
-        .leftOuterJoinRelation('snapshotFlake')
         .where('buildId', build.id)
         .where('approved', false)
         .where('diff', true)
-        .where('snapshot.flake', false)
-        .whereNull('snapshotFlake.id')
+        .where('flake', false)
         .map(s => s.id);
 
       await Snapshot.query()
@@ -493,12 +503,7 @@ const resolvers = {
       build.notifyApproved();
       return true;
     },
-    approveGroupSnapshots: async (
-      root,
-      { buildId, group },
-      context,
-      info,
-    ) => {
+    approveGroupSnapshots: async (root, { buildId, group }, context, info) => {
       const { user } = context.req;
       const build = await Build.authorizationFilter(user).findById(buildId);
 
@@ -521,12 +526,10 @@ const resolvers = {
 
       const ids = await Snapshot.query()
         .joinRelation('snapshotDiff')
-        .leftOuterJoinRelation('snapshotFlake')
         .where('snapshot.buildId', build.id)
         .where('snapshot.approved', false)
         .where('snapshot.diff', true)
         .where('snapshot.flake', false)
-        .whereNull('snapshotFlake.id')
         .where('snapshotDiff.group', group)
         .map(s => s.id);
 
@@ -545,22 +548,22 @@ const resolvers = {
   },
 };
 
-const checkModifiedAndNotify = async (build) => {
+const checkModifiedAndNotify = async build => {
   const { modifiedSnapshotCount } = await Snapshot.query()
-  .leftOuterJoinRelation('snapshotFlake')
-  .where('buildId', build.id)
-  .where('diff', true)
-  .where(builder =>
-    builder.where('approved', false)
-    .orWhereNotNull('snapshotFlake.id')
-  )
-  .count('snapshot.id as modifiedSnapshotCount')
-  .first();
+    .where('buildId', build.id)
+    .where('diff', true)
+    .where(builder => {
+      builder.where('approved', false).orWhere(builder => {
+        builder.where('flake', true).whereNull('snapshotFlakeMatchedId');
+      });
+    })
+    .count('snapshot.id as modifiedSnapshotCount')
+    .first();
 
   if (parseInt(modifiedSnapshotCount) === 0) {
     await build.notifyApproved(null);
   }
-}
+};
 
 module.exports = {
   typeDefs,
