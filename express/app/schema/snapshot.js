@@ -354,7 +354,7 @@ const resolvers = {
   Mutation: {
     addSnapshotFlake: async (root, { id }, context, info) => {
       const { user } = context.req;
-      const snapshot = await Snapshot.authorizationFilter(user).findById(id);
+      const snapshot = await Snapshot.authorizationFilter(user).eager('build').findById(id);
 
       const member = await OrganizationMember.query()
         .where('userId', user.id)
@@ -389,7 +389,7 @@ const resolvers = {
         snapshot,
       );
 
-      return SnapshotFlake.query().insertAndFetch({
+      const flake = await SnapshotFlake.query().insertAndFetch({
         title: snapshot.title,
         width: snapshot.width,
         snapshotId: snapshot.id,
@@ -400,10 +400,14 @@ const resolvers = {
         organizationId: snapshot.organizationId,
         projectId: snapshot.projectId,
       });
+
+      await checkModifiedAndNotify(snapshot.build);
+
+      return flake;
     },
     approveSnapshot: async (root, { id }, context, info) => {
       const { user } = context.req;
-      const snapshot = await Snapshot.authorizationFilter(user).findById(id);
+      const snapshot = await Snapshot.authorizationFilter(user).eager('build').findById(id);
 
       const member = await OrganizationMember.query()
         .where('userId', user.id)
@@ -430,21 +434,24 @@ const resolvers = {
           'This snapshot has already been approved or doesnt require approving.',
         );
       }
-      const { modifiedSnapshotCount } = await Snapshot.query()
-        .where('buildId', snapshot.buildId)
-        .where('diff', true)
-        .count('id as modifiedSnapshotCount')
-        .first();
 
-      if (parseInt(modifiedSnapshotCount) === 0) {
-        const build = await snapshot.$relatedQuery('build');
-        await build.notifyApproved(null, project);
+      const snapshotFlake = await snapshot.$relatedQuery('snapshotFlake');
+
+      if (snapshotFlake) {
+        throw new Error(
+          'This snapshot has already been set as a flake, you cannot approve it.'
+        );
       }
-      return snapshot.$query().updateAndFetch({
+
+      const updatedSnapshot = await snapshot.$query().updateAndFetch({
         approved: true,
         approvedById: member.id,
         approvedOn: Snapshot.knex().fn.now(),
       });
+
+      await checkModifiedAndNotify(snapshot.build);
+
+      return updatedSnapshot;
     },
     approveSnapshots: async (root, { buildId }, context, info) => {
       const { user } = context.req;
@@ -468,9 +475,12 @@ const resolvers = {
       const approvedOn = Snapshot.knex().fn.now();
 
       const ids = await Snapshot.query()
+        .leftOuterJoinRelation('snapshotFlake')
         .where('buildId', build.id)
         .where('approved', false)
         .where('diff', true)
+        .where('snapshot.flake', false)
+        .whereNull('snapshotFlake.id')
         .map(s => s.id);
 
       await Snapshot.query()
@@ -511,10 +521,12 @@ const resolvers = {
 
       const ids = await Snapshot.query()
         .joinRelation('snapshotDiff')
+        .leftOuterJoinRelation('snapshotFlake')
         .where('snapshot.buildId', build.id)
         .where('snapshot.approved', false)
         .where('snapshot.diff', true)
         .where('snapshot.flake', false)
+        .whereNull('snapshotFlake.id')
         .where('snapshotDiff.group', group)
         .map(s => s.id);
 
@@ -526,20 +538,29 @@ const resolvers = {
         })
         .whereIn('id', ids);
 
-      const { modifiedSnapshotCount } = await Snapshot.query()
-        .where('buildId', build.id)
-        .where('diff', true)
-        .count('id as modifiedSnapshotCount')
-        .first();
+      await checkModifiedAndNotify(build);
 
-      if (parseInt(modifiedSnapshotCount) === 0) {
-        const build = await snapshot.$relatedQuery('build');
-        await build.notifyApproved(null, project);
-      }
       return true;
     },
   },
 };
+
+const checkModifiedAndNotify = async (build) => {
+  const { modifiedSnapshotCount } = await Snapshot.query()
+  .leftOuterJoinRelation('snapshotFlake')
+  .where('buildId', build.id)
+  .where('diff', true)
+  .where(builder =>
+    builder.where('approved', false)
+    .orWhereNotNull('snapshotFlake.id')
+  )
+  .count('snapshot.id as modifiedSnapshotCount')
+  .first();
+
+  if (parseInt(modifiedSnapshotCount) === 0) {
+    await build.notifyApproved(null);
+  }
+}
 
 module.exports = {
   typeDefs,
