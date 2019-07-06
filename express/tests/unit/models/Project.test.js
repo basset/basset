@@ -151,6 +151,16 @@ describe('Project', () => {
     expect(newAsset2.sha).toBe(newAssets[path2]);
   });
 
+  test('createAssets creates an asset that exists in another project', async () => {
+    await createAsset(project, '12345ea');
+    const newAssets = {
+      'path/to/asset.png': '12345ea',
+    };
+    await otherProject.createAssets(newAssets);
+    const asset = await otherProject.$relatedQuery('assets').where('sha', '12345ea').first();
+    expect(asset).toBeDefined();
+  });
+
   test('createAssets does not create duplicates', async () => {
     const path = 'path/to/new-asset.png';
     const path2 = 'path/to/new-asset2.png';
@@ -160,6 +170,6 @@ describe('Project', () => {
     };
     await project.createAssets(newAssets);
     const updatedAssets = await project.$relatedQuery('assets');
-    expect(updatedAssets).toHaveLength(assets.length + 2);
+    expect(updatedAssets).toHaveLength(assets.length + 3);
   });
 });
