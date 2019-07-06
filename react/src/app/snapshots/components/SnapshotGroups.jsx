@@ -10,7 +10,7 @@ import {
   getGroupsPageInfo,
   getIsLoadingMoreGroups,
   getIsApproving,
-  getCurrentSnapshot,
+  getCurrentSnapshotId,
   getSnapshotGroups,
   getShowMoreFromGroup,
 } from '../../../redux/snapshots/selectors.js';
@@ -45,7 +45,7 @@ class SnapshotGroups extends React.PureComponent {
       }),
     ),
     build: PropTypes.object.isRequired,
-    currentSnapshot: PropTypes.object,
+    currentSnapshotId: PropTypes.string,
     isLoading: PropTypes.bool.isRequired,
     canApproveAll: PropTypes.bool.isRequired,
     isApproving: PropTypes.bool.isRequired,
@@ -55,10 +55,6 @@ class SnapshotGroups extends React.PureComponent {
     onApproveSnapshot: PropTypes.func.isRequired,
     onLoadMoreFromGroup: PropTypes.func.isRequired,
   };
-
-  currentSnapshotId = this.props.currentSnapshot
-    ? this.props.currentSnapshot.id
-    : null;
 
   render() {
     const typeName = 'Modified snapshots';
@@ -82,7 +78,6 @@ class SnapshotGroups extends React.PureComponent {
     const count = this.props.build.modifiedSnapshots;
     const noSnapshots = groups.length === 0 && count === 0;
     const countText = noSnapshots ? '(None)' : `(${count})`;
-
     if (noSnapshots) {
       children = null;
     } else {
@@ -126,7 +121,7 @@ class SnapshotGroups extends React.PureComponent {
                         onExpand={() => this.props.onExpand(snapshot)}
                         type={this.props.type}
                         isApproving={this.props.isApproving}
-                        active={this.currentSnapshotId === snapshot.id}
+                        active={this.props.currentSnapshotId === snapshot.id}
                         onToggleFlake={() =>
                           this.props.onToggleFlake({ group, snapshot })
                         }
@@ -138,7 +133,11 @@ class SnapshotGroups extends React.PureComponent {
                     <LoadMoreButton
                       isLoadingMore={!!this.props.isLoadingMoreFromGroup[group]}
                       onLoadMore={() => this.props.onLoadMoreFromGroup(group)}
-                      label={group.group === null ? 'Load more' : 'Load more similar snapshots'}
+                      label={
+                        group.group === null
+                          ? 'Load more'
+                          : 'Load more similar snapshots'
+                      }
                     />
                   </Box>
                 )}
@@ -183,7 +182,7 @@ const mapState = state => {
     pageInfo: getGroupsPageInfo(state),
     canApproveAll: build.approvedSnapshots < build.modifiedSnapshots,
     build,
-    currentSnapshot: getCurrentSnapshot(state),
+    currentSnapshotId: getCurrentSnapshotId(state),
   };
 };
 

@@ -83,7 +83,7 @@ const loadBuilds = async items => {
       .as('approvedSnapshots'),
     Build.relatedQuery('snapshots')
       .where('flake', true)
-      .whereNotNull('snapshotFlakeMatched')
+      .whereNotNull('snapshotFlakeMatchedId')
       .count()
       .as('flakedSnapshots'),
     Build.relatedQuery('snapshots')

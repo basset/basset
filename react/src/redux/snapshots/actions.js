@@ -43,28 +43,38 @@ export const doneLoadingMoreFromGroup = group => ({
 export const isApproving = () => ({ type: actionTypes.isApproving });
 export const doneApproving = () => ({ type: actionTypes.doneApproving });
 export const isLoadingGroups = () => ({ type: actionTypes.isLoadingGroups });
-export const doneLoadingGroups = () => ({ type: actionTypes.doneLoadingGroups });
-export const isLoadingMoreGroups = () => ({ type: actionTypes.isLoadingMoreGroups });
-export const doneLoadingMoreGroups = () => ({ type: actionTypes.doneLoadingMoreGroups });
-export const isAddingSnapshotFlake = () => ({ type: actionTypes.isAddingSnapshotFlake });
-export const doneAddingSnapshotFlake = () => ({ type: actionTypes.doneAddingSnapshotFlake });
+export const doneLoadingGroups = () => ({
+  type: actionTypes.doneLoadingGroups,
+});
+export const isLoadingMoreGroups = () => ({
+  type: actionTypes.isLoadingMoreGroups,
+});
+export const doneLoadingMoreGroups = () => ({
+  type: actionTypes.doneLoadingMoreGroups,
+});
+export const isAddingSnapshotFlake = () => ({
+  type: actionTypes.isAddingSnapshotFlake,
+});
+export const doneAddingSnapshotFlake = () => ({
+  type: actionTypes.doneAddingSnapshotFlake,
+});
 
 export const setError = error => ({
   type: actionTypes.setError,
   error,
 });
 
-export const receiveGroups = (groups) => ({
+export const receiveGroups = groups => ({
   type: actionTypes.receiveGroups,
   groups,
 });
 
-export const addGroups = (groups) => ({
+export const addGroups = groups => ({
   type: actionTypes.addGroups,
   groups,
 });
 
-export const updateGroupsPageInfo = (groups) => ({
+export const updateGroupsPageInfo = groups => ({
   type: actionTypes.updateGroupsPageInfo,
   groups,
 });
@@ -104,7 +114,7 @@ export const addSnapshots = (snapshotType, snapshots) => ({
   snapshotType,
 });
 
-export const approveSnapshots = (snapshot) => ({
+export const approveSnapshots = snapshot => ({
   type: actionTypes.approveSnapshots,
   snapshot,
 });
@@ -166,10 +176,10 @@ export const getSnapshot = id => async (dispatch, getState) => {
         dispatch(addSnapshot('single', snapshot));
       }
       if (currentOrganizationId !== snapshot.organizationId) {
-        dispatch(changeOrganization(snapshot.organizationId));
+        dispatch(changeOrganization({ id: snapshot.organizationId }));
       }
       if (currentProjectId !== snapshot.projectId) {
-        dispatch(changeProject(snapshot.projectId));
+        dispatch(changeProject({ id: snapshot.projectId }));
       }
       if (currentBuildId !== snapshot.buildId) {
         dispatch(changeBuild({ id: snapshot.buildId }));
@@ -228,14 +238,16 @@ export const getSnapshotGroups = () => async (dispatch, getState) => {
     });
 
     if (data.modifiedSnapshotGroups) {
-      dispatch(receiveGroups(data.modifiedSnapshotGroups.edges.map(e => e.node)));
+      dispatch(
+        receiveGroups(data.modifiedSnapshotGroups.edges.map(e => e.node)),
+      );
       dispatch(updateGroupsPageInfo(data.modifiedSnapshotGroups));
     }
     dispatch(doneLoadingGroups());
   } catch (error) {
     dispatch(doneLoadingGroups());
   }
-}
+};
 
 export const loadMoreGroups = () => async (dispatch, getState) => {
   const state = getState();
@@ -263,7 +275,7 @@ export const loadMoreGroups = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch(doneLoadingMoreGroups());
   }
-}
+};
 
 export const loadMoreFromGroup = group => async (dispatch, getState) => {
   const state = getState();
@@ -286,13 +298,15 @@ export const loadMoreFromGroup = group => async (dispatch, getState) => {
 
     if (data.modifiedSnapshots) {
       dispatch(addSnapshotsToGroup(group, data.modifiedSnapshots.edges));
-      dispatch(updateGroupSnapshotsPageInfo(group, data.modifiedSnapshots.pageInfo))
+      dispatch(
+        updateGroupSnapshotsPageInfo(group, data.modifiedSnapshots.pageInfo),
+      );
     }
     dispatch(doneLoadingMoreFromGroup(group.group));
   } catch (error) {
     dispatch(doneLoadingMoreFromGroup(group.group));
   }
-}
+};
 
 export const setCurrentSnapshot = currentSnapshotId => ({
   type: actionTypes.setCurrentSnapshot,
@@ -325,7 +339,9 @@ export const approveSnapshot = ({ group, snapshot }) => async dispatch => {
     });
     if (data.approveSnapshot) {
       dispatch(updateGroupSnapshot(group, data.approveSnapshot));
-      dispatch(updateGroupApprovedSnapshots(group, group.approvedSnapshots + 1));
+      dispatch(
+        updateGroupApprovedSnapshots(group, group.approvedSnapshots + 1),
+      );
       dispatch(updateApprovedSnapshots(1));
     }
     dispatch(doneApproving());
@@ -367,7 +383,7 @@ export const approveAllSnapshots = () => async (dispatch, getState) => {
   }
 };
 
-export const approveGroupSnapshots = (group) => async (dispatch, getState) => {
+export const approveGroupSnapshots = group => async (dispatch, getState) => {
   const state = getState();
   const user = getUser(state);
   const { currentBuildId } = state.builds;
@@ -430,7 +446,10 @@ export const loadMore = type => async (dispatch, getState) => {
   }
 };
 
-export const addSnapshotFlake = ({ group, snapshot }) => async (dispatch, getState) => {
+export const addSnapshotFlake = ({ group, snapshot }) => async (
+  dispatch,
+  getState,
+) => {
   dispatch(isAddingSnapshotFlake());
   try {
     const { data } = await ApolloClient.mutate({
@@ -440,10 +459,12 @@ export const addSnapshotFlake = ({ group, snapshot }) => async (dispatch, getSta
       },
     });
     if (data.addSnapshotFlake) {
-      dispatch(updateGroupSnapshot(group, {
-        id: snapshot.id,
-        snapshotFlake: data.addSnapshotFlake,
-      }));
+      dispatch(
+        updateGroupSnapshot(group, {
+          id: snapshot.id,
+          snapshotFlake: data.addSnapshotFlake,
+        }),
+      );
     }
     dispatch(doneAddingSnapshotFlake());
   } catch (error) {
