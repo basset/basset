@@ -82,7 +82,7 @@ class Project extends BaseModel {
 
   async createAssets(assets) {
     for await (const sha of Object.values(assets)) {
-      const assetExists = await Asset.query()
+      const assetExists = await this.$relatedQuery('assets')
         .where('sha', sha)
         .first(); // ignore duplicates
       if (!assetExists) {
