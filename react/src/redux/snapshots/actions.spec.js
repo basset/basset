@@ -672,6 +672,9 @@ beforeEach(() => {
     snapshotDiff: null,
     title: 'Project list - all',
     width: 1280,
+    projectId: '12345',
+    organizationId: '1234',
+    buildId: '54321',
     __typename: 'Snapshot',
   };
   snapshotsData = {

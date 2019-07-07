@@ -11,7 +11,7 @@ import {
   getIsLoadingMore,
   getPageInfo,
   getIsApproving,
-  getCurrentSnapshot,
+  getCurrentSnapshotId,
 } from '../../../redux/snapshots/selectors.js';
 import {
   showSnapshot,
@@ -65,10 +65,6 @@ class SnapshotList extends React.PureComponent {
     }
   }
 
-  currentSnapshotId = this.props.currentSnapshot
-    ? this.props.currentSnapshot.id
-    : null;
-
   render() {
     if (this.props.isLoading) {
       return (
@@ -118,7 +114,7 @@ class SnapshotList extends React.PureComponent {
               onExpand={() => this.props.onExpand(snapshot)}
               type={this.props.type}
               isApproving={this.props.isApproving}
-              active={this.currentSnapshotId === snapshot.id}
+              active={this.props.currentSnapshotId === snapshot.id}
             />
           ))}
           {hasMore && (
@@ -155,7 +151,7 @@ const mapState = (state, { type }) => {
     pageInfo: getPageInfo(state)[type],
     isApproving: getIsApproving(state),
     build,
-    currentSnapshot: getCurrentSnapshot(state),
+    currentSnapshotId: getCurrentSnapshotId(state),
   };
 };
 

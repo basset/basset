@@ -21,6 +21,7 @@ enum SnapshotType {
   UNMODIFIED
   REMOVED
   FLAKE
+  NEW_FLAKE
 }
 type SnapshotFlake implements Node {
   id: ID!
@@ -146,14 +147,19 @@ const resolvers = {
           query
             .whereNotNull('snapshotDiff.id')
             .whereNotNull('previousApproved.id')
-            .whereNull('snapshotDiff.group')
-            .where('snapshot.flake', false);
+            .whereNull('snapshotDiff.group');
         } else if (type === 'UNMODIFIED') {
           query
             .whereNull('snapshotDiff.id')
             .whereNotNull('previousApproved.id');
         } else if (type === 'FLAKE') {
-          query.where('snapshot.flake', true);
+          query
+            .where('snapshot.flake', true)
+            .whereNotNull('snapshot.snapshotFlakeMatchedId');
+        } else if (type === 'NEW_FLAKE') {
+          query
+            .where('snapshot.flake', true)
+            .whereNull('snapshot.snapshotFlakeMatchedId');
         }
       }
 
@@ -328,8 +334,14 @@ const resolvers = {
         .joinRelation('previousApproved')
         .where('snapshot.buildId', group.buildId)
         .where('snapshotDiff.group', group.group)
-        .where('snapshot.approved', true)
         .where('snapshot.diff', true)
+        .where(builder => {
+          builder.where('snapshot.approved', true).orWhere(builder => {
+            builder
+              .where('snapshot.flake', true)
+              .whereNull('snapshot.snapshotFlakeMatchedId');
+          });
+        })
         .count()
         .first()
         .then(r => r.count);
@@ -342,8 +354,8 @@ const resolvers = {
         .joinRelation('snapshotDiff')
         .joinRelation('previousApproved')
         .where('snapshot.buildId', group.buildId)
-        .where('snapshot.flake', false)
-        .where('snapshotDiff.group', group.group);
+        .where('snapshotDiff.group', group.group)
+        .whereNull('snapshot.snapshotFlakeMatchedId');
 
       return paginateQuery(context, query, {
         ...args,
@@ -354,7 +366,9 @@ const resolvers = {
   Mutation: {
     addSnapshotFlake: async (root, { id }, context, info) => {
       const { user } = context.req;
-      const snapshot = await Snapshot.authorizationFilter(user).findById(id);
+      const snapshot = await Snapshot.authorizationFilter(user)
+        .eager('build')
+        .findById(id);
 
       const member = await OrganizationMember.query()
         .where('userId', user.id)
@@ -389,7 +403,11 @@ const resolvers = {
         snapshot,
       );
 
-      return SnapshotFlake.query().insertAndFetch({
+      await snapshot.$query().update({
+        flake: true,
+      });
+
+      const flake = await SnapshotFlake.query().insertAndFetch({
         title: snapshot.title,
         width: snapshot.width,
         snapshotId: snapshot.id,
@@ -400,10 +418,16 @@ const resolvers = {
         organizationId: snapshot.organizationId,
         projectId: snapshot.projectId,
       });
+
+      await checkModifiedAndNotify(snapshot.build);
+
+      return flake;
     },
     approveSnapshot: async (root, { id }, context, info) => {
       const { user } = context.req;
-      const snapshot = await Snapshot.authorizationFilter(user).findById(id);
+      const snapshot = await Snapshot.authorizationFilter(user)
+        .eager('build')
+        .findById(id);
 
       const member = await OrganizationMember.query()
         .where('userId', user.id)
@@ -427,24 +451,19 @@ const resolvers = {
 
       if (snapshot.approved || !snapshot.diff || snapshot.flake) {
         throw new Error(
-          'This snapshot has already been approved or doesnt require approving.',
+          'This snapshot has already been approved or does not require approving.',
         );
       }
-      const { modifiedSnapshotCount } = await Snapshot.query()
-        .where('buildId', snapshot.buildId)
-        .where('diff', true)
-        .count('id as modifiedSnapshotCount')
-        .first();
 
-      if (parseInt(modifiedSnapshotCount) === 0) {
-        const build = await snapshot.$relatedQuery('build');
-        await build.notifyApproved(null, project);
-      }
-      return snapshot.$query().updateAndFetch({
+      const updatedSnapshot = await snapshot.$query().updateAndFetch({
         approved: true,
         approvedById: member.id,
         approvedOn: Snapshot.knex().fn.now(),
       });
+
+      await checkModifiedAndNotify(snapshot.build);
+
+      return updatedSnapshot;
     },
     approveSnapshots: async (root, { buildId }, context, info) => {
       const { user } = context.req;
@@ -471,6 +490,7 @@ const resolvers = {
         .where('buildId', build.id)
         .where('approved', false)
         .where('diff', true)
+        .where('flake', false)
         .map(s => s.id);
 
       await Snapshot.query()
@@ -483,12 +503,7 @@ const resolvers = {
       build.notifyApproved();
       return true;
     },
-    approveGroupSnapshots: async (
-      root,
-      { buildId, group },
-      context,
-      info,
-    ) => {
+    approveGroupSnapshots: async (root, { buildId, group }, context, info) => {
       const { user } = context.req;
       const build = await Build.authorizationFilter(user).findById(buildId);
 
@@ -526,19 +541,28 @@ const resolvers = {
         })
         .whereIn('id', ids);
 
-      const { modifiedSnapshotCount } = await Snapshot.query()
-        .where('buildId', build.id)
-        .where('diff', true)
-        .count('id as modifiedSnapshotCount')
-        .first();
+      await checkModifiedAndNotify(build);
 
-      if (parseInt(modifiedSnapshotCount) === 0) {
-        const build = await snapshot.$relatedQuery('build');
-        await build.notifyApproved(null, project);
-      }
       return true;
     },
   },
+};
+
+const checkModifiedAndNotify = async build => {
+  const { modifiedSnapshotCount } = await Snapshot.query()
+    .where('buildId', build.id)
+    .where('diff', true)
+    .where(builder => {
+      builder.where('approved', false).orWhere(builder => {
+        builder.where('flake', true).whereNull('snapshotFlakeMatchedId');
+      });
+    })
+    .count('snapshot.id as modifiedSnapshotCount')
+    .first();
+
+  if (parseInt(modifiedSnapshotCount) === 0) {
+    await build.notifyApproved(null);
+  }
 };
 
 module.exports = {

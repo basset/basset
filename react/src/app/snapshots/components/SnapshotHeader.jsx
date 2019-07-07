@@ -180,6 +180,15 @@ const SnapshotHeader = React.memo(
           />
         );
       }
+      if (!canExpand) {
+        return (
+          <Button
+            disabled
+            data-test-id="expand-snapshot-button"
+            icon={<Expand />}
+          />
+        )
+      }
       return (
         <Link.Button
           data-test-id="expand-snapshot-link"

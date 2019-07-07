@@ -16,7 +16,6 @@ jest.mock('../../../app/utils/upload', () => ({
 
 const upload = require('../../../app/utils/upload');
 
-
 describe('snapshot schema', () => {
   let user, otherUser;
   let organization, otherOrganization;
@@ -144,28 +143,79 @@ describe('snapshot schema', () => {
       ];
       const newBuild = await createBuild('test', project);
       const newSnapshots = [
-        await createSnapshot('test 1', newBuild, { diff: true, previousApprovedId: oldSnapshots[0].id }),
-        await createSnapshot('test 2', newBuild, { diff: true, previousApprovedId: oldSnapshots[1].id }),
-        await createSnapshot('test 3', newBuild, { diff: true, previousApprovedId: oldSnapshots[2].id }),
-        await createSnapshot('test 4', newBuild, { diff: true, previousApprovedId: oldSnapshots[3].id }),
-        await createSnapshot('test 5', newBuild, { diff: true, previousApprovedId: oldSnapshots[4].id }),
-        await createSnapshot('test 6', newBuild, { diff: true, previousApprovedId: oldSnapshots[5].id }),
-        await createSnapshot('test 7', newBuild, { approved: true, diff: true, previousApprovedId: oldSnapshots[6].id }),
-        await createSnapshot('test 8', newBuild, { diff: true, previousApprovedId: oldSnapshots[7].id }),
-        await createSnapshot('test 9', newBuild, { diff: true, previousApprovedId: oldSnapshots[8].id }),
-        await createSnapshot('test 10', newBuild, { diff: true, previousApprovedId: oldSnapshots[9].id }),
+        await createSnapshot('test 1', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshots[0].id,
+        }),
+        await createSnapshot('test 2', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshots[1].id,
+        }),
+        await createSnapshot('test 3', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshots[2].id,
+        }),
+        await createSnapshot('test 4', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshots[3].id,
+        }),
+        await createSnapshot('test 5', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshots[4].id,
+        }),
+        await createSnapshot('test 6', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshots[5].id,
+        }),
+        await createSnapshot('test 7', newBuild, {
+          approved: true,
+          diff: true,
+          previousApprovedId: oldSnapshots[6].id,
+        }),
+        await createSnapshot('test 8', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshots[7].id,
+        }),
+        await createSnapshot('test 9', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshots[8].id,
+        }),
+        await createSnapshot('test 10', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshots[9].id,
+        }),
       ];
       const snapshotDiffs = [
-        await createSnapshotDiff(oldSnapshots[0], newSnapshots[0], newBuild, { group: 1 }),
-        await createSnapshotDiff(oldSnapshots[1], newSnapshots[1], newBuild, { group: 1 }),
-        await createSnapshotDiff(oldSnapshots[2], newSnapshots[2], newBuild, { group: 3 }),
-        await createSnapshotDiff(oldSnapshots[3], newSnapshots[3], newBuild, { group: 3 }),
-        await createSnapshotDiff(oldSnapshots[4], newSnapshots[4], newBuild, { group: 2 }),
-        await createSnapshotDiff(oldSnapshots[5], newSnapshots[5], newBuild, { group: 2 }),
-        await createSnapshotDiff(oldSnapshots[6], newSnapshots[6], newBuild, { group: 2 }),
-        await createSnapshotDiff(oldSnapshots[7], newSnapshots[7], newBuild, { group: null }),
-        await createSnapshotDiff(oldSnapshots[8], newSnapshots[8], newBuild, { group: null }),
-        await createSnapshotDiff(oldSnapshots[9], newSnapshots[9], newBuild, { group: null }),
+        await createSnapshotDiff(oldSnapshots[0], newSnapshots[0], newBuild, {
+          group: 1,
+        }),
+        await createSnapshotDiff(oldSnapshots[1], newSnapshots[1], newBuild, {
+          group: 1,
+        }),
+        await createSnapshotDiff(oldSnapshots[2], newSnapshots[2], newBuild, {
+          group: 3,
+        }),
+        await createSnapshotDiff(oldSnapshots[3], newSnapshots[3], newBuild, {
+          group: 3,
+        }),
+        await createSnapshotDiff(oldSnapshots[4], newSnapshots[4], newBuild, {
+          group: 2,
+        }),
+        await createSnapshotDiff(oldSnapshots[5], newSnapshots[5], newBuild, {
+          group: 2,
+        }),
+        await createSnapshotDiff(oldSnapshots[6], newSnapshots[6], newBuild, {
+          group: 2,
+        }),
+        await createSnapshotDiff(oldSnapshots[7], newSnapshots[7], newBuild, {
+          group: null,
+        }),
+        await createSnapshotDiff(oldSnapshots[8], newSnapshots[8], newBuild, {
+          group: null,
+        }),
+        await createSnapshotDiff(oldSnapshots[9], newSnapshots[9], newBuild, {
+          group: null,
+        }),
       ];
       const query = `
       query modifiedSnapshotGroups($first: Int, $after: String, $buildId: ID!, $limit: Int!, $offset: Int!) {
@@ -245,7 +295,10 @@ describe('snapshot schema', () => {
   describe('mutation', () => {
     describe('addSnapshotFlake', () => {
       test('can create snapshot flake', async () => {
-        const newSnapshot = await createSnapshot('test 1', build, { diff: true, previousApprovedId: snapshot.id });
+        const newSnapshot = await createSnapshot('test 1', build, {
+          diff: true,
+          previousApprovedId: snapshot.id,
+        });
         await createSnapshotDiff(snapshot, newSnapshot, build, { group: 1 });
         const query = `
         mutation addSnapshotFlake($id: ID!) {
@@ -259,15 +312,17 @@ describe('snapshot schema', () => {
             }
           }
         }
-      `;
-      const variables = {
-        id: newSnapshot.id,
-      };
-      const result = await runQuery(query, user, variables);
-      expect(result.data.addSnapshotFlake.imageLocation).toBe('imageLocation');
-      expect(result.data.addSnapshotFlake.createdBy.user.id).toBe(user.id);
-      expect(upload.copySnapshotDiffToFlake).toHaveBeenCalled();
-      })
+        `;
+        const variables = {
+          id: newSnapshot.id,
+        };
+        const result = await runQuery(query, user, variables);
+        expect(result.data.addSnapshotFlake.imageLocation).toBe(
+          'imageLocation',
+        );
+        expect(result.data.addSnapshotFlake.createdBy.user.id).toBe(user.id);
+        expect(upload.copySnapshotDiffToFlake).toHaveBeenCalled();
+      });
     });
 
     describe('approveSnapshot', () => {
@@ -293,6 +348,64 @@ describe('snapshot schema', () => {
         expect(result.data.approveSnapshot.approved).toBe(true);
         expect(result.data.approveSnapshot.approvedBy.user.id).toBe(user.id);
         expect(result.data.approveSnapshot.approvedOn).toBeDefined();
+      });
+      test('approving last snapshot verifies the build', async () => {
+        const query = `
+          mutation approveSnapshot($id: ID!) {
+            approveSnapshot(id: $id) {
+              id
+            }
+          }
+        `;
+        let newBuild = await createBuild('tester', project);
+        const newSnapshot = await createSnapshot('test', newBuild, {
+          diff: true,
+        });
+        const variables = {
+          id: newSnapshot.id,
+        };
+        await runQuery(query, user, variables);
+        newBuild = await newBuild.$query();
+        expect(newBuild.buildVerified).toBe(true);
+      });
+      test('cannot approve snapshot that has been set as a flake', async () => {
+        const newSnapshot = await createSnapshot('test 1', build, {
+          diff: true,
+          previousApprovedId: snapshot.id,
+        });
+        await createSnapshotDiff(snapshot, newSnapshot, build, { group: 1 });
+        const flakeQuery = `
+        mutation addSnapshotFlake($id: ID!) {
+          addSnapshotFlake(id: $id) {
+            id
+            imageLocation
+            createdBy {
+              user {
+                id
+              }
+            }
+          }
+        }
+        `;
+        const variables = {
+          id: newSnapshot.id,
+        };
+        await runQuery(flakeQuery, user, variables);
+        const query = `
+          mutation approveSnapshot($id: ID!) {
+            approveSnapshot(id: $id) {
+              id
+            }
+          }
+        `;
+        const result = await runQuery(query, user, variables);
+        expect(
+          result.errors.some(
+            e =>
+              e.message ===
+              'This snapshot has already been approved or does not require approving.',
+          ),
+        ).toBe(true);
       });
     });
 
@@ -330,6 +443,48 @@ describe('snapshot schema', () => {
         expect(approvedSnapshots[0].approvedBy.user.id).toBe(user.id);
         expect(approvedSnapshots[0].approvedOn).toBeDefined();
       });
+
+      test('does not approve snapshots that have been set as a flake', async () => {
+        const oldBuild = await createBuild('oldBuild', project);
+        const oldSnapshot = await createSnapshot('old snapshot', oldBuild);
+        const newBuild = await createBuild('newBuild', project);
+        const newSnapshot = await createSnapshot('test 1', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshot.id,
+        });
+        await createSnapshotDiff(oldSnapshot, newSnapshot, newBuild, { group: 1 });
+        const flakeQuery = `
+        mutation addSnapshotFlake($id: ID!) {
+          addSnapshotFlake(id: $id) {
+            id
+            imageLocation
+            createdBy {
+              user {
+                id
+              }
+            }
+          }
+        }
+        `;
+        let variables = {
+          id: newSnapshot.id,
+        };
+        await runQuery(flakeQuery, user, variables);
+        variables = {
+          buildId: newBuild.id,
+          group: 1,
+        };
+        await runQuery(query, user, variables);
+        const approvedSnapshots = await Snapshots.query()
+          .joinRelation('snapshotDiff')
+          .where('snapshot.buildId', newBuild.id)
+          .where('snapshotDiff.group', 1)
+          .where('approved', true)
+          .eager('approvedBy.user');
+        expect(approvedSnapshots).toHaveLength(0);
+        const totalSnapshots = await newBuild.$relatedQuery('snapshots');
+        expect(totalSnapshots).toHaveLength(1);
+      })
     });
 
     describe('approveGroupSnapshots', () => {
@@ -342,7 +497,11 @@ describe('snapshot schema', () => {
         `;
       });
       test('can approve snapshots already approved', async () => {
-        const newSnapshot = await createSnapshot('test 1', build, { diff: true, approved: true, previousApprovedId: snapshot.id });
+        const newSnapshot = await createSnapshot('test 1', build, {
+          diff: true,
+          approved: true,
+          previousApprovedId: snapshot.id,
+        });
         await createSnapshotDiff(snapshot, newSnapshot, build, { group: 1 });
         const variables = {
           buildId: build.id,
@@ -354,7 +513,10 @@ describe('snapshot schema', () => {
       });
 
       test('can approve snapshots', async () => {
-        const newSnapshot = await createSnapshot('test 1', build2, { diff: true, previousApprovedId: snapshot2.id });
+        const newSnapshot = await createSnapshot('test 1', build2, {
+          diff: true,
+          previousApprovedId: snapshot2.id,
+        });
         await createSnapshotDiff(snapshot, newSnapshot, build2, { group: 1 });
         const variables = {
           buildId: build2.id,
@@ -373,6 +535,47 @@ describe('snapshot schema', () => {
         expect(approvedSnapshots[0].id).toBe(newSnapshot.id);
         expect(approvedSnapshots[0].approvedBy.user.id).toBe(user.id);
         expect(approvedSnapshots[0].approvedOn).toBeDefined();
+      });
+      test('does not approve snapshots that have been set as a flake', async () => {
+        const oldBuild = await createBuild('oldBuild', project);
+        const oldSnapshot = await createSnapshot('old snapshot', oldBuild);
+        const newBuild = await createBuild('newBuild', project);
+        const newSnapshot = await createSnapshot('test 1', newBuild, {
+          diff: true,
+          previousApprovedId: oldSnapshot.id,
+        });
+        await createSnapshotDiff(oldSnapshot, newSnapshot, newBuild, { group: 1 });
+        const flakeQuery = `
+        mutation addSnapshotFlake($id: ID!) {
+          addSnapshotFlake(id: $id) {
+            id
+            imageLocation
+            createdBy {
+              user {
+                id
+              }
+            }
+          }
+        }
+        `;
+        let variables = {
+          id: newSnapshot.id,
+        };
+        await runQuery(flakeQuery, user, variables);
+        variables = {
+          buildId: build2.id,
+          group: 1,
+        };
+        await runQuery(query, user, variables);
+        const approvedSnapshots = await Snapshots.query()
+          .joinRelation('snapshotDiff')
+          .where('snapshot.buildId', newBuild.id)
+          .where('snapshotDiff.group', 1)
+          .where('approved', true)
+          .eager('approvedBy.user');
+        expect(approvedSnapshots).toHaveLength(0);
+        const totalSnapshots = await newBuild.$relatedQuery('snapshots');
+        expect(totalSnapshots).toHaveLength(1);
       });
     });
   });

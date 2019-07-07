@@ -8,6 +8,9 @@ fragment snapshotFragment on Snapshot {
   width
   browser
   diff
+  buildId
+  projectId
+  organizationId
   approvedBy {
     user {
       id

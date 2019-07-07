@@ -6,6 +6,7 @@ export const getCurrentSnapshot = state =>
   state.snapshots.snapshots.single.find(
     b => b.id === state.snapshots.currentSnapshotId,
   );
+export const getCurrentSnapshotId = state => state.snapshots.currentSnapshotId;
 export const getPageInfo = state => state.snapshots.pageInfo;
 export const getIsLoadingMore = state => state.snapshots.isLoadingMore;
 export const getIsApproving = state => state.snapshots.isApproving;
