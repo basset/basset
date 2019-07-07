@@ -30,11 +30,11 @@ def setup_queue(task):
         connection.add_on_connection_unblocked_callback(on_unblocked)
         channel = connection.channel()
 
-        channel.queue_declare(queue=AMPQ_QUEUE, durable=True)
+        channel.queue_declare(queue=AMPQ_BUILD_QUEUE, durable=True)
         print('Waiting for messages.')
 
         channel.basic_qos(prefetch_count=5)
-        channel.basic_consume(callback, queue=AMPQ_QUEUE)
+        channel.basic_consume(callback, queue=AMPQ_BUILD_QUEUE)
 
         try:
             channel.start_consuming()
