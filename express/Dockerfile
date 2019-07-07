@@ -40,8 +40,11 @@ ENV AWS_BATCH_JOB_DEFINITION job-definition
 ENV AWS_BATCH_JOB_QUEUE job-queue
 
 ENV AMPQ_HOST amqp://host
-ENV AMPQ_QUEUE queue_name
+ENV AMPQ_BUILD_QUEUE queue_name
+ENV AMPQ_TASK_QUEUE queue_name
 ENV SQS_URL sqsUrl
+ENV SQS_BUILD_QUEUE_URL queue_name
+ENV SQS_TASK_QUEUE_URL queue_name
 ENV USE_SQS = 1
 
 ENV TOKEN token
