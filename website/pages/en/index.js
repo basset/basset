@@ -157,6 +157,18 @@ class Index extends React.Component {
       </Block>
     );
 
+    const Example = () => {
+      return (
+        <Block>
+          {[{
+            image: `${baseUrl}img/basset-snapshots.png`,
+            imageAlign: "bottom",
+            title: "Manage visual differences with ease"
+          }]}
+        </Block>
+      )
+    }
+
     const Showcase = () => {
       if ((siteConfig.users || []).length === 0) {
         return null;
@@ -191,6 +203,7 @@ class Index extends React.Component {
         <div className="mainContainer">
           <Description />
           <Features />
+          <Example />
           <Showcase />
         </div>
       </div>
