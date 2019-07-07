@@ -104,6 +104,20 @@ describe('stream transformer', () => {
         `<html><head><style>body { background-image: url(${baseUrl}/${assetPath[0]}); } div { background-image: url(${baseUrl}/${assetPath[1]}); }</style></head><body><div>Test</div></body></html>`,
       );
     });
+    it('should not modify elements who do not have the attribute', async () => {
+      const stream = new Readable();
+      stream.push(
+        `<html><head><link hef="broke" /><script>console.log('test');</script><body><div>Test</div><img scr="whoops"/></body></html>`,
+      );
+      stream.push(null);
+
+      const returnedStream = transform.transformHTML(assets, baseUrl, '');
+      stream.pipe(returnedStream);
+      const data = await readStream(returnedStream);
+      expect(data).toBe(
+        `<html><head><link hef="broke" /><script>console.log('test');</script><body><div>Test</div><img scr="whoops"/></body></html>`,
+      );
+    })
   });
 
   test('transformCSS', async () => {

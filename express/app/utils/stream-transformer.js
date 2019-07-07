@@ -44,9 +44,9 @@ const transformHTML = (assets, assetsUrl, relativePath) => {
   };
   const stream = trumpet();
 
-  stream.selectAll('img', element => updateAttribute('src', element));
-  stream.selectAll('script', element => updateAttribute('src', element));
-  stream.selectAll('link', element => updateAttribute('href', element));
+  stream.selectAll('img[src]', element => updateAttribute('src', element));
+  stream.selectAll('script[src]', element => updateAttribute('src', element));
+  stream.selectAll('link[href]', element => updateAttribute('href', element));
   stream.selectAll('style', element => {
     let elementStream = element.createStream();
     elementStream
