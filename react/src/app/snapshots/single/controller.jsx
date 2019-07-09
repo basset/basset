@@ -5,11 +5,11 @@ import {
   getCurrentSnapshot,
   getIsLoading,
   getIsApproving,
-} from '../../redux/snapshots/selectors.js';
-import { approveSnapshot } from '../../redux/snapshots/actions.js';
+} from '../../../redux/snapshots/selectors.js';
+import { approveSnapshot } from '../../../redux/snapshots/actions.js';
 
-import Snapshot from './components/Snapshot.jsx';
-import Loader from '../../components/Loader/Loader.jsx';
+import Snapshot from '../components/Snapshot.jsx';
+import Loader from '../../../components/Loader/Loader.jsx';
 
 export const SnapshotController = ({
   isLoading,

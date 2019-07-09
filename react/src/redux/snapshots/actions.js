@@ -3,6 +3,7 @@ import getSnapshotsQuery from '../../graphql/query/getSnapshots.js';
 import getSnapshotGroupsQuery from '../../graphql/query/getSnapshotGroups.js';
 import getSnapshotsFromGroupQuery from '../../graphql/query/getSnapshotsFromGroup.js';
 import getSnapshotQuery from '../../graphql/query/getSnapshot.js';
+import getSnapshotsByTitleQuery from '../../graphql/query/getSnapshotsByTitle.js';
 import approveSnapshotMutation from '../../graphql/mutate/approveSnapshot.js';
 import approveAllSnapshotsMutation from '../../graphql/mutate/approveAllSnapshots.js';
 import addSnapshotFlakeMutation from '../../graphql/mutate/addSnapshotFlake.js';
@@ -152,6 +153,30 @@ export const updateSnapshot = (snapshotType, snapshot) => ({
   snapshot,
   snapshotType,
 });
+
+export const getSnapshotsByTitle = (projectId, title, width, browser) => async (dispatch, getState) => {
+  const type = 'search';
+  dispatch(isLoading(type));
+  try {
+    const { data } = await ApolloClient.query({
+      query: getSnapshotsByTitleQuery,
+      variables: {
+        title,
+        first: 100,
+        width,
+        browser,
+        projectId: projectId,
+      },
+    });
+    if (data.snapshotsByTitle) {
+      dispatch(receiveSnapshots(type, data.snapshotsByTitle.edges.map(e => e.node)));
+      dispatch(updatePageInfo(type, data.snapshotsByTitle));
+    }
+    dispatch(doneLoading(type));
+  } catch (error) {
+    dispatch(doneLoading(type));
+  }
+}
 
 export const getSnapshot = id => async (dispatch, getState) => {
   const state = getState();

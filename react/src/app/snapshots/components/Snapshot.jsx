@@ -4,26 +4,7 @@ import PropTypes from 'prop-types';
 import { Box, Heading } from 'grommet';
 
 import SnapshotHeader, { VIEWS } from './SnapshotHeader.jsx';
-
-const Image = styled.img`
-  display: inline-block;
-  vertical-align: middle;
-  width: 100%;
-`;
-const ImageBox = styled(Box)`
-  margin: 0 auto;
-  position: relative;
-`;
-
-const ImageDiff = styled.img`
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: rgba(255, 255, 255, 0.4);
-`;
+import SnapshotImage from './SnapshotImage.jsx';
 
 class Snapshot extends React.PureComponent {
   static propTypes = {
@@ -127,31 +108,6 @@ class Snapshot extends React.PureComponent {
     }
   };
 
-  renderImage(snapshot, diff) {
-    if (!snapshot) {
-      return null;
-    }
-
-    return (
-      <Box pad={{ horizontal: 'small' }} margin={{ top: 'medium' }} flex>
-        <ImageBox border={{ color: 'light-4' }}>
-          <Image
-            data-test-id="snapshot"
-            src={snapshot.imageLocation}
-            onClick={() => this.onToggleDiff(snapshot)}
-          />
-          {diff && this.props.snapshot.snapshotDiff && (
-            <ImageDiff
-              data-test-id="snapshot-overlay"
-              src={this.props.snapshot.snapshotDiff.imageLocation}
-              onClick={() => this.onToggleDiff(snapshot)}
-            />
-          )}
-        </ImageBox>
-      </Box>
-    );
-  }
-
   renderLabel(text) {
     return (
       <Box align="center" flex>
@@ -189,8 +145,8 @@ class Snapshot extends React.PureComponent {
           </Box>
         )}
         <Box className="images" direction="row" flex>
-          {showOriginal && this.renderImage(previousApproved, false)}
-          {showNew && this.renderImage(this.props.snapshot, showDiff)}
+          {showOriginal && <SnapshotImage snapshot={previousApproved} diff={false} onToggleDiff={this.onToggleDiff} />}
+          {showNew && <SnapshotImage snapshot={this.props.snapshot} diff={showDiff} onToggleDiff={this.onToggleDiff} />}
         </Box>
       </React.Fragment>
     );
