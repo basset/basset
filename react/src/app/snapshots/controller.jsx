@@ -20,6 +20,9 @@ export const SnapshotController = ({
   if (isLoading.single) {
     return <Loader />;
   }
+  if (!snapshot) {
+    return null;
+  }
   return (
     <Snapshot
       snapshot={snapshot}
