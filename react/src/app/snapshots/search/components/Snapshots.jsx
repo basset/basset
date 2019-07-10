@@ -12,7 +12,7 @@ const HiddenImage = styled(Image)`
 const ImageDiv = styled.div`
   background-size: 100% 100%;
   background-image: ${({ imageLocation }) => `url(${imageLocation})`};
-  transition: background 2s;
+  transition: background 0.5s;
 `;
 
 export const Snapshots = ({ snapshots, toggleModified, toggleFlakes }) => {
@@ -36,7 +36,7 @@ export const Snapshots = ({ snapshots, toggleModified, toggleFlakes }) => {
         return;
       }
       increaseSnapshot();
-    }, 2500);
+    }, 2000);
     return () => {
       clearTimeout(timer);
     }
