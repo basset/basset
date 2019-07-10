@@ -8,8 +8,6 @@ import Snapshot from './controller.jsx';
 export default (context, params, history, dispatch, getState) => {
   const title = params.title;
   const projectId = params.projectId;
-  console.log(context)
-  console.log(params)
   dispatch(getSnapshotsByTitle(projectId, title));
   return {
     title: 'Basset • Snapshot',

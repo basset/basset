@@ -5,7 +5,7 @@ export default gql`
     $projectId: ID!
     $title: String!
     $first: Int!
-    $after: String
+    $before: String
     $browser: String
     $width: String
   ) {
@@ -13,7 +13,7 @@ export default gql`
       projectId: $projectId
       title: $title
       first: $first
-      after: $after
+      before: $before
       browser: $browser
       width: $width
       diff: true

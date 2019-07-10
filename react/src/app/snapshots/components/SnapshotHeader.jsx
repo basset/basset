@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Box, Text, Button, Heading, ResponsiveContext } from 'grommet';
+import {
+  Box,
+  Text,
+  Button,
+  Heading,
+  ResponsiveContext,
+  DropButton,
+} from 'grommet';
 import {
   Clone,
   Chrome,
@@ -16,6 +23,7 @@ import Tooltip from '../../../components/Tooltip/Tooltip.jsx';
 import Link from '../../../components/Link/Link.jsx';
 import StickyBox from '../../../components/StickyBox/StickyBox.jsx';
 import Flake from '../../../components/Icons/Flake.jsx';
+import Ellipsis from '../../../components/Icons/Ellipsis.jsx';
 
 const getBrowserType = browser => {
   if (browser === 'chrome') {
@@ -187,7 +195,7 @@ const SnapshotHeader = React.memo(
             data-test-id="expand-snapshot-button"
             icon={<Expand />}
           />
-        )
+        );
       }
       return (
         <Link.Button
@@ -299,6 +307,38 @@ const SnapshotHeader = React.memo(
       );
     };
 
+    const [dropOpen, setDropOpen] = useState(false);
+    const renderDropdownMenu = () => {
+      const url = `/snapshots/search/${snapshot.projectId}/${btoa(snapshot.title)}`
+      return (
+        <DropButton
+          data-test-id="snapshot-dropdown"
+          margin={{horizontal: 'small'}}
+          dropContent={
+            <Box>
+              <Button
+                data-test-id="view-snapshot-history"
+                hoverIndicator="background"
+                href={url}
+              >
+                <Box margin={{ vertical: 'small', horizontal: 'medium' }}>
+                  <Text size="small">View snapshot history</Text>
+                </Box>
+              </Button>
+            </Box>
+          }
+          open={dropOpen}
+          onClose={() => setDropOpen(false)}
+          onOpen={() => setDropOpen(true)}
+          dropAlign={{top: "bottom", left: "left"}}
+        >
+          <Box align="center">
+            <Ellipsis />
+          </Box>
+        </DropButton>
+      );
+    };
+
     const renderInfo = size => {
       const props = {};
       if (size === 'small') {
@@ -310,6 +350,7 @@ const SnapshotHeader = React.memo(
       }
       return (
         <Box direction="row" align="center" {...props} wrap>
+          {showingMoreThanOne && renderDropdownMenu()}
           {showingMoreThanOne && getBrowserType(snapshot.browser)}
           <Box title="width">
             <Header>{snapshot.width}px</Header>

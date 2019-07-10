@@ -154,7 +154,7 @@ export const updateSnapshot = (snapshotType, snapshot) => ({
   snapshotType,
 });
 
-export const getSnapshotsByTitle = (projectId, title, width, browser) => async (dispatch, getState) => {
+export const getSnapshotsByTitle = (projectId, title, width, browser, before) => async (dispatch, getState) => {
   const type = 'search';
   dispatch(isLoading(type));
   try {
@@ -165,12 +165,17 @@ export const getSnapshotsByTitle = (projectId, title, width, browser) => async (
         first: 100,
         width,
         browser,
+        before,
         projectId: projectId,
       },
     });
     if (data.snapshotsByTitle) {
-      dispatch(receiveSnapshots(type, data.snapshotsByTitle.edges.map(e => e.node)));
+      dispatch(addSnapshots(type, data.snapshotsByTitle.edges.map(e => e.node)));
       dispatch(updatePageInfo(type, data.snapshotsByTitle));
+      if (getState().snapshots.snapshots.search.length < data.snapshotsByTitle.totalCount) {
+        const before = data.snapshotsByTitle.edges.slice(-1)[0].cursor;
+        dispatch(getSnapshotsByTitle(projectId, title, width, browser, before))
+      }
     }
     dispatch(doneLoading(type));
   } catch (error) {

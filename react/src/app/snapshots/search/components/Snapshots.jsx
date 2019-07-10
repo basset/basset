@@ -31,12 +31,15 @@ export const Snapshots = ({ snapshots, toggleModified, toggleFlakes }) => {
     setCurrentSnapshot(nextSnapshot);
   };
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if (!transition) {
         return;
       }
       increaseSnapshot();
     }, 2500);
+    return () => {
+      clearTimeout(timer);
+    }
   }, [transition, currentSnapshot]);
 
   const ImageComponent = transition ? HiddenImage : Image;
@@ -62,8 +65,8 @@ export const Snapshots = ({ snapshots, toggleModified, toggleFlakes }) => {
           <Button icon={<Next />} label="Next" onClick={increaseSnapshot} />
         </Box>
       </Box>
-      <Box align="center">
-        <Box margin="small" direction="row" width="large" justify="between">
+      <Box direction="column" width="large" alignSelf="center">
+        <Box align="center" margin="small" direction="row" justify="between">
           <Box basis="1/3" align="start" wrap>
             <Text>
               # {currentSnapshot + 1} / {snapshots.length}
