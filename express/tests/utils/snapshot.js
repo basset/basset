@@ -4,6 +4,7 @@ const createSnapshot = async (title, build, args = {}) => {
   return Snapshot.query().insertAndFetch({
     title,
     buildId: build.id,
+    projectId: build.projectId,
     organizationId: build.organizationId,
     ...args,
   });

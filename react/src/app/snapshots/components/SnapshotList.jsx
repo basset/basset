@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Box, Button, Text, Heading, Form, FormField } from 'grommet';
-import { Tree } from 'grommet-icons';
+import { Box, Button, Heading } from 'grommet';
 
 import { getCurrentBuild } from '../../../redux/builds/selectors.js';
 import {

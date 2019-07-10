@@ -46,6 +46,7 @@ const initialState = {
     new: [],
     unmodified: [],
     removed: [],
+    history: [],
   },
   isAddingSnapshotFlake: false,
   isLoadingMoreGroups: false,
@@ -256,6 +257,7 @@ const handler = {
     pageInfo: {
       ...state.pageInfo,
       [snapshotType]: {
+        totalCount: data.totalCount,
         hasNextPage: data.pageInfo.hasNextPage,
       },
     },

@@ -84,6 +84,7 @@ type SnapshotGroupEdge {
 extend type Query {
   snapshots(first: Int, last: Int, after: String, before: String, buildId: ID!, title: String, type: SnapshotType): SnapshotConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
   snapshot(id: ID!): Snapshot @authField
+  snapshotsByTitle(first: Int, last: Int, after: String, before: String, projectId: ID!, title: String!, browser: String, width: String, diff: Boolean):  SnapshotConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
   removedSnapshots(first: Int, last: Int, after: String, before: String, buildId: ID!): SnapshotConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
   modifiedSnapshots(first: Int, last: Int, after: String, before: String, buildId: ID!, group: Int): SnapshotConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
   modifiedSnapshotGroups(limit: Int!, offset: Int!, buildId: ID!): SnapshotGroupConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
@@ -99,6 +100,42 @@ extend type Mutation {
 
 const resolvers = {
   Query: {
+    snapshotsByTitle: async (
+      object,
+      { projectId, title, ...args },
+      context,
+      info,
+    ) => {
+      const decodedTitle = Buffer.from(title, 'base64').toString();
+      const { user } = context.req;
+      query = Snapshot.authorizationFilter(user)
+        .where('projectId', projectId)
+        .where('title', decodedTitle)
+        .whereNotNull('imageLocation');
+
+      if (args.browser) {
+        query.where('browser', args.browser);
+      }
+      if (args.width) {
+        query.where('width', args.width);
+      }
+      if (args.diff) {
+        query.where('diff', true).where(builder => {
+          builder.where('approved', true);
+          if (args.includeFlakes) {
+            builder.OrWhere(b => {
+              b.where('flake', true).whereNull('snapshotFlakeMatchedId');
+            })
+          }
+        });
+      }
+
+      return paginateQuery(context, query, {
+        ...args,
+        orderByPrefix: 'snapshot',
+        orderBy: 'desc',
+      });
+    },
     snapshot: async (object, { id }, context, info) => {
       const { user } = context.req;
       const snapshot = await getModelLoader(context, Snapshot).load(id);
@@ -289,7 +326,7 @@ const resolvers = {
   },
   Snapshot: {
     build: (snapshot, args, context, info) =>
-      getModelLoader(context, Asset).load(snapshot.buildId),
+      getModelLoader(context, Build).load(snapshot.buildId),
     organization: (snapshot, args, context, info) =>
       getModelLoader(context, Organization).load(snapshot.organizationId),
     project: (snapshot, args, context, info) =>

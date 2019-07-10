@@ -75,8 +75,8 @@ const loadBuilds = async items => {
     Build.relatedQuery('snapshots')
       .where('diff', true)
       .where(builder => {
-        builder.where('approved', true).orWhere(builder => {
-          builder.where('flake', true).whereNull('snapshotFlakeMatchedId');
+        builder.where('approved', true).orWhere(b => {
+          b.where('flake', true).whereNull('snapshotFlakeMatchedId');
         });
       })
       .count()

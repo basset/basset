@@ -1,5 +1,6 @@
 import organizations from './app/organizations/routes.js';
 import projects from './app/projects/routes.js';
+import snapshots from './app/snapshots/routes.js';
 import verifyAuthenticated from './app/verify-authenticated.js';
 
 export default [
@@ -77,9 +78,8 @@ export default [
           import(/* webpackChunkName: 'build-single' */ './app/builds/route.jsx'),
       },
       {
-        path: '/snapshots/:id',
-        load: () =>
-          import(/* webpackChunkName: 'snapshot-single' */ './app/snapshots/route.jsx'),
+        path: '/snapshots',
+        children: snapshots,
       },
       {
         path: '/oauth-error/',
