@@ -34,7 +34,7 @@ def setup_queue(task):
         print('Waiting for messages.')
 
         channel.basic_qos(prefetch_count=5)
-        channel.basic_consume(callback, queue=AMPQ_BUILD_QUEUE)
+        channel.basic_consume(AMPQ_BUILD_QUEUE, callback)
 
         try:
             channel.start_consuming()
