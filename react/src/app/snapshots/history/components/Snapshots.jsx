@@ -43,7 +43,7 @@ export const Snapshots = ({ snapshots }) => {
   }, [transition, currentSnapshot]);
 
   const ImageComponent = transition ? HiddenImage : Image;
-
+  const snapshot = snapshots[currentSnapshot];
   return (
     <Box flex="grow" width="100%">
       <Box align="end">
@@ -77,22 +77,27 @@ export const Snapshots = ({ snapshots }) => {
         </Box>
       </Box>
       <Box direction="column" width="xlarge" alignSelf="center">
-        <Box align="center" margin="small" direction="row" justify="between">
-          <Box basis="1/3" align="start" wrap>
+        <Box align="center" margin="small" direction="row" justify="between" wrap>
+          <Box wrap>
+            <Text>
+              {snapshot.title}
+            </Text>
+          </Box>
+          <Box wrap>
             <Text>
               # {currentSnapshot + 1} / {snapshots.length}
             </Text>
           </Box>
-          <Box basis="1/3" align="center" wrap>
-            <Text>Build #{snapshots[currentSnapshot].build.number}</Text>
+          <Box wrap>
+            <Text>Build #{snapshot.build.number}</Text>
           </Box>
-          <Box basis="1/3" align="end" wrap>
-            <Text>Branch {snapshots[currentSnapshot].build.branch}</Text>
+          <Box align="end" wrap>
+            <Text>Branch {snapshot.build.branch}</Text>
           </Box>
         </Box>
         <ImageBox style={{ position: 'relative' }}>
-          <ImageDiv imageLocation={snapshots[currentSnapshot].imageLocation}>
-            <ImageComponent data-test-id="snapshot-image" src={snapshots[currentSnapshot].imageLocation} />
+          <ImageDiv imageLocation={snapshot.imageLocation}>
+            <ImageComponent data-test-id="snapshot-image" src={snapshot.imageLocation} />
           </ImageDiv>
         </ImageBox>
       </Box>
