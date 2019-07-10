@@ -17,6 +17,7 @@ import {
   Expand,
   StatusGood,
   Multiple,
+  History,
 } from 'grommet-icons';
 
 import Tooltip from '../../../components/Tooltip/Tooltip.jsx';
@@ -321,7 +322,8 @@ const SnapshotHeader = React.memo(
                 hoverIndicator="background"
                 href={url}
               >
-                <Box margin={{ vertical: 'small', horizontal: 'medium' }}>
+                <Box margin={{ vertical: 'small', horizontal: 'medium' }} direction="row" align="center" gap="small">
+                  <History />
                   <Text size="small">View snapshot history</Text>
                 </Box>
               </Button>
