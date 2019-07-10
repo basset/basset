@@ -309,7 +309,7 @@ const SnapshotHeader = React.memo(
 
     const [dropOpen, setDropOpen] = useState(false);
     const renderDropdownMenu = () => {
-      const url = `/snapshots/search/${snapshot.projectId}/${btoa(snapshot.title)}`
+      const url = `/snapshots/history/${snapshot.projectId}/${btoa(snapshot.title)}/${snapshot.width}/${snapshot.browser}`
       return (
         <DropButton
           data-test-id="snapshot-dropdown"

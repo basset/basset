@@ -15,7 +15,7 @@ const ImageDiv = styled.div`
   transition: background 0.5s;
 `;
 
-export const Snapshots = ({ snapshots, toggleModified, toggleFlakes }) => {
+export const Snapshots = ({ snapshots }) => {
   const [transition, setTransition] = useState(false);
   const [currentSnapshot, setCurrentSnapshot] = useState(0);
   const increaseSnapshot = () => {
@@ -39,7 +39,7 @@ export const Snapshots = ({ snapshots, toggleModified, toggleFlakes }) => {
     }, 2000);
     return () => {
       clearTimeout(timer);
-    }
+    };
   }, [transition, currentSnapshot]);
 
   const ImageComponent = transition ? HiddenImage : Image;
@@ -50,6 +50,7 @@ export const Snapshots = ({ snapshots, toggleModified, toggleFlakes }) => {
         <Box gap="small">
           <CheckBox
             toggle
+            data-test-id="snapshot-slideshow"
             label="Show change over time"
             onChange={() => {
               setTransition(!transition);
@@ -59,10 +60,20 @@ export const Snapshots = ({ snapshots, toggleModified, toggleFlakes }) => {
       </Box>
       <Box direction="row" justify="center" align="center" wrap>
         <Box margin="small">
-          <Button icon={<Previous />} label="Prev" onClick={decreaseSnapshot} />
+          <Button
+            data-test-id="prev-snapshot"
+            icon={<Previous />}
+            label="Prev"
+            onClick={decreaseSnapshot}
+          />
         </Box>
         <Box pad="small">
-          <Button icon={<Next />} label="Next" onClick={increaseSnapshot} />
+          <Button
+            data-test-id="next-snapshot"
+            icon={<Next />}
+            label="Next"
+            onClick={increaseSnapshot}
+          />
         </Box>
       </Box>
       <Box direction="column" width="xlarge" alignSelf="center">
@@ -75,13 +86,13 @@ export const Snapshots = ({ snapshots, toggleModified, toggleFlakes }) => {
           <Box basis="1/3" align="center" wrap>
             <Text>Build #{snapshots[currentSnapshot].build.number}</Text>
           </Box>
-          <Box basis="1/3"  align="end" wrap>
+          <Box basis="1/3" align="end" wrap>
             <Text>Branch {snapshots[currentSnapshot].build.branch}</Text>
           </Box>
         </Box>
         <ImageBox style={{ position: 'relative' }}>
           <ImageDiv imageLocation={snapshots[currentSnapshot].imageLocation}>
-            <ImageComponent src={snapshots[currentSnapshot].imageLocation} />
+            <ImageComponent data-test-id="snapshot-image" src={snapshots[currentSnapshot].imageLocation} />
           </ImageDiv>
         </ImageBox>
       </Box>

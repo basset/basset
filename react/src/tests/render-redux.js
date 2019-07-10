@@ -32,4 +32,12 @@ const renderApp = children => {
   };
 };
 
-export { renderApp, renderWithRedux, renderWithGrommet, store };
+const rerenderApp = children => {
+  return (
+    <Grommet full id="grommet" theme={theme}>
+      <Provider store={store}>{children}</Provider>
+    </Grommet>
+  );
+};
+
+export { rerenderApp, renderApp, renderWithRedux, renderWithGrommet, store };

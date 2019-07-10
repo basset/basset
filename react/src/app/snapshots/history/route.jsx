@@ -6,9 +6,8 @@ import Home from '../../Home-controller.jsx';
 import Snapshot from './controller.jsx';
 
 export default (context, params, history, dispatch, getState) => {
-  const title = params.title;
-  const projectId = params.projectId;
-  dispatch(getSnapshotsByTitle(projectId, title));
+  const { title, projectId, width, browser } = params;
+  dispatch(getSnapshotsByTitle(projectId, title, width, browser));
   return {
     title: 'Basset • Snapshot',
     component: (

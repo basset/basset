@@ -114,10 +114,10 @@ const resolvers = {
         .whereNotNull('imageLocation');
 
       if (args.browser) {
-        query.where('browser', browser);
+        query.where('browser', args.browser);
       }
       if (args.width) {
-        query.where('width', width);
+        query.where('width', args.width);
       }
       if (args.diff) {
         query.where('diff', true).where(builder => {

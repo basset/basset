@@ -13,7 +13,7 @@ import { approveSnapshot } from '../../../redux/snapshots/actions.js';
 import Loader from '../../../components/Loader/Loader.jsx';
 import Snapshots from './components/Snapshots.jsx';
 
-export const SnapshotSearchController = ({
+export const SnapshotHistoryController = ({
   isLoading,
   snapshots,
 }) => {
@@ -27,10 +27,10 @@ export const SnapshotSearchController = ({
 
 const mapState = state => {
   return {
-    isLoading: getIsLoading(state).search,
-    isLoadingMore: getIsLoadingMore(state).search,
-    snapshots: getSnapshots(state).search,
-    pageInfo: getPageInfo(state).search,
+    isLoading: getIsLoading(state).history,
+    isLoadingMore: getIsLoadingMore(state).history,
+    snapshots: getSnapshots(state).history,
+    pageInfo: getPageInfo(state).history,
     isApproving: getIsApproving(state),
   };
 };
@@ -42,4 +42,4 @@ const mapAction = dispatch => ({
 export default connect(
   mapState,
   mapAction,
-)(SnapshotSearchController);
+)(SnapshotHistoryController);

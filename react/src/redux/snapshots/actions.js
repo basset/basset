@@ -155,7 +155,7 @@ export const updateSnapshot = (snapshotType, snapshot) => ({
 });
 
 export const getSnapshotsByTitle = (projectId, title, width, browser, before) => async (dispatch, getState) => {
-  const type = 'search';
+  const type = 'history';
   dispatch(isLoading(type));
   try {
     const { data } = await ApolloClient.query({
@@ -172,9 +172,12 @@ export const getSnapshotsByTitle = (projectId, title, width, browser, before) =>
     if (data.snapshotsByTitle) {
       dispatch(addSnapshots(type, data.snapshotsByTitle.edges.map(e => e.node)));
       dispatch(updatePageInfo(type, data.snapshotsByTitle));
-      if (getState().snapshots.snapshots.search.length < data.snapshotsByTitle.totalCount) {
+
+      const currentSnapshots = getState().snapshots.snapshots[type].length;
+
+      if (currentSnapshots < data.snapshotsByTitle.totalCount) {
         const before = data.snapshotsByTitle.edges.slice(-1)[0].cursor;
-        dispatch(getSnapshotsByTitle(projectId, title, width, browser, before))
+        await dispatch(getSnapshotsByTitle(projectId, title, width, browser, before))
       }
     }
     dispatch(doneLoading(type));

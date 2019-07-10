@@ -13,6 +13,7 @@ let store;
 let snapshotData;
 let snapshotsData;
 let groupsData;
+let snapshotsHistory;
 beforeEach(() => {
   jest.resetModules();
   store = require('../store.js').default;
@@ -72,6 +73,200 @@ beforeEach(() => {
     ]),
   );
   store.dispatch(buildActions.setCurrentBuild('54321'));
+  snapshotsHistory = snapshotData = [
+    {
+      cursor:
+        'MTU2MjM5MjQ3MjgwOQ==:MjYwYjE3ZGQtOGJmYi00ZWQzLTgxNjgtZDU5YmY4MTdiMzQz',
+      node: {
+        id: '260b17dd-8bfb-4ed3-8168-d59bf817b343',
+        imageLocation:
+          'http://192.168.39.61:30462/screenshots.basset.io/c7986a42-c688-465d-9326-c0fc02d58eed/c671ae78-1ce4-4f2b-b696-1553201053e9/f50e37ee-6867-453e-9763-a9fbf603c6ff/screenshots/firefox/1280/60284b23b33c47dfb26df43582b29584.html.png',
+        approved: true,
+        approvedOn: '1562393001355',
+        title: 'index',
+        width: 1280,
+        browser: 'firefox',
+        diff: true,
+        buildId: 'f50e37ee-6867-453e-9763-a9fbf603c6ff',
+        build: {
+          id: 'f50e37ee-6867-453e-9763-a9fbf603c6ff',
+          number: 6,
+          branch: 'basset-io-test',
+          commitSha: '969fdec99723c502a045c66624f44dbb3a8c3f24',
+          commitMessage:
+            'feat(platform): enable redirect on login / oauth (#15)\r\n\r\n* enable redirect on login / oauth\r\n\r\n* add test\r\n',
+          committerName: 'GitHub',
+          committerEmail: 'noreply@github.com',
+          commitDate: '1562338606000',
+          authorName: 'Basset User',
+          authorDate: '1562338606000',
+          authorEmail: 'basset@basset.io',
+          createdAt: '1562392472557',
+          updatedAt: '1562393001343',
+          completedAt: '1562392487669',
+          submittedAt: '1562392472827',
+          cancelledAt: null,
+          __typename: 'Build',
+        },
+        projectId: 'c671ae78-1ce4-4f2b-b696-1553201053e9',
+        organizationId: 'c7986a42-c688-465d-9326-c0fc02d58eed',
+        approvedBy: {
+          user: {
+            id: '9169b595-213f-4f19-beff-3f507f2ba6c2',
+            name: 'Basset User',
+            __typename: 'User',
+          },
+          __typename: 'OrganizationMember',
+        },
+        __typename: 'Snapshot',
+      },
+      __typename: 'SnapshotEdge',
+    },
+    {
+      cursor:
+        'MTU2MjM5MjQyMzU1OA==:NDRlNTk3Y2EtNDk4MC00NTNjLWI0M2QtM2FjNjQ4MzliODI3',
+      node: {
+        id: '44e597ca-4980-453c-b43d-3ac64839b827',
+        imageLocation:
+          'http://192.168.39.61:30462/screenshots.basset.io/c7986a42-c688-465d-9326-c0fc02d58eed/c671ae78-1ce4-4f2b-b696-1553201053e9/a59d6c02-ab29-4dbf-a2d7-b144181340bb/screenshots/firefox/1280/7d4617aa89804785bccc076b1479cde0.html.png',
+        approved: true,
+        approvedOn: '1562392467408',
+        title: 'index',
+        width: 1280,
+        browser: 'firefox',
+        diff: true,
+        buildId: 'a59d6c02-ab29-4dbf-a2d7-b144181340bb',
+        build: {
+          id: 'a59d6c02-ab29-4dbf-a2d7-b144181340bb',
+          number: 5,
+          branch: 'basset-io-test',
+          commitSha: '969fdec99723c502a045c66624f44dbb3a8c3f24',
+          commitMessage:
+            'feat(platform): enable redirect on login / oauth (#15)\n\n* enable redirect on login / oauth\r\n\r\n* add test\r\n',
+          committerName: 'GitHub',
+          committerEmail: 'noreply@github.com',
+          commitDate: '1562338606000',
+          authorName: 'Basset User',
+          authorDate: '1562338606000',
+          authorEmail: 'basset@basset.io',
+          createdAt: '1562392423293',
+          updatedAt: '1562392441244',
+          completedAt: '1562392441244',
+          submittedAt: '1562392423571',
+          cancelledAt: null,
+          __typename: 'Build',
+        },
+        projectId: 'c671ae78-1ce4-4f2b-b696-1553201053e9',
+        organizationId: 'c7986a42-c688-465d-9326-c0fc02d58eed',
+        approvedBy: {
+          user: {
+            id: '9169b595-213f-4f19-beff-3f507f2ba6c2',
+            name: 'Basset User',
+            __typename: 'User',
+          },
+          __typename: 'OrganizationMember',
+        },
+        __typename: 'Snapshot',
+      },
+      __typename: 'SnapshotEdge',
+    },
+    {
+      cursor:
+        'MTU2MjM5MjQwOTMzMg==:NTRlOTE0ZDUtZTcwNi00NjMxLTliNTQtMGQzYzZlMTY5ODVj',
+      node: {
+        id: '54e914d5-e706-4631-9b54-0d3c6e16985c',
+        imageLocation:
+          'http://192.168.39.61:30462/screenshots.basset.io/c7986a42-c688-465d-9326-c0fc02d58eed/c671ae78-1ce4-4f2b-b696-1553201053e9/80b21a8e-54d8-4070-8503-f68c19170726/screenshots/firefox/1280/68b71181f57845ca893baf1a4dbea010.html.png',
+        approved: true,
+        approvedOn: '1562392417262',
+        title: 'index',
+        width: 1280,
+        browser: 'firefox',
+        diff: true,
+        buildId: '80b21a8e-54d8-4070-8503-f68c19170726',
+        build: {
+          id: '80b21a8e-54d8-4070-8503-f68c19170726',
+          number: 4,
+          branch: 'basset-io-test',
+          commitSha: '969fdec99723c502a045c66624f44dbb3a8c3f24',
+          commitMessage:
+            'feat(platform): enable redirect on login / oauth (#15)\n\n* enable redirect on login / oauth\r\n\r\n* add test\r\n',
+          committerName: 'GitHub',
+          committerEmail: 'noreply@github.com',
+          commitDate: '1562338606000',
+          authorName: 'Basset User',
+          authorDate: '1562338606000',
+          authorEmail: 'basset@basset.io',
+          createdAt: '1562392408929',
+          updatedAt: '1562392410542',
+          completedAt: '1562392410542',
+          submittedAt: '1562392409364',
+          cancelledAt: null,
+          __typename: 'Build',
+        },
+        projectId: 'c671ae78-1ce4-4f2b-b696-1553201053e9',
+        organizationId: 'c7986a42-c688-465d-9326-c0fc02d58eed',
+        approvedBy: {
+          user: {
+            id: '9169b595-213f-4f19-beff-3f507f2ba6c2',
+            name: 'Basset User',
+            __typename: 'User',
+          },
+          __typename: 'OrganizationMember',
+        },
+        __typename: 'Snapshot',
+      },
+      __typename: 'SnapshotEdge',
+    },
+    {
+      cursor:
+        'MTU2MjM5MjM3NTMwMg==:NDYyMzVkYWEtZDFkNC00MzA4LTgyYWItMGM0ZmQyMjc0MmJi',
+      node: {
+        id: '46235daa-d1d4-4308-82ab-0c4fd22742bb',
+        imageLocation:
+          'http://192.168.39.61:30462/screenshots.basset.io/c7986a42-c688-465d-9326-c0fc02d58eed/c671ae78-1ce4-4f2b-b696-1553201053e9/bc5cf6d3-0551-4b2c-94cd-a9c7bdd2d59e/screenshots/firefox/1280/1d481c662ad34732a670bfc9d05ca665.html.png',
+        approved: true,
+        approvedOn: '1562450819196',
+        title: 'index',
+        width: 1280,
+        browser: 'firefox',
+        diff: true,
+        buildId: 'bc5cf6d3-0551-4b2c-94cd-a9c7bdd2d59e',
+        build: {
+          id: 'bc5cf6d3-0551-4b2c-94cd-a9c7bdd2d59e',
+          number: 3,
+          branch: 'basset-io-test',
+          commitSha: '969fdec99723c502a045c66624f44dbb3a8c3f24',
+          commitMessage:
+            'feat(platform): enable redirect on login / oauth (#15)\n\n* enable redirect on login / oauth\r\n\r\n* add test\r\n',
+          committerName: 'GitHub',
+          committerEmail: 'noreply@github.com',
+          commitDate: '1562338606000',
+          authorName: 'Basset User',
+          authorDate: '1562338606000',
+          authorEmail: 'basset@basset.io',
+          createdAt: '1562392375016',
+          updatedAt: '1562450819246',
+          completedAt: '1562392376411',
+          submittedAt: '1562392375314',
+          cancelledAt: null,
+          __typename: 'Build',
+        },
+        projectId: 'c671ae78-1ce4-4f2b-b696-1553201053e9',
+        organizationId: 'c7986a42-c688-465d-9326-c0fc02d58eed',
+        approvedBy: {
+          user: {
+            id: '9169b595-213f-4f19-beff-3f507f2ba6c2',
+            name: 'Basset User',
+            __typename: 'User',
+          },
+          __typename: 'OrganizationMember',
+        },
+        __typename: 'Snapshot',
+      },
+      __typename: 'SnapshotEdge',
+    },
+  ];
   groupsData = {
     totalCount: 4,
     edges: [
@@ -913,6 +1108,30 @@ test('getSnapshots', async () => {
   );
 });
 
+test('getSnapshotsByTitle', async () => {
+  ApolloClient.query = jest.fn(
+    () => Promise.resolve({
+      data: {
+        snapshotsByTitle: {
+          edges: snapshotsHistory,
+          totalCount: 8,
+          pageInfo: { hasNextPage: true },
+        },
+      },
+    })
+  );
+  let promise = store.dispatch(actions.getSnapshotsByTitle('1', 'test title', '1280', 'browser'));
+  let state = store.getState().snapshots;
+  await promise;
+  expect(ApolloClient.query).toHaveBeenCalledTimes(2);
+  state = store.getState().snapshots;
+  expect(state.isLoading['history']).toBe(false);
+  expect(state.error).toBe('');
+  expect(state.snapshots['history']).toHaveLength(8);
+  expect(state.pageInfo['history'].totalCount).toBe(8);
+  expect(state.pageInfo['history'].hasNextPage).toBe(true);
+});
+
 test('getSnapshot', async () => {
   let resolver;
   ApolloClient.query = jest.fn(
@@ -1128,7 +1347,9 @@ test('addSnapshotFlake', async () => {
   state = store.getState().snapshots;
   expect(state.error).toBe('');
   expect(state.isAddingSnapshotFlake).toBe(false);
-  expect(state.groups[0].snapshots.edges[0].node.snapshotFlake).toBe(snapshotFlake);
+  expect(state.groups[0].snapshots.edges[0].node.snapshotFlake).toBe(
+    snapshotFlake,
+  );
 });
 
 test('loadMoreFromGroup', async () => {
@@ -1138,7 +1359,8 @@ test('loadMoreFromGroup', async () => {
   ApolloClient.query = jest.fn(
     () => new Promise(resolve => (resolver = resolve)),
   );
-  const resolvePromise = () => resolver({ data: { modifiedSnapshots: snapshotsData } });
+  const resolvePromise = () =>
+    resolver({ data: { modifiedSnapshots: snapshotsData } });
   const loadMore = store.dispatch(actions.loadMoreFromGroup(group));
 
   let state = store.getState().snapshots;
@@ -1154,13 +1376,13 @@ test('loadMoreFromGroup', async () => {
   expect(state.groups[0].snapshots.pageInfo.hasNextPage).toBe(true);
 });
 
-
 test('getSnapshotGroups', async () => {
   let resolver;
   ApolloClient.query = jest.fn(
     () => new Promise(resolve => (resolver = resolve)),
   );
-  const resolvePromise = () => resolver({ data: { modifiedSnapshotGroups: groupsData } });
+  const resolvePromise = () =>
+    resolver({ data: { modifiedSnapshotGroups: groupsData } });
 
   const promise = store.dispatch(actions.getSnapshotGroups());
   let state = store.getState().snapshots;

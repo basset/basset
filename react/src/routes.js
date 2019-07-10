@@ -82,11 +82,6 @@ export default [
         children: snapshots,
       },
       {
-        path: '/snapshots/search/:name/:width?/:browser',
-        load: () =>
-          import(/* webpackChunkName: 'snapshot-search' */ './app/snapshots/search/route.jsx'),
-      },
-      {
         path: '/oauth-error/',
         load: () =>
           import(/* webpackChunkName: 'oauth-error' */ './app/oauth-error/route.jsx'),

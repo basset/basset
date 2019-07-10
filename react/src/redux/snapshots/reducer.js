@@ -46,7 +46,7 @@ const initialState = {
     new: [],
     unmodified: [],
     removed: [],
-    search: [],
+    history: [],
   },
   isAddingSnapshotFlake: false,
   isLoadingMoreGroups: false,

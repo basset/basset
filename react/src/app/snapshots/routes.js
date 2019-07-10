@@ -5,8 +5,8 @@ export default [
       import(/* webpackChunkName: 'snapshot-single' */ './single/route.jsx'),
   },
   {
-    path: '/search/:projectId/:title',
+    path: '/history/:projectId/:title/:width/:browser',
     load: () =>
-      import(/* webpackChunkName: 'snapshot-search' */ './search/route.jsx'),
+      import(/* webpackChunkName: 'snapshot-history' */ './history/route.jsx'),
   },
 ];
