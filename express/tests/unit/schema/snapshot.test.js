@@ -290,6 +290,75 @@ describe('snapshot schema', () => {
       const groupNull = groups.edges.find(edge => edge.node.group === null);
       expect(groupNull.node.snapshots.totalCount).toBe(3);
     });
+
+    test('get snapshots by title', async () => {
+      const query = `
+      query snapshotsByTitle(
+        $projectId: ID!
+        $title: String!
+        $first: Int!
+        $before: String
+        $browser: String
+        $width: String
+      ) {
+        snapshotsByTitle(
+          projectId: $projectId
+          title: $title
+          first: $first
+          before: $before
+          browser: $browser
+          width: $width
+          diff: true
+        ) {
+          pageInfo {
+            hasNextPage
+          }
+          totalCount
+          edges {
+            cursor
+            node {
+              id
+            }
+          }
+        }
+      }
+      `;
+      const builds = [
+        await createBuild('test1', project),
+        await createBuild('test2', project),
+        await createBuild('test3', project),
+        await createBuild('test4', project),
+        await createBuild('test5', project),
+        await createBuild('test6', project),
+        await createBuild('test7', project),
+        await createBuild('test8', project),
+        await createBuild('test9', project),
+        await createBuild('test10', project),
+      ];
+      const snapshots = [
+        await createSnapshot('test 1', builds[0], { approved: true, diff: true, imageLocation: '1.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[1], { approved: true, diff: true, imageLocation: '2.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[2], { approved: true, diff: true, imageLocation: '3.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[3], { approved: true, diff: true, imageLocation: '4.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[4], { approved: true, diff: true, imageLocation: '5.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[5], { approved: true, diff: true, imageLocation: '6.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[6], { approved: true, diff: true, imageLocation: '7.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[7], { approved: true, diff: true, imageLocation: '8.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[8], { approved: true, diff: true, imageLocation: '9.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[9], { approved: true, diff: true, imageLocation: '10.png', browser: 'chrome', width: '1280'}),
+      ];
+      const variables = {
+        projectId: project.id,
+        title: Buffer.from('test 1').toString('base64'),
+        width: '1280',
+        browser: 'chrome',
+        first: 100,
+      };
+      const result = await runQuery(query, user, variables);
+      expect(result.errors).toBeUndefined();
+      expect(result.data.snapshotsByTitle.totalCount).toBe(snapshots.length);
+      expect(result.data.snapshotsByTitle.edges.map(e => e.node.id)).toEqual(snapshots.reverse().map(s => s.id));
+    });
   });
 
   describe('mutation', () => {
