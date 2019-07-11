@@ -336,7 +336,7 @@ describe('snapshot schema', () => {
         await createBuild('test10', project),
       ];
       const snapshots = [
-        await createSnapshot('test 1', builds[0], { approved: true, diff: true, imageLocation: '1.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[0], { imageLocation: '1.png', browser: 'chrome', width: '1280'}),
         await createSnapshot('test 1', builds[1], { approved: true, diff: true, imageLocation: '2.png', browser: 'chrome', width: '1280'}),
         await createSnapshot('test 1', builds[2], { approved: true, diff: true, imageLocation: '3.png', browser: 'chrome', width: '1280'}),
         await createSnapshot('test 1', builds[3], { approved: true, diff: true, imageLocation: '4.png', browser: 'chrome', width: '1280'}),
