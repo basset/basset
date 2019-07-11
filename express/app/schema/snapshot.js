@@ -120,13 +120,18 @@ const resolvers = {
         query.where('width', args.width);
       }
       if (args.diff) {
-        query.where('diff', true).where(builder => {
-          builder.where('approved', true);
-          if (args.includeFlakes) {
-            builder.OrWhere(b => {
-              b.where('flake', true).whereNull('snapshotFlakeMatchedId');
-            })
-          }
+        query.where(builder => {
+          builder
+            .whereNull('previousApprovedId')
+            .orWhere('diff', true)
+            .where(b => {
+              b.where('approved', true);
+              if (args.includeFlakes) {
+                b.orWhere(b2 => {
+                  b2.where('flake', true).whereNull('snapshotFlakeMatchedId');
+                });
+              }
+            });
         });
       }
 
