@@ -102,7 +102,7 @@ class Build extends BaseModel {
     }
   }
 
-  async getPreviousBuild(project = null) {
+  async getPreviousBuild({project = null, compareBranch = null} = {}) {
     if (!project) {
       project = await this.$relatedQuery('project');
     }
@@ -110,7 +110,7 @@ class Build extends BaseModel {
     let baseSHA = null;
     let baseBuild = null;
 
-    if (project.hasSCM && this.commitSha && this.branch) {
+    if (project.hasSCM && this.commitSha && (compareBranch || this.branch)) {
       this.notifyPending(project);
 
       const pullRequests = await getPRs({
@@ -139,7 +139,7 @@ class Build extends BaseModel {
       .first();
 
     if (isPR) {
-      baseBuild = await baseQuery.clone().where('branch', this.branch);
+      baseBuild = await baseQuery.clone().where('branch', compareBranch || this.branch);
 
       if (!baseBuild && baseSHA) {
         baseBuild = await baseQuery.clone().where('commitSha', baseSHA);
@@ -151,7 +151,7 @@ class Build extends BaseModel {
         .where('branch', project.defaultBranch);
     }
     if (!baseBuild && !isPR) {
-      baseBuild = await baseQuery.clone().where('branch', this.branch);
+      baseBuild = await baseQuery.clone().where('branch', compareBranch || this.branch);
     }
 
     return baseBuild;
