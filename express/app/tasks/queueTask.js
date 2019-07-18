@@ -17,14 +17,10 @@ const queueTask = async message => {
     try {
       await channel.assertQueue(settings.ampq.taskQueue, { durable: true });
 
-      for await (const messageData of messages) {
-        const message = JSON.stringify(messageData);
-        console.log('sending', message);
-        await channel.sendToQueue(settings.ampq.taskQueue, Buffer.from(message), {
-          deliveryMode: true,
-        });
-      }
-
+      const messageData = JSON.stringify(message);
+      await channel.sendToQueue(settings.ampq.taskQueue, Buffer.from(messageData), {
+        deliveryMode: true,
+      });
       await channel.close();
       await connection.close();
     } catch (error) {
