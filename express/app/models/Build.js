@@ -148,7 +148,7 @@ class Build extends BaseModel {
     if (!baseBuild) {
       baseBuild = await baseQuery
         .clone()
-        .where('branch', project.defaultBranch);
+        .where('branch', compareBranch || project.defaultBranch);
     }
     if (!baseBuild && !isPR) {
       baseBuild = await baseQuery.clone().where('branch', compareBranch || this.branch);
