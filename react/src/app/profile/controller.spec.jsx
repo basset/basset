@@ -28,8 +28,8 @@ describe('<Profile />', () => {
     window.__BASSET__ = {
       logins: {
         github: true,
-      }
-    }
+      },
+    };
     userActions.saveUser = jest.fn(() => (dispatch, getState) => {});
     store.dispatch(
       userActions.receiveUser({

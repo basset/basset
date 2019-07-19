@@ -1,7 +1,7 @@
 jest.mock('../builds/actions.js', () => ({
   getBuilds: jest.fn(() => () => {}),
   setCurrentBuild: jest.fn(() => () => {}),
-  clearBuilds: jest.fn(() => () => {})
+  clearBuilds: jest.fn(() => () => {}),
 }));
 jest.mock('../../graphql/client.js', () => ({
   mutate: jest.fn(),

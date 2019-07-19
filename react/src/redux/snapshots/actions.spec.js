@@ -1109,8 +1109,8 @@ test('getSnapshots', async () => {
 });
 
 test('getSnapshotsByTitle', async () => {
-  ApolloClient.query = jest.fn(
-    () => Promise.resolve({
+  ApolloClient.query = jest.fn(() =>
+    Promise.resolve({
       data: {
         snapshotsByTitle: {
           edges: snapshotsHistory,
@@ -1118,9 +1118,11 @@ test('getSnapshotsByTitle', async () => {
           pageInfo: { hasNextPage: true },
         },
       },
-    })
+    }),
   );
-  let promise = store.dispatch(actions.getSnapshotsByTitle('1', 'test title', '1280', 'browser'));
+  let promise = store.dispatch(
+    actions.getSnapshotsByTitle('1', 'test title', '1280', 'browser'),
+  );
   let state = store.getState().snapshots;
   await promise;
   expect(ApolloClient.query).toHaveBeenCalledTimes(2);

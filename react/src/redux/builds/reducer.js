@@ -48,13 +48,13 @@ const handler = {
     ...state,
     builds,
   }),
-  [actionTypes.clearBuilds]: (state) => ({
+  [actionTypes.clearBuilds]: state => ({
     ...state,
     builds: [],
     currentBuildId: null,
     pageInfo: {
       hasNextPage: false,
-    }
+    },
   }),
   [actionTypes.addBuild]: (state, { build }) => ({
     ...state,

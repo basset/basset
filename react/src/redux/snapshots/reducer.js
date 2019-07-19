@@ -174,10 +174,7 @@ const handler = {
       [group]: true,
     },
   }),
-  [actionTypes.updateGroupSnapshotsPageInfo]: (
-    state,
-    { group, pageInfo },
-  ) => ({
+  [actionTypes.updateGroupSnapshotsPageInfo]: (state, { group, pageInfo }) => ({
     ...state,
     groups: state.groups.map(g => {
       if (g.group === group.group) {
@@ -267,7 +264,10 @@ const handler = {
         data.edges.length > 0 ? data.edges[data.edges.length - 1].cursor : null,
     },
   }),
-  [actionTypes.updateGroupApprovedSnapshots]: (state, { group, approvedSnapshots }) => ({
+  [actionTypes.updateGroupApprovedSnapshots]: (
+    state,
+    { group, approvedSnapshots },
+  ) => ({
     ...state,
     groups: state.groups.map(g => {
       if (g.group === group.group) {

@@ -27,8 +27,8 @@ export default [
     action: ({ next }, params, history, dispatch, getState) => {
       if (__BASSET__.private) {
         return {
-          redirect: '/private/'
-        }
+          redirect: '/private/',
+        };
       }
       return next();
     },
@@ -37,14 +37,13 @@ export default [
         path: '',
         load: () =>
           import(/* webpackChunkName: 'signup' */ './app/signup/route.jsx'),
-      }
-    ]
-
+      },
+    ],
   },
   {
     path: '/private',
     load: () =>
-      import(/* webpackChunkName: 'private' */'./app/private/route.jsx'),
+      import(/* webpackChunkName: 'private' */ './app/private/route.jsx'),
   },
   {
     path: '/activate/:id/:token',

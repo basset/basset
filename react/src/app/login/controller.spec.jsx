@@ -49,7 +49,7 @@ describe('<Login />', () => {
   test('login with email and password', async () => {
     const login = {
       user: {},
-    }
+    };
     mockMutate = Promise.resolve({
       data: {
         login,
@@ -75,14 +75,16 @@ describe('<Login />', () => {
   });
   test('redirect', async () => {
     const login = {
-      user: {}
-    }
+      user: {},
+    };
     mockMutate = Promise.resolve({
       data: {
         login,
       },
     });
-    const { getByTestId } = renderWithRedux(<Login {...PROPS} redirect="/organizations" />);
+    const { getByTestId } = renderWithRedux(
+      <Login {...PROPS} redirect="/organizations" />,
+    );
 
     const emailInput = getByTestId('test-email');
     fireEvent.change(emailInput, {
@@ -97,7 +99,9 @@ describe('<Login />', () => {
       },
     });
     fireEvent.submit(passwordInput);
-    await wait(() => expect(userActions.login).toHaveBeenCalledWith(login, '/organizations'));
+    await wait(() =>
+      expect(userActions.login).toHaveBeenCalledWith(login, '/organizations'),
+    );
   });
   test('empty email', async () => {
     const { container, getByTestId } = renderWithRedux(<Login {...PROPS} />);

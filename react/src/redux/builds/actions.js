@@ -120,7 +120,7 @@ export const getBuild = id => async (dispatch, getState) => {
       await Promise.all([
         dispatch(getSnapshotGroups()),
         //dispatch(getSnapshots('modified')),
-        dispatch(getSnapshots('new'))
+        dispatch(getSnapshots('new')),
       ]);
     }
     dispatch(doneLoadingSingle());

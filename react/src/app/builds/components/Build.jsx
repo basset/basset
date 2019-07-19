@@ -57,7 +57,7 @@ export default class Build extends React.PureComponent {
     }
 
     if (build.error) {
-      return <StatusCritical color="status-error" />
+      return <StatusCritical color="status-error" />;
     }
     return <StatusPlaceholder color="status-unknown" />;
   };
@@ -71,7 +71,7 @@ export default class Build extends React.PureComponent {
 
   buildTimedOut = build => {
     return build.error && !build.submittedAt;
-  }
+  };
 
   buildIncompleteSnapshots = build => build.error && !build.completedAt;
 
@@ -89,7 +89,7 @@ export default class Build extends React.PureComponent {
     } else if (build.cancelledAt) {
       text = `Cancelled ${this.formatDate(build.cancelledAt)}`;
     } else if (this.buildIncompleteSnapshots(build)) {
-        return 'Snapshot rendering and comparison did not complete';
+      return 'Snapshot rendering and comparison did not complete';
     } else if (build.submittedAt) {
       text = `Submitted ${this.formatDate(build.submittedAt)}`;
     } else if (build.createdAt) {
