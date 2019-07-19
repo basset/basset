@@ -67,7 +67,7 @@ class Organization extends BaseModel {
         join: {
           from: 'organization.id',
           to: 'project.organizationId',
-        }
+        },
       },
     };
   }

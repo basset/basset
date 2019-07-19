@@ -45,8 +45,8 @@ class SnapshotFlake extends BaseModel {
         modelClass: Project,
         join: {
           from: 'snapshotFlake.projectId',
-          to: 'project.id'
-        }
+          to: 'project.id',
+        },
       },
       snapshot: {
         relation: Model.BelongsToOneRelation,

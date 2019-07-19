@@ -11,7 +11,10 @@ const replaceUrl = (assets, str, assetsUrl, relativePath) => {
   const replacer = (match, p1, offset, str) => {
     const asset = findAsset(assets, p1, relativePath);
     if (asset) {
-      return `url(${assetsUrl}/${getAssetsPath(asset.relativePath, asset.sha)})`;
+      return `url(${assetsUrl}/${getAssetsPath(
+        asset.relativePath,
+        asset.sha,
+      )})`;
     }
     return `url(${p1})`;
   };
@@ -38,7 +41,10 @@ const transformHTML = (assets, assetsUrl, relativePath) => {
     if (!validPath.test(attribute)) {
       const asset = findAsset(assets, attribute);
       if (asset) {
-        element.setAttribute(name, `${assetsUrl}/${getAssetsPath(asset.relativePath, asset.sha)}`);
+        element.setAttribute(
+          name,
+          `${assetsUrl}/${getAssetsPath(asset.relativePath, asset.sha)}`,
+        );
       }
     }
   };

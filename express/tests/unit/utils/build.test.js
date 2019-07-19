@@ -71,17 +71,36 @@ describe('build utils', () => {
     it('should include assets with a null locations', async () => {
       const buildAssets = [
         await createBuildAsset('path/to/file.css', null, build, project),
-        await createBuildAsset('path/to/file.js', 'site/path/to/file.js/sha1.js', build, project),
-        await createBuildAsset('path/to/file.png', 'site/path/to/file.png/sha1.png', build, project),
+        await createBuildAsset(
+          'path/to/file.js',
+          'site/path/to/file.js/sha1.js',
+          build,
+          project,
+        ),
+        await createBuildAsset(
+          'path/to/file.png',
+          'site/path/to/file.png/sha1.png',
+          build,
+          project,
+        ),
       ];
       await utils.checkBuild(req, res, next);
       expect(req.locals.assets).toHaveLength(3);
       expect(req.locals.assets).toEqual([
-        {relativePath: buildAssets[0].relativePath, sha: buildAssets[0].asset.sha},
-        {relativePath: buildAssets[1].relativePath, sha: buildAssets[1].asset.sha},
-        {relativePath: buildAssets[2].relativePath, sha: buildAssets[2].asset.sha},
+        {
+          relativePath: buildAssets[0].relativePath,
+          sha: buildAssets[0].asset.sha,
+        },
+        {
+          relativePath: buildAssets[1].relativePath,
+          sha: buildAssets[1].asset.sha,
+        },
+        {
+          relativePath: buildAssets[2].relativePath,
+          sha: buildAssets[2].asset.sha,
+        },
       ]);
-    })
+    });
   });
   test('getToken', () => {
     const req = {

@@ -336,16 +336,74 @@ describe('snapshot schema', () => {
         await createBuild('test10', project),
       ];
       const snapshots = [
-        await createSnapshot('test 1', builds[0], { imageLocation: '1.png', browser: 'chrome', width: '1280'}),
-        await createSnapshot('test 1', builds[1], { approved: true, diff: true, imageLocation: '2.png', browser: 'chrome', width: '1280'}),
-        await createSnapshot('test 1', builds[2], { approved: true, diff: true, imageLocation: '3.png', browser: 'chrome', width: '1280'}),
-        await createSnapshot('test 1', builds[3], { approved: true, diff: true, imageLocation: '4.png', browser: 'chrome', width: '1280'}),
-        await createSnapshot('test 1', builds[4], { approved: true, diff: true, imageLocation: '5.png', browser: 'chrome', width: '1280'}),
-        await createSnapshot('test 1', builds[5], { approved: true, diff: true, imageLocation: '6.png', browser: 'chrome', width: '1280'}),
-        await createSnapshot('test 1', builds[6], { approved: true, diff: true, imageLocation: '7.png', browser: 'chrome', width: '1280'}),
-        await createSnapshot('test 1', builds[7], { approved: true, diff: true, imageLocation: '8.png', browser: 'chrome', width: '1280'}),
-        await createSnapshot('test 1', builds[8], { approved: true, diff: true, imageLocation: '9.png', browser: 'chrome', width: '1280'}),
-        await createSnapshot('test 1', builds[9], { approved: true, diff: true, imageLocation: '10.png', browser: 'chrome', width: '1280'}),
+        await createSnapshot('test 1', builds[0], {
+          imageLocation: '1.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
+        await createSnapshot('test 1', builds[1], {
+          approved: true,
+          diff: true,
+          imageLocation: '2.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
+        await createSnapshot('test 1', builds[2], {
+          approved: true,
+          diff: true,
+          imageLocation: '3.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
+        await createSnapshot('test 1', builds[3], {
+          approved: true,
+          diff: true,
+          imageLocation: '4.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
+        await createSnapshot('test 1', builds[4], {
+          approved: true,
+          diff: true,
+          imageLocation: '5.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
+        await createSnapshot('test 1', builds[5], {
+          approved: true,
+          diff: true,
+          imageLocation: '6.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
+        await createSnapshot('test 1', builds[6], {
+          approved: true,
+          diff: true,
+          imageLocation: '7.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
+        await createSnapshot('test 1', builds[7], {
+          approved: true,
+          diff: true,
+          imageLocation: '8.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
+        await createSnapshot('test 1', builds[8], {
+          approved: true,
+          diff: true,
+          imageLocation: '9.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
+        await createSnapshot('test 1', builds[9], {
+          approved: true,
+          diff: true,
+          imageLocation: '10.png',
+          browser: 'chrome',
+          width: '1280',
+        }),
       ];
       const variables = {
         projectId: project.id,
@@ -357,7 +415,9 @@ describe('snapshot schema', () => {
       const result = await runQuery(query, user, variables);
       expect(result.errors).toBeUndefined();
       expect(result.data.snapshotsByTitle.totalCount).toBe(snapshots.length);
-      expect(result.data.snapshotsByTitle.edges.map(e => e.node.id)).toEqual(snapshots.reverse().map(s => s.id));
+      expect(result.data.snapshotsByTitle.edges.map(e => e.node.id)).toEqual(
+        snapshots.reverse().map(s => s.id),
+      );
     });
   });
 
@@ -521,7 +581,9 @@ describe('snapshot schema', () => {
           diff: true,
           previousApprovedId: oldSnapshot.id,
         });
-        await createSnapshotDiff(oldSnapshot, newSnapshot, newBuild, { group: 1 });
+        await createSnapshotDiff(oldSnapshot, newSnapshot, newBuild, {
+          group: 1,
+        });
         const flakeQuery = `
         mutation addSnapshotFlake($id: ID!) {
           addSnapshotFlake(id: $id) {
@@ -553,7 +615,7 @@ describe('snapshot schema', () => {
         expect(approvedSnapshots).toHaveLength(0);
         const totalSnapshots = await newBuild.$relatedQuery('snapshots');
         expect(totalSnapshots).toHaveLength(1);
-      })
+      });
     });
 
     describe('approveGroupSnapshots', () => {
@@ -613,7 +675,9 @@ describe('snapshot schema', () => {
           diff: true,
           previousApprovedId: oldSnapshot.id,
         });
-        await createSnapshotDiff(oldSnapshot, newSnapshot, newBuild, { group: 1 });
+        await createSnapshotDiff(oldSnapshot, newSnapshot, newBuild, {
+          group: 1,
+        });
         const flakeQuery = `
         mutation addSnapshotFlake($id: ID!) {
           addSnapshotFlake(id: $id) {

@@ -161,7 +161,9 @@ describe('Build', () => {
       });
       const prBuild = await createBuild('repoBranch', project2);
       prBuild.notifyPending = jest.fn();
-      expect(await prBuild.getPreviousBuild({project: project2})).toEqual(firstBuild);
+      expect(await prBuild.getPreviousBuild({ project: project2 })).toEqual(
+        firstBuild,
+      );
       expect(prBuild.notifyPending).toHaveBeenCalled();
     });
 
@@ -185,7 +187,9 @@ describe('Build', () => {
         completedAt: Build.knex().fn.now(),
       });
       const newBuild = await createBuild('otherBranch', project2);
-      expect(await newBuild.getPreviousBuild({project: project2})).toEqual(baseBuild);
+      expect(await newBuild.getPreviousBuild({ project: project2 })).toEqual(
+        baseBuild,
+      );
     });
 
     it('should return the previous build based on the last branch', async () => {
@@ -194,7 +198,9 @@ describe('Build', () => {
         completedAt: Build.knex().fn.now(),
       });
       const newBuild = await createBuild('diffBranch', project);
-      expect(await newBuild.getPreviousBuild({project: project})).toEqual(baseBuild);
+      expect(await newBuild.getPreviousBuild({ project: project })).toEqual(
+        baseBuild,
+      );
     });
 
     it('should return the previous build based on a project default branch', async () => {
@@ -203,7 +209,7 @@ describe('Build', () => {
         completedAt: Build.knex().fn.now(),
       });
       const newBuild = await createBuild('diffBranch', project);
-      expect(await newBuild.getPreviousBuild({project,})).toEqual(baseBuild);
+      expect(await newBuild.getPreviousBuild({ project })).toEqual(baseBuild);
     });
 
     it('should return undefined if no previous build is found', async () => {

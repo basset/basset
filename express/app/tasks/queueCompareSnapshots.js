@@ -53,9 +53,13 @@ const queueCompareSnapshots = async messages => {
       for await (const messageData of messages) {
         const message = JSON.stringify(messageData);
         console.log('sending', message);
-        await channel.sendToQueue(settings.ampq.buildQueue, Buffer.from(message), {
-          deliveryMode: true,
-        });
+        await channel.sendToQueue(
+          settings.ampq.buildQueue,
+          Buffer.from(message),
+          {
+            deliveryMode: true,
+          },
+        );
       }
 
       await channel.close();
@@ -67,7 +71,6 @@ const queueCompareSnapshots = async messages => {
     }
   }
 };
-
 
 module.exports = {
   queueCompareSnapshots,

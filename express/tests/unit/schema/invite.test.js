@@ -378,8 +378,8 @@ describe('invite schema', async () => {
           isAuthenticated: () => false,
           login: jest.fn((u, cb) => cb(null)),
           user: null,
-        }
-        const result = await runQuery(query, null, variables, {req, });
+        };
+        const result = await runQuery(query, null, variables, { req });
         expect(result.data.acceptInvite.id).toBeDefined();
         expect(result.data.acceptInvite.email).toBe(invite.email);
         expect(result.data.acceptInvite.name).toBe('tester');

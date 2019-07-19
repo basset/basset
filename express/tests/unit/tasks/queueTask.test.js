@@ -28,11 +28,13 @@ const queueTask = require('../../../app/tasks/queueTask');
 
 test('queueTask', async () => {
   settings.sqs.use = true;
-  settings.sqs.taskUrl = 'taskurl'
-  const message ={ type: 'test', data: 'testing' }
+  settings.sqs.taskUrl = 'taskurl';
+  const message = { type: 'test', data: 'testing' };
   queueTask.queueTask(message);
-  expect(mockSendMessage).toHaveBeenCalledWith(expect.objectContaining({
-    QueueUrl: settings.sqs.taskUrl,
-    MessageBody: JSON.stringify(message)
-  }));
+  expect(mockSendMessage).toHaveBeenCalledWith(
+    expect.objectContaining({
+      QueueUrl: settings.sqs.taskUrl,
+      MessageBody: JSON.stringify(message),
+    }),
+  );
 });

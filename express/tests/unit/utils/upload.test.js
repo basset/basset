@@ -82,8 +82,8 @@ describe('upload utils', () => {
         },
       },
       headers: {
-        'x-relative-path': '/'
-      }
+        'x-relative-path': '/',
+      },
     };
     upload.getSnapshotContentType(req, file, cb);
     expect(transformer.transformHTML).toHaveBeenCalledWith(
@@ -132,7 +132,7 @@ describe('upload utils', () => {
       },
       headers: {
         'x-relative-path': '/path/to/stuff.png',
-      }
+      },
     };
     upload.getAssetContentType(req, file, cb);
     expect(transformer.transformCSS).not.toHaveBeenCalled();

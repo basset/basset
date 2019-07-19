@@ -157,7 +157,10 @@ describe('Project', () => {
       'path/to/asset.png': '12345ea',
     };
     await otherProject.createAssets(newAssets);
-    const asset = await otherProject.$relatedQuery('assets').where('sha', '12345ea').first();
+    const asset = await otherProject
+      .$relatedQuery('assets')
+      .where('sha', '12345ea')
+      .first();
     expect(asset).toBeDefined();
   });
 

@@ -28,7 +28,11 @@ const updateStatus = ({
     },
     (error, response, body) => {
       if (response.statusCode !== 201) {
-        console.error(`There was an error updating the github repo status: ${JSON.parse(response.body)}`)
+        console.error(
+          `There was an error updating the github repo status: ${JSON.parse(
+            response.body,
+          )}`,
+        );
       }
       if (error) {
         console.error(error);

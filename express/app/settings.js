@@ -64,7 +64,7 @@ const s3 = {
 const sqs = {
   use: parseInt(process.env.USE_SQS) === 1,
   buildUrl: process.env.SQS_BUILD_QUEUE_URL,
-  taskUrl: process.env.SQS_TASK_QUEUE_URL
+  taskUrl: process.env.SQS_TASK_QUEUE_URL,
 };
 
 const awsBatch = {

@@ -22,7 +22,7 @@ const createBuildAsset = async (
   project,
   args = {},
 ) => {
-  const asset = await createAsset(project, undefined, { location, });
+  const asset = await createAsset(project, undefined, { location });
   const buildAsset = await BuildAsset.query().insertAndFetch({
     assetId: asset.id,
     buildId: build.id,
@@ -32,8 +32,7 @@ const createBuildAsset = async (
   });
   buildAsset.asset = asset;
   return buildAsset;
-}
-
+};
 
 module.exports = {
   createAsset,

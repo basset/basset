@@ -19,7 +19,11 @@ const monitorBuildStatus = async ({ buildId }) => {
 
   const timeDelta = lastUpdated - build.updatedAt;
   if (timeDelta > buildTimeout) {
-    console.error(`Build (id: ${build.id}) has timed out. There were${lastSnapshot ? '' : ' no'} snapshots created.`);
+    console.error(
+      `Build (id: ${build.id}) has timed out. There were${
+        lastSnapshot ? '' : ' no'
+      } snapshots created.`,
+    );
     await build.$query().update({
       error: true,
     });

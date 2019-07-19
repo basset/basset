@@ -5,10 +5,12 @@ const queueTask = async message => {
   if (settings.sqs.use) {
     const aws = require('aws-sdk');
     const sqs = new aws.SQS({ apiVersion: '2012-11-05' });
-    await sqs.sendMessage({
-      QueueUrl: settings.sqs.taskUrl,
-      MessageBody: JSON.stringify(message),
-    }).promise();
+    await sqs
+      .sendMessage({
+        QueueUrl: settings.sqs.taskUrl,
+        MessageBody: JSON.stringify(message),
+      })
+      .promise();
   } else {
     const amqp = require('amqplib');
     const connection = await amqp.connect(settings.ampq.host);
@@ -18,9 +20,13 @@ const queueTask = async message => {
       await channel.assertQueue(settings.ampq.taskQueue, { durable: true });
 
       const messageData = JSON.stringify(message);
-      await channel.sendToQueue(settings.ampq.taskQueue, Buffer.from(messageData), {
-        deliveryMode: true,
-      });
+      await channel.sendToQueue(
+        settings.ampq.taskQueue,
+        Buffer.from(messageData),
+        {
+          deliveryMode: true,
+        },
+      );
       await channel.close();
       await connection.close();
     } catch (error) {
@@ -37,8 +43,8 @@ const tasks = {
     data: {
       buildId,
     },
-  })
-}
+  }),
+};
 
 module.exports = {
   queueTask,

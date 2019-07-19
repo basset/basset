@@ -1,4 +1,3 @@
-
 exports.up = function(knex, Promise) {
   return knex.schema.table('snapshot_diff', table => {
     table.string('sha', 40);
@@ -15,5 +14,5 @@ exports.down = function(knex, Promise) {
   return knex.schema.table('snapshot_diff', table => {
     table.dropColumn('sha');
     table.dropColumn('group');
-  })
+  });
 };
