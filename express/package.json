@@ -8,8 +8,8 @@
     "dev:debug": "DEBUG=knex* nodemon ./bin/www",
     "start": "node ./bin/www",
     "migrate": "knex migrate:latest",
-    "test:unit": "jest -c tests/unit/config/config.js",
-    "test:selenium": "jest -c tests/selenium/config/config.js"
+    "test:unit": "jest -c tests/unit/config/config.js -i",
+    "test:selenium": "jest -c tests/selenium/config/config.js -i"
   },
   "author": "",
   "license": "AGPLv3",
