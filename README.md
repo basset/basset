@@ -19,6 +19,12 @@ Basset is an open source visual regression testing service. Basset allows you to
 
 Head to [www.basset.io/docs/getting-started](https://basset.io/docs/getting-started) for instructions on installation and setup.
 
+## Snapshots
+
+<h1 align="center">
+  <a href="https://basset.io"><img src="https://basset.io/img/basset-snapshots.png"  alt="Basset"></a>
+</h1>
+
 ## License
 
 Basset is licensed under [GNU AGPLv3](./LICENSE)
