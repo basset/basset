@@ -154,7 +154,13 @@ export const updateSnapshot = (snapshotType, snapshot) => ({
   snapshotType,
 });
 
-export const getSnapshotsByTitle = (projectId, title, width, browser, before) => async (dispatch, getState) => {
+export const getSnapshotsByTitle = (
+  projectId,
+  title,
+  width,
+  browser,
+  before,
+) => async (dispatch, getState) => {
   const type = 'history';
   dispatch(isLoading(type));
   try {
@@ -170,21 +176,25 @@ export const getSnapshotsByTitle = (projectId, title, width, browser, before) =>
       },
     });
     if (data.snapshotsByTitle) {
-      dispatch(addSnapshots(type, data.snapshotsByTitle.edges.map(e => e.node)));
+      dispatch(
+        addSnapshots(type, data.snapshotsByTitle.edges.map(e => e.node)),
+      );
       dispatch(updatePageInfo(type, data.snapshotsByTitle));
 
       const currentSnapshots = getState().snapshots.snapshots[type].length;
 
       if (currentSnapshots < data.snapshotsByTitle.totalCount) {
         const before = data.snapshotsByTitle.edges.slice(-1)[0].cursor;
-        await dispatch(getSnapshotsByTitle(projectId, title, width, browser, before))
+        await dispatch(
+          getSnapshotsByTitle(projectId, title, width, browser, before),
+        );
       }
     }
     dispatch(doneLoading(type));
   } catch (error) {
     dispatch(doneLoading(type));
   }
-}
+};
 
 export const getSnapshot = id => async (dispatch, getState) => {
   const state = getState();

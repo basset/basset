@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Box, Button } from 'grommet';
 
-import {
-  getIsApproving,
-} from '../../../redux/snapshots/selectors.js';
+import { getIsApproving } from '../../../redux/snapshots/selectors.js';
 import {
   showSnapshot,
   approveSnapshot,
@@ -28,7 +26,11 @@ class FoundSnapshots extends React.PureComponent {
     }
     return (
       <Box border="bottom">
-        <SnapshotType type="found" typeName="Found snapshots" countText={`(${this.props.foundSnapshots.length})`} />
+        <SnapshotType
+          type="found"
+          typeName="Found snapshots"
+          countText={`(${this.props.foundSnapshots.length})`}
+        />
         <Box margin={{ vertical: 'small' }}>
           <Button
             data-test-id="clear-results"
@@ -55,7 +57,6 @@ class FoundSnapshots extends React.PureComponent {
 }
 
 const mapState = state => {
-
   return {
     isApproving: getIsApproving(state),
   };

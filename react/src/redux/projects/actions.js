@@ -18,7 +18,9 @@ export const setError = error => ({
 export const isLoading = () => ({ type: actionTypes.isLoading });
 export const doneLoading = () => ({ type: actionTypes.doneLoading });
 export const isLoadingSingle = () => ({ type: actionTypes.isLoadingSingle });
-export const doneLoadingSingle = () => ({ type: actionTypes.doneLoadingSingle });
+export const doneLoadingSingle = () => ({
+  type: actionTypes.doneLoadingSingle,
+});
 export const isLoadingMore = () => ({ type: actionTypes.isLoadingMore });
 export const doneLoadingMore = () => ({ type: actionTypes.doneLoadingMore });
 
@@ -40,7 +42,7 @@ export const updatePageInfo = data => ({
   data,
 });
 
-export const getProject = (id) => async (dispatch, getState) => {
+export const getProject = id => async (dispatch, getState) => {
   const { currentOrganizationId } = getState().organizations;
   try {
     dispatch(isLoadingSingle());
@@ -54,14 +56,14 @@ export const getProject = (id) => async (dispatch, getState) => {
       const { project } = data;
       dispatch(setCurrentProject(id));
       if (currentOrganizationId !== project.organizationId) {
-        await dispatch(changeOrganization({ id: project.organizationId }))
+        await dispatch(changeOrganization({ id: project.organizationId }));
       }
     }
     dispatch(doneLoadingSingle());
   } catch (error) {
     dispatch(doneLoadingSingle());
   }
-}
+};
 
 export const getProjects = () => async (dispatch, getState) => {
   const { currentOrganizationId } = getState().organizations;

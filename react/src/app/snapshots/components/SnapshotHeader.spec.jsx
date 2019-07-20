@@ -44,9 +44,9 @@ describe('<SnapshotHeader />', () => {
       const { getByTestId, queryByTestId } = render(
         <SnapshotHeader {...PROPS} canExpand={false} />,
       );
-      expect(getByTestId('expand-snapshot-button').hasAttribute('disabled')).toBe(
-        true,
-      );
+      expect(
+        getByTestId('expand-snapshot-button').hasAttribute('disabled'),
+      ).toBe(true);
     });
     it('should be a button when fully collapsed', () => {
       const { getByTestId, queryByTestId } = render(

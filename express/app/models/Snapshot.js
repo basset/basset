@@ -84,7 +84,9 @@ class Snapshot extends BaseModel {
             matchCount: snapshotFlake.matchCount + 1,
           });
           update.snapshotFlakeMatchedId = snapshotFlake.id;
-          const snapshotDiff = await snapshotFlake.$relatedQuery('snapshotDiff').first();
+          const snapshotDiff = await snapshotFlake
+            .$relatedQuery('snapshotDiff')
+            .first();
           await SnapshotDiff.query(trx).insert({
             imageLocation: snapshotDiff.imageLocation,
             differenceAmount: snapshotDiff.differenceAmount,

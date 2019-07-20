@@ -33,7 +33,7 @@ export default class LoginPage extends React.PureComponent {
 
   static defaultProps = {
     redirect: null,
-  }
+  };
 
   renderError = () => (
     <Box
@@ -60,7 +60,11 @@ export default class LoginPage extends React.PureComponent {
         <LogoContainer margin="medium">
           <Logo size="64px" />
         </LogoContainer>
-        <GithubLogin label="Login with Github" redirect={this.props.redirect} multiple />
+        <GithubLogin
+          label="Login with Github"
+          redirect={this.props.redirect}
+          multiple
+        />
         <BoxContainer
           elevation="small"
           height="medium"

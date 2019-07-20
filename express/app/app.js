@@ -94,7 +94,7 @@ const saveRedirect = (req, res, next) => {
     req.session.redirect = req.query.redirect;
   }
   return next();
-}
+};
 
 app.get('/oauth/github', saveRedirect, passport.authenticate('github'));
 

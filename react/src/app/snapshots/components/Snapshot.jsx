@@ -145,8 +145,20 @@ class Snapshot extends React.PureComponent {
           </Box>
         )}
         <Box className="images" direction="row" flex>
-          {showOriginal && <SnapshotImage snapshot={previousApproved} diff={false} onToggleDiff={this.onToggleDiff} />}
-          {showNew && <SnapshotImage snapshot={this.props.snapshot} diff={showDiff} onToggleDiff={this.onToggleDiff} />}
+          {showOriginal && (
+            <SnapshotImage
+              snapshot={previousApproved}
+              diff={false}
+              onToggleDiff={this.onToggleDiff}
+            />
+          )}
+          {showNew && (
+            <SnapshotImage
+              snapshot={this.props.snapshot}
+              diff={showDiff}
+              onToggleDiff={this.onToggleDiff}
+            />
+          )}
         </Box>
       </React.Fragment>
     );

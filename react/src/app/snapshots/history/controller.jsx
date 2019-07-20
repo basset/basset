@@ -13,16 +13,11 @@ import { approveSnapshot } from '../../../redux/snapshots/actions.js';
 import Loader from '../../../components/Loader/Loader.jsx';
 import Snapshots from './components/Snapshots.jsx';
 
-export const SnapshotHistoryController = ({
-  isLoading,
-  snapshots,
-}) => {
+export const SnapshotHistoryController = ({ isLoading, snapshots }) => {
   if (isLoading) {
     return <Loader />;
   }
-  return (
-    <Snapshots snapshots={snapshots} />
-  )
+  return <Snapshots snapshots={snapshots} />;
 };
 
 const mapState = state => {

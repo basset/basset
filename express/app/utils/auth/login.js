@@ -101,7 +101,12 @@ const loginUserWithProvider = async ({ req, userInfo, providerInfo }) => {
           userId: user.id,
         });
       } else {
-        await Project.updateSCMToken(trx, user, user.providers[0], providerInfo.token);
+        await Project.updateSCMToken(
+          trx,
+          user,
+          user.providers[0],
+          providerInfo.token,
+        );
         await user.providers[0].$query(trx).update({
           ...providerInfo,
         });

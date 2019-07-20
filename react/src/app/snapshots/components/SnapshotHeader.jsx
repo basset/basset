@@ -310,11 +310,13 @@ const SnapshotHeader = React.memo(
 
     const [dropOpen, setDropOpen] = useState(false);
     const renderDropdownMenu = () => {
-      const url = `/snapshots/history/${snapshot.projectId}/${btoa(snapshot.title)}/${snapshot.width}/${snapshot.browser}`
+      const url = `/snapshots/history/${snapshot.projectId}/${btoa(
+        snapshot.title,
+      )}/${snapshot.width}/${snapshot.browser}`;
       return (
         <DropButton
           data-test-id="snapshot-dropdown"
-          margin={{horizontal: 'small'}}
+          margin={{ horizontal: 'small' }}
           dropContent={
             <Box>
               <Button
@@ -322,7 +324,12 @@ const SnapshotHeader = React.memo(
                 hoverIndicator="background"
                 href={url}
               >
-                <Box margin={{ vertical: 'small', horizontal: 'medium' }} direction="row" align="center" gap="small">
+                <Box
+                  margin={{ vertical: 'small', horizontal: 'medium' }}
+                  direction="row"
+                  align="center"
+                  gap="small"
+                >
                   <History />
                   <Text size="small">View snapshot history</Text>
                 </Box>
@@ -332,7 +339,7 @@ const SnapshotHeader = React.memo(
           open={dropOpen}
           onClose={() => setDropOpen(false)}
           onOpen={() => setDropOpen(true)}
-          dropAlign={{top: "bottom", left: "left"}}
+          dropAlign={{ top: 'bottom', left: 'left' }}
         >
           <Box align="center">
             <Ellipsis />

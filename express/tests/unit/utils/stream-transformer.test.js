@@ -17,16 +17,33 @@ describe('stream transformer', () => {
     project = await createProject('yay', organization.id);
     build = await createBuild('master', project);
     const buildAssets = [
-      await createBuildAsset('path/to/file.js', 'http://basset.io/baseUrl/assets/file.js', build, project),
-      await createBuildAsset('different/path/to/file.css', 'http://basset.io/baseUrl/assets/file.css', build, project),
-      await createBuildAsset('another/path/to/file.png', 'http://basset.io/baseUrl/assets/file.png', build, project),
+      await createBuildAsset(
+        'path/to/file.js',
+        'http://basset.io/baseUrl/assets/file.js',
+        build,
+        project,
+      ),
+      await createBuildAsset(
+        'different/path/to/file.css',
+        'http://basset.io/baseUrl/assets/file.css',
+        build,
+        project,
+      ),
+      await createBuildAsset(
+        'another/path/to/file.png',
+        'http://basset.io/baseUrl/assets/file.png',
+        build,
+        project,
+      ),
     ];
     assets = buildAssets.map(buildAsset => ({
       relativePath: buildAsset.relativePath,
       sha: buildAsset.asset.sha,
     }));
     baseUrl = 'http://basset.io/baseUrl/assets';
-    assetPath = assets.map(asset => getAssetsPath(asset.relativePath,asset.sha));
+    assetPath = assets.map(asset =>
+      getAssetsPath(asset.relativePath, asset.sha),
+    );
   });
 
   test('replaceUrl', async () => {
@@ -34,9 +51,7 @@ describe('stream transformer', () => {
     jest.spyOn(str.__proto__, 'replace');
 
     let newStr = transform.replaceUrl(assets, str, baseUrl, '');
-    expect(newStr).toBe(
-      `background-image: url(${baseUrl}/${assetPath[1]})`,
-    );
+    expect(newStr).toBe(`background-image: url(${baseUrl}/${assetPath[1]})`);
     expect(str.replace).toHaveBeenCalled();
   });
 
@@ -60,7 +75,13 @@ describe('stream transformer', () => {
       const data = await readStream(returnedStream);
 
       expect(data).toBe(
-        `<html><head><link rel="stylesheet" href="${baseUrl}/${assetPath[1]}"><script src="${baseUrl}/${assetPath[0]}"></script></head><body><img src="${baseUrl}/${assetPath[2]}"></body></html>`,
+        `<html><head><link rel="stylesheet" href="${baseUrl}/${
+          assetPath[1]
+        }"><script src="${baseUrl}/${
+          assetPath[0]
+        }"></script></head><body><img src="${baseUrl}/${
+          assetPath[2]
+        }"></body></html>`,
       );
     });
     it('should not replace urls that start with http or https', async () => {
@@ -73,7 +94,9 @@ describe('stream transformer', () => {
       stream.pipe(returnedStream);
       const data = await readStream(returnedStream);
       expect(data).toBe(
-        `<html><head><link rel="stylesheet" href="http://basset.io/asset/different/path/to/file.css"></head><body><img src="${baseUrl}/${assetPath[2]}"></body></html>`,
+        `<html><head><link rel="stylesheet" href="http://basset.io/asset/different/path/to/file.css"></head><body><img src="${baseUrl}/${
+          assetPath[2]
+        }"></body></html>`,
       );
     });
     it('should not replace urls that it does not have an asset for', async () => {
@@ -87,7 +110,9 @@ describe('stream transformer', () => {
       stream.pipe(returnedStream);
       const data = await readStream(returnedStream);
       expect(data).toBe(
-        `<html><head><link rel="stylesheet" href="some/different/path/to/file.css"></head><body><img src="${baseUrl}/${assetPath[2]}"></body></html>`,
+        `<html><head><link rel="stylesheet" href="some/different/path/to/file.css"></head><body><img src="${baseUrl}/${
+          assetPath[2]
+        }"></body></html>`,
       );
     });
     it('should replace urls in style tags', async () => {
@@ -101,7 +126,11 @@ describe('stream transformer', () => {
       stream.pipe(returnedStream);
       const data = await readStream(returnedStream);
       expect(data).toBe(
-        `<html><head><style>body { background-image: url(${baseUrl}/${assetPath[0]}); } div { background-image: url(${baseUrl}/${assetPath[1]}); }</style></head><body><div>Test</div></body></html>`,
+        `<html><head><style>body { background-image: url(${baseUrl}/${
+          assetPath[0]
+        }); } div { background-image: url(${baseUrl}/${
+          assetPath[1]
+        }); }</style></head><body><div>Test</div></body></html>`,
       );
     });
     it('should not modify elements who do not have the attribute', async () => {
@@ -117,7 +146,7 @@ describe('stream transformer', () => {
       expect(data).toBe(
         `<html><head><link hef="broke" /><script>console.log('test');</script><body><div>Test</div><img scr="whoops"/></body></html>`,
       );
-    })
+    });
   });
 
   test('transformCSS', async () => {
@@ -130,31 +159,55 @@ describe('stream transformer', () => {
     stream.pipe(returnedStream);
     const data = await readStream(returnedStream);
     expect(data).toBe(
-      `body { background-image: url(${baseUrl}/${assetPath[0]}); } div { background-image: url(${baseUrl}/${assetPath[1]}); } p { background-image: url(http://basset.io/assets/image.img); }`,
+      `body { background-image: url(${baseUrl}/${
+        assetPath[0]
+      }); } div { background-image: url(${baseUrl}/${
+        assetPath[1]
+      }); } p { background-image: url(http://basset.io/assets/image.img); }`,
     );
   });
   test('transformCSS uses a currentPath to check for nested assets', async () => {
     const otherBuildAssets = [
-      await createBuildAsset('path/to/dir/with/file.js', 'http://basset.io/baseUrl/assets/file.js', build, project),
-      await createBuildAsset('path/to/dir/with/file.css', 'http://basset.io/baseUrl/assets/file.css', build, project),
+      await createBuildAsset(
+        'path/to/dir/with/file.js',
+        'http://basset.io/baseUrl/assets/file.js',
+        build,
+        project,
+      ),
+      await createBuildAsset(
+        'path/to/dir/with/file.css',
+        'http://basset.io/baseUrl/assets/file.css',
+        build,
+        project,
+      ),
     ];
     otherAssets = otherBuildAssets.map(buildAsset => ({
       relativePath: buildAsset.relativePath,
       sha: buildAsset.asset.sha,
     }));
-    otherAssetPath = otherAssets.map(asset => getAssetsPath(asset.relativePath,asset.sha));
+    otherAssetPath = otherAssets.map(asset =>
+      getAssetsPath(asset.relativePath, asset.sha),
+    );
     const stream = new Readable();
     stream.push(
       `body { background-image: url("file.js"); } div { background-image: url(file.css); } p { background-image: url(http://basset.io/assets/image.img); }`,
     );
     stream.push(null);
-    const returnedStream = transform.transformCSS(otherAssets, baseUrl, 'path/to/dir/with');
+    const returnedStream = transform.transformCSS(
+      otherAssets,
+      baseUrl,
+      'path/to/dir/with',
+    );
     stream.pipe(returnedStream);
     const data = await readStream(returnedStream);
     expect(data).toBe(
-      `body { background-image: url(${baseUrl}/${otherAssetPath[0]}); } div { background-image: url(${baseUrl}/${otherAssetPath[1]}); } p { background-image: url(http://basset.io/assets/image.img); }`,
+      `body { background-image: url(${baseUrl}/${
+        otherAssetPath[0]
+      }); } div { background-image: url(${baseUrl}/${
+        otherAssetPath[1]
+      }); } p { background-image: url(http://basset.io/assets/image.img); }`,
     );
-  })
+  });
 });
 
 const readStream = stream => {

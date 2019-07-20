@@ -5,9 +5,7 @@ import { Box, Button, Form, FormField } from 'grommet';
 
 import ApolloClient from '../../../graphql/client.js';
 import SnapshotsQuery from '../../../graphql/query/getSnapshots.js';
-import {
-  getIsApproving,
-} from '../../../redux/snapshots/selectors.js';
+import { getIsApproving } from '../../../redux/snapshots/selectors.js';
 import {
   showSnapshot,
   approveSnapshot,
@@ -79,42 +77,42 @@ class SnapshotsSearch extends React.PureComponent {
   render() {
     return (
       <React.Fragment>
-      <Box margin={{ vertical: 'small' }} alignSelf="end">
-        {this.state.error && (
-          <Notification
-            type="error"
-            error={this.state.error}
-            message="There was an error searching"
-          />
-        )}
-        <Form onSubmit={this.handleSearch}>
-          <Box direction="row" align="center" width="medium">
-            <Box flex>
-              <FormField
-                data-test-id="search-input"
-                size="small"
-                label="Search for snapshots title"
-                value={this.state.searchTitle}
-                onChange={this.handleChangeSearchTitle}
-              />
+        <Box margin={{ vertical: 'small' }} alignSelf="end">
+          {this.state.error && (
+            <Notification
+              type="error"
+              error={this.state.error}
+              message="There was an error searching"
+            />
+          )}
+          <Form onSubmit={this.handleSearch}>
+            <Box direction="row" align="center" width="medium">
+              <Box flex>
+                <FormField
+                  data-test-id="search-input"
+                  size="small"
+                  label="Search for snapshots title"
+                  value={this.state.searchTitle}
+                  onChange={this.handleChangeSearchTitle}
+                />
+              </Box>
+              <Box>
+                <Button
+                  data-test-id="submit-search"
+                  size="small"
+                  type="submit"
+                  label="Search"
+                  disabled={this.state.isSearching}
+                />
+              </Box>
             </Box>
-            <Box>
-              <Button
-                data-test-id="submit-search"
-                size="small"
-                type="submit"
-                label="Search"
-                disabled={this.state.isSearching}
-              />
-            </Box>
-          </Box>
-        </Form>
-      </Box>
-      <FoundSnapshots
-        foundSnapshots={this.state.foundSnapshots}
-        onClearSearchResults={this.handleClearSearchResults}
-        isSearching={this.state.isSearching}
-      />
+          </Form>
+        </Box>
+        <FoundSnapshots
+          foundSnapshots={this.state.foundSnapshots}
+          onClearSearchResults={this.handleClearSearchResults}
+          isSearching={this.state.isSearching}
+        />
       </React.Fragment>
     );
   }

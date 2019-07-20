@@ -102,7 +102,7 @@ class Build extends BaseModel {
     }
   }
 
-  async getPreviousBuild({project = null, compareBranch = null} = {}) {
+  async getPreviousBuild({ project = null, compareBranch = null } = {}) {
     if (!project) {
       project = await this.$relatedQuery('project');
     }
@@ -139,7 +139,9 @@ class Build extends BaseModel {
       .first();
 
     if (isPR) {
-      baseBuild = await baseQuery.clone().where('branch', compareBranch || this.branch);
+      baseBuild = await baseQuery
+        .clone()
+        .where('branch', compareBranch || this.branch);
 
       if (!baseBuild && baseSHA) {
         baseBuild = await baseQuery.clone().where('commitSha', baseSHA);
@@ -151,7 +153,9 @@ class Build extends BaseModel {
         .where('branch', compareBranch || project.defaultBranch);
     }
     if (!baseBuild && !isPR) {
-      baseBuild = await baseQuery.clone().where('branch', compareBranch || this.branch);
+      baseBuild = await baseQuery
+        .clone()
+        .where('branch', compareBranch || this.branch);
     }
 
     return baseBuild;

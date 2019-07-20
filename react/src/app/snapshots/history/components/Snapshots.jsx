@@ -77,11 +77,15 @@ export const Snapshots = ({ snapshots }) => {
         </Box>
       </Box>
       <Box direction="column" width="xlarge" alignSelf="center">
-        <Box align="center" margin="small" direction="row" justify="between" wrap>
+        <Box
+          align="center"
+          margin="small"
+          direction="row"
+          justify="between"
+          wrap
+        >
           <Box wrap>
-            <Text>
-              {snapshot.title}
-            </Text>
+            <Text>{snapshot.title}</Text>
           </Box>
           <Box wrap>
             <Text>
@@ -97,7 +101,10 @@ export const Snapshots = ({ snapshots }) => {
         </Box>
         <ImageBox style={{ position: 'relative' }}>
           <ImageDiv imageLocation={snapshot.imageLocation}>
-            <ImageComponent data-test-id="snapshot-image" src={snapshot.imageLocation} />
+            <ImageComponent
+              data-test-id="snapshot-image"
+              src={snapshot.imageLocation}
+            />
           </ImageDiv>
         </ImageBox>
       </Box>

@@ -66,7 +66,9 @@ class Snapshots {
   }
 
   async submit() {
-    const basset = new Basset(process.env.BASSET_TOKEN, 'static', BASSET_URL);
+    const basset = new Basset(process.env.BASSET_TOKEN, 'static', BASSET_URL, {
+      ignoreExtensions: '.js,.map',
+    });
     const snapshots = await this.getSnapshots();
     console.log('Submitting build');
     await basset.buildStart();

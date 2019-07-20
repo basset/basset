@@ -17,7 +17,7 @@ export class Login extends React.PureComponent {
 
   static defaultProps = {
     redirect: null,
-  }
+  };
 
   state = {
     email: '',

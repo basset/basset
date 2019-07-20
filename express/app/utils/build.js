@@ -71,7 +71,7 @@ const checkBuild = async (req, res, next) => {
   const assets = buildAssets.map(buildAsset => ({
     relativePath: buildAsset.relativePath,
     sha: buildAsset.asset.sha,
-  }))
+  }));
 
   req.locals = {
     build,

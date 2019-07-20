@@ -1,4 +1,3 @@
-
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('build_asset', table => {
     table
@@ -24,9 +23,9 @@ exports.up = function(knex, Promise) {
       .index()
       .references('organization.id')
       .onDelete('CASCADE');
-  })
+  });
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('build_asset')
+  return knex.schema.dropTable('build_asset');
 };

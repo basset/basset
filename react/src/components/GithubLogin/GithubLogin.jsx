@@ -4,7 +4,7 @@ import { Button, Heading } from 'grommet';
 import { Github } from 'grommet-icons';
 
 const GithubLogin = ({ label, multiple, redirect }) => {
-  let href = "/oauth/github";
+  let href = '/oauth/github';
   if (redirect) {
     href = `${href}?redirect=${redirect}`;
   }
@@ -38,5 +38,5 @@ GithubLogin.propTypes = {
 };
 GithubLogin.defaultProps = {
   redirect: null,
-}
+};
 export default GithubLogin;

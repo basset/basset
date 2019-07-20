@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Flake = ({ size, color="#666666" }) => {
+const Flake = ({ size, color = '#666666' }) => {
   return (
     <svg
       version="1.1"

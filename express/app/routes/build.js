@@ -34,8 +34,8 @@ router.post('/start', async (req, res) => {
   let build = Build.fromJson(data);
 
   const compareBranch = req.body.compareBranch || null;
-  console.log(compareBranch)
-  const baseBuild = await build.getPreviousBuild({project, compareBranch});
+  console.log(compareBranch);
+  const baseBuild = await build.getPreviousBuild({ project, compareBranch });
   let missingAssets = [];
 
   if (baseBuild) {

@@ -3,12 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Box, Button, Text, Heading } from 'grommet';
 
-import {
-  getIsApproving,
-} from '../../../redux/snapshots/selectors.js';
-import {
-  approveAllSnapshots,
-} from '../../../redux/snapshots/actions.js';
+import { getIsApproving } from '../../../redux/snapshots/selectors.js';
+import { approveAllSnapshots } from '../../../redux/snapshots/actions.js';
 
 import StickyBox from '../../../components/StickyBox/StickyBox.jsx';
 
@@ -55,17 +51,19 @@ class SnapshotType extends React.PureComponent {
           <Heading level={4}>
             <Box direction="row" gap="small">
               <Text>
-                {this.props.typeName} <Text color="dark-3">{this.props.countText}</Text>
+                {this.props.typeName}{' '}
+                <Text color="dark-3">{this.props.countText}</Text>
               </Text>
             </Box>
           </Heading>
-          <Box flex>{this.props.type === 'modified' && this.renderApproveAll()}</Box>
+          <Box flex>
+            {this.props.type === 'modified' && this.renderApproveAll()}
+          </Box>
         </Box>
       </StickyBox>
     );
   }
 }
-
 
 const mapState = state => {
   return {
