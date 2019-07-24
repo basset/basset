@@ -9,9 +9,9 @@ Here is a list of environmental variables Basset uses:
 
 | Name | Description |
 | ---|---|
-| `OUTH_GITHUB` | set to 1 to enable Github integration |
-| `OAUTH_GITHUB_CLIENT_ID` | your Github Client ID |
-| `OAUTH_GITHUB_CLIENT_SECRET` | your Github Client Secret |
+| `OUTH_GITHUB` | set to 1 to enable GitHub integration |
+| `OAUTH_GITHUB_CLIENT_ID` | your GitHub Client ID |
+| `OAUTH_GITHUB_CLIENT_SECRET` | your GitHub Client Secret |
 | `MAIL_HOST` | the host used to send user emails |
 | `MAIL_PORT` | the port used to connect to the host |
 | `MAIL_EMAIL` | the email address used to send emails from |
@@ -40,9 +40,9 @@ Here is a list of environmental variables Basset uses:
 | Name | Description |
 | ---|---|
 | `BASSET_URL` | URL for the web service |
-| `S3_ENDPOINT` | endpoint for s3 |
-| `AWS_ACCESS_KEY_ID` | access key for aws |
-| `AWS_SECRET_ACCESS_KEY` | secret key for aws |
+| `S3_ENDPOINT` | endpoint for S3 |
+| `AWS_ACCESS_KEY_ID` | access key for AWS |
+| `AWS_SECRET_ACCESS_KEY` | secret key for AWS |
 | `SCREENSHOT_BUCKET` | bucket for storing screenshots |
 | `ASSETS_BUCKET` | bucket for storing files that are rendered |
 | `SQS_BUILD_QUEUE_URL` | SQS URL for build snapshots |
