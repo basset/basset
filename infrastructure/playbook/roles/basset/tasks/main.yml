@@ -147,7 +147,7 @@
 
 - name: install basset
   unarchive:
-    src: /home/basset/dev/basset/express/app.zip
+    src: app.zip
     dest: /var/basset
     owner: ubuntu
     group: ubuntu
@@ -174,7 +174,7 @@
 
 - name: Move restore db
   copy:
-    src: /home/basset/dev/basset/basset.sql
+    src: basset.sql
     dest: /home/ubuntu/basset.dump.sql
     owner: postgres
     group: postgres

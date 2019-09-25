@@ -7,7 +7,7 @@ title: Installation
 2. Navigate to the `react` folder and run:
 
     ```shell-session
-    npm install --production
+    npm install
     npm run build
     cp dist/* ../express/static/dist/
     ```
