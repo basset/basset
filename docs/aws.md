@@ -37,6 +37,7 @@ The following infrastructure is required to run basset on AWS:
 
 6. Update the file at `infrastructure/terraform/userdata.tpl` which will be used to set the environment [variables](environmental-variables.md) for the ec2 instance.
 7. Update the file at  `infrastructure/terraform/terraform.tfvars`
+   > Be sure to update `zone` and `domain_name` as the default values will not work
 8. Navigate to the `infrastructure/terraform` folder and run:
 
     ```shell-session
