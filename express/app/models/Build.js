@@ -162,6 +162,9 @@ class Build extends BaseModel {
   }
 
   async compareSnapshots() {
+    if (!this.project) {
+      this.project = await this.$relatedQuery('project');
+    }
     await this.$query().update({
       submittedAt: Build.knex().fn.now(),
     });
@@ -193,6 +196,7 @@ class Build extends BaseModel {
       }
       const messageData = {
         id: snapshot.id,
+        type: this.project.type,
         title: snapshot.title,
         sourceLocation: snapshot.sourceLocation,
         hideSelectors: snapshot.hideSelectors,

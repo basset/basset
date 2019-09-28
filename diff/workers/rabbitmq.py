@@ -45,6 +45,7 @@ def setup_queue(task):
 
 def run_task(body):
     data = json.loads(body, encoding='utf-8')
+    project_type = data['type']
     snapshot_id = data['id']
     source_location = data['sourceLocation']
     organization_id = data['organizationId']
@@ -58,23 +59,29 @@ def run_task(body):
     compare_snapshot = data.get('compareSnapshot', None)
     flake_sha_list = data.get('flakeShas', [])
 
-    save_snapshot = compare_snapshot == None
-
-    snapshop_image, image_location = render_snapshot(
-        source_location,
-        organization_id,
-        project_id,
-        build_id,
-        title,
-        width,
-        browser,
-        selector,
-        hide_selectors,
-        save_snapshot
-    )
-    message = {
-        'id': data['id'],
+    message_data = {
+        'id': snapshot_id,
     }
+
+    if project_type == PROJECT_TYPE.WEB:
+        save_snapshot = compare_snapshot == None
+        snapshop_image, image_location = render_snapshot(
+            source_location,
+            organization_id,
+            project_id,
+            build_id,
+            title,
+            width,
+            browser,
+            selector,
+            hide_selectors,
+            save_snapshot
+        )
+        message_data['imageLocation'] = image_location
+
+    if project_type == PROJECT_TYPE.IMAGE:
+        image_location = source_location
+
     if data.get('compareSnapshot'):
         diff_location, difference, image_location, diff_sha, flake_matched = diff_snapshot(
             snapshop_image,
@@ -96,7 +103,6 @@ def run_task(body):
         message['difference'] = not flake_matched and difference > 0.1
         message['flakeMatched'] = flake_matched
 
-    message['imageLocation'] = image_location
     send_message(message)
 
 

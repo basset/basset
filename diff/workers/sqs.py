@@ -6,6 +6,7 @@ from diff.diff import diff_snapshot
 from render.snapshot import render_snapshot, finished
 from utils.send_message import send_message
 from utils.settings import *
+from utils.enum import PROJECT_TYPE
 
 
 sqs = boto3.resource('sqs')
@@ -25,6 +26,7 @@ while len(messages) > 0:
 		data = json.loads(message.body, encoding='utf-8')
 
 		snapshot_id = data['id']
+		project_type = data['type']
 		source_location = data['sourceLocation']
 		organization_id = data['organizationId']
 		project_id = data['projectId']
@@ -38,24 +40,30 @@ while len(messages) > 0:
 		flake_sha_list = data.get('flakeShas', [])
 
 		try:
-			save_snapshot = compare_snapshot == None
-
-			snapshop_image, image_location = render_snapshot(
-				source_location,
-				organization_id,
-				project_id,
-				build_id,
-				title,
-				width,
-				browser,
-				selector,
-				hide_selectors,
-				save_snapshot
-			)
-
-			message_data = {
+            message_data = {
 				'id': snapshot_id,
 			}
+
+			if project_type == PROJECT_TYPE.WEB:
+			    save_snapshot = compare_snapshot == None
+                snapshop_image, image_location = render_snapshot(
+                    source_location,
+                    organization_id,
+                    project_id,
+                    build_id,
+                    title,
+                    width,
+                    browser,
+                    selector,
+                    hide_selectors,
+                    save_snapshot
+                )
+                message_data['imageLocation'] = image_location
+
+            if project_type == PROJECT_TYPE.IMAGE:
+                image_location = source_location
+
+
 			if compare_snapshot:
 				diff_location, difference, image_location, diff_hash, flake_matched = diff_snapshot(
 					snapshop_image,
@@ -77,8 +85,6 @@ while len(messages) > 0:
 				message_data['diffSha'] = diff_hash
 				message_data['difference'] = not flake_matched and difference > 0.1
 				message_data['flakeMatched'] = flake_matched
-
-			message_data['imageLocation'] = image_location
 
 			send_message(message_data)
 
