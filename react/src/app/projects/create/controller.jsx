@@ -105,7 +105,7 @@ export class CreateProject extends React.PureComponent {
 
   handleChangeType = event => {
     const { value } = event;
-    const type = projectOptions.find(o => o.value === value.value)
+    const type = projectTypeOptions.find(o => o.value === value.value)
     this.setState(state => ({
       ...state,
       type,

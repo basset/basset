@@ -56,19 +56,20 @@ export default class CreateProject extends React.PureComponent {
             onChange={this.props.onChangeName}
             error={this.props.nameError}
           />
-          <FormField
-            label="Type"
-            name="type"
-            help="Value cannot be changed after creation"
-          >
-            <Select
-              value={this.props.type}
-              options={this.props.projectTypes}
-              onChange={this.props.onChangeType}
-              labelKey="label"
-              valueKey="value"
+          <Box margin={{horizontal: 'small'}}>
+            <Text margin={{bottom: 'xsmall'}}>Type</Text>
+            <Text margin={{bottom: 'small'}} color="dark-3">Value cannot be changed after creation</Text>
+          </Box>
+          <Box margin={{bottom: 'medium'}}>
+          <Select
+            data-test-id="create-project-type-select"
+            value={this.props.type}
+            options={this.props.projectTypes}
+            onChange={this.props.onChangeType}
+            labelKey="label"
+            valueKey="value"
             />
-          </FormField>
+          </Box>
           <Button
             data-test-id="create-project-submit"
             type="submit"
