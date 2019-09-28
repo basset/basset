@@ -43,6 +43,11 @@ jest.mock('../../../app/utils/upload', () => {
         return (req, res, next) => next(req, res);
       },
     },
+    uploadScreenshot: {
+      single: () => {
+        return (req, res, next) => next(req, res);
+      }
+    },
     deleteFile: jest.fn(),
   };
 });
@@ -301,7 +306,7 @@ describe('build routes', () => {
   });
 
   describe('/upload/snapshot', () => {
-    let req;
+    let req, cb = express.routes['/upload/snapshot'][3], funcNumber = 3;
     beforeEach(async () => {
       jest.clearAllMocks();
       await build.$relatedQuery('snapshots').delete();
@@ -322,7 +327,7 @@ describe('build routes', () => {
       };
     });
     it('should create a snapshot', async () => {
-      await express.routes['/upload/snapshot'][2](req, res);
+      await express.routes['/upload/snapshot'][funcNumber](req, res, cb);
       expect(res.json).toHaveBeenCalledWith({ uploaded: true });
       const snapshots = await build.$relatedQuery('snapshots');
       expect(snapshots).toHaveLength(1);
@@ -330,7 +335,7 @@ describe('build routes', () => {
     });
     it('should set the browsers', async () => {
       req.body.browsers = 'firefox, chrome, ignore';
-      await express.routes['/upload/snapshot'][2](req, res);
+      await express.routes['/upload/snapshot'][funcNumber](req, res, cb);
       expect(res.json).toHaveBeenCalledWith({ uploaded: true });
       const snapshots = await build.$relatedQuery('snapshots');
       expect(snapshots).toHaveLength(2);
@@ -343,7 +348,7 @@ describe('build routes', () => {
     });
     it('should set the widths', async () => {
       req.body.widths = '720, 360';
-      await express.routes['/upload/snapshot'][2](req, res);
+      await express.routes['/upload/snapshot'][funcNumber](req, res, cb);
       expect(res.json).toHaveBeenCalledWith({ uploaded: true });
       const snapshots = await build.$relatedQuery('snapshots');
       expect(snapshots).toHaveLength(2);
@@ -356,7 +361,7 @@ describe('build routes', () => {
     });
     it('should set the selectors', async () => {
       req.body.selectors = '.stuff, .tester';
-      await express.routes['/upload/snapshot'][2](req, res);
+      await express.routes['/upload/snapshot'][funcNumber](req, res, cb);
       expect(res.json).toHaveBeenCalledWith({ uploaded: true });
       const snapshots = await build.$relatedQuery('snapshots');
       expect(snapshots).toHaveLength(2);
@@ -369,7 +374,7 @@ describe('build routes', () => {
     });
     it('should set the hide selectors', async () => {
       req.body.hideSelectors = '.hide-me, .or-me';
-      await express.routes['/upload/snapshot'][2](req, res);
+      await express.routes['/upload/snapshot'][funcNumber](req, res, cb);
       expect(res.json).toHaveBeenCalledWith({ uploaded: true });
       const snapshots = await build.$relatedQuery('snapshots');
       expect(snapshots).toHaveLength(1);
@@ -401,13 +406,6 @@ describe('build routes', () => {
       await express.routes['/upload/snapshot'][2](req, res);
       expect(res.json).toHaveBeenCalledWith({ error: 'Invalid headers' });
       expect(res.status).toHaveBeenCalledWith(403);
-    });
-    test('403 build null', async () => {
-      req.locals.build = null;
-      req.headers['x-sha'] = 'sha1';
-      await express.routes['/upload/snapshot'][2](req, res);
-      expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Invalid build' });
     });
     test('403 no file', async () => {
       req.locals.build = build;

@@ -139,14 +139,15 @@ router.post(
 
 const checkBody = (type) => (req, res, next) => {
   const title = req.body.title;
+  const noTitle = !req.body.title || req.body.title.trim() === '';
   const sha = req.headers['x-sha'];
   const project = req.locals.build.project;
   const wrongType = project.type !== type;
-  if (!req.file || !title || wrongType) {
+  if (!req.file || noTitle || wrongType) {
     let error = 'Invalid build';
     if (wrongType) {
       error = `This endpoint is only for projects with type: ${type}`;
-    } else if (!title) {
+    } else if (noTitle) {
       error = 'Title must be included';
     }
     if (!req.file) {
@@ -159,9 +160,7 @@ const checkBody = (type) => (req, res, next) => {
   if (!sha) {
     return res.status(403).json({ error: 'Invalid headers'});
   }
-  if (project.type !== type) {
-    return res.status(403)
-  }
+  console.log(title);
   next();
 };
 
@@ -176,7 +175,6 @@ router.post(
     const title = req.body.title;
     const sha = req.headers['x-sha'];
     const relativePath = req.headers['x-relative-path'] || 'base';
-
     let browsers = project.browsers.split(',');
     if (req.body.browsers && req.body.browsers.trim() !== '') {
       browsers = req.body.browsers
@@ -205,7 +203,6 @@ router.post(
         selectors = [''];
       }
     }
-
     try {
       await Snapshot.createSnapshots({
         build,
@@ -216,7 +213,6 @@ router.post(
         hideSelectors,
         selectors,
         sourceLocation: req.file.location,
-        selector,
         sha,
       });
     } catch (error) {
@@ -241,13 +237,12 @@ router.post(
       await Snapshot.createSnapshots({
         build,
         title,
-        widths: '',
-        browsers: '',
+        widths: [''],
+        browsers: [''],
         relativePath: '',
         hideSelectors: '',
-        selectors: '',
+        selectors: [''],
         imageLocation: req.file.location,
-        selector: '',
         sha,
       });
     } catch (error) {

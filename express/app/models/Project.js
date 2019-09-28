@@ -9,10 +9,12 @@ class Project extends BaseModel {
     return super.$beforeInsert(queryContext);
   }
 
-  static TYPE = {
-    WEB: 'web',
-    IMAGE: 'image',
-  };
+  static get TYPE() {
+    return {
+      WEB: 'web',
+      IMAGE: 'image',
+    };
+  }
 
   static get allowedBrowsers() {
     return ['firefox', 'chrome'];

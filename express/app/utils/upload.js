@@ -97,7 +97,7 @@ const uploadScreenshot = multer({
     s3,
     bucket: settings.s3.assetsBucket,
     key: getScreenshotKey,
-  })
+  }),
 });
 
 const getAssetContentType = (req, file, cb) => {
