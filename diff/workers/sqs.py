@@ -2,7 +2,7 @@ import boto3
 import json
 import traceback
 
-from diff.diff import diff_snapshot
+from diff.diff import diff_snapshot, get_image
 from render.snapshot import render_snapshot, finished
 from utils.send_message import send_message
 from utils.settings import *
@@ -44,9 +44,9 @@ while len(messages) > 0:
 				'id': snapshot_id,
 			}
 
-			if project_type == PROJECT_TYPE.WEB:
+			if project_type == PROJECT_TYPE.WEB.value:
 			    save_snapshot = compare_snapshot == None
-                snapshop_image, image_location = render_snapshot(
+                snapshot_image, image_location = render_snapshot(
                     source_location,
                     organization_id,
                     project_id,
@@ -58,15 +58,14 @@ while len(messages) > 0:
                     hide_selectors,
                     save_snapshot
                 )
-                message_data['imageLocation'] = image_location
 
-            if project_type == PROJECT_TYPE.IMAGE:
+            if project_type == PROJECT_TYPE.IMAGE.value:
                 image_location = source_location
-
+                snapshot_image = get_image(source_location)
 
 			if compare_snapshot:
 				diff_location, difference, image_location, diff_hash, flake_matched = diff_snapshot(
-					snapshop_image,
+					snapshot_image,
 					organization_id,
 					project_id,
 					build_id,
@@ -86,6 +85,7 @@ while len(messages) > 0:
 				message_data['difference'] = not flake_matched and difference > 0.1
 				message_data['flakeMatched'] = flake_matched
 
+            message_data['imageLocation'] = image_location
 			send_message(message_data)
 
 			message.delete()

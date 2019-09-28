@@ -3,10 +3,11 @@ import json
 
 from retry import retry
 
-from diff.diff import diff_snapshot
+from diff.diff import diff_snapshot, get_image
 from render.snapshot import render_snapshot
 from utils.send_message import send_message
 from utils.settings import *
+from utils.enum import PROJECT_TYPE
 
 
 def setup_queue(task):
@@ -59,13 +60,13 @@ def run_task(body):
     compare_snapshot = data.get('compareSnapshot', None)
     flake_sha_list = data.get('flakeShas', [])
 
-    message_data = {
+    message = {
         'id': snapshot_id,
     }
 
-    if project_type == PROJECT_TYPE.WEB:
+    if project_type == PROJECT_TYPE.WEB.value:
         save_snapshot = compare_snapshot == None
-        snapshop_image, image_location = render_snapshot(
+        snapshot_image, image_location = render_snapshot(
             source_location,
             organization_id,
             project_id,
@@ -77,14 +78,14 @@ def run_task(body):
             hide_selectors,
             save_snapshot
         )
-        message_data['imageLocation'] = image_location
 
-    if project_type == PROJECT_TYPE.IMAGE:
+    if project_type == PROJECT_TYPE.IMAGE.value:
         image_location = source_location
+        snapshot_image = get_image(source_location)
 
     if data.get('compareSnapshot'):
         diff_location, difference, image_location, diff_sha, flake_matched = diff_snapshot(
-            snapshop_image,
+            snapshot_image,
             organization_id,
             project_id,
             build_id,
@@ -103,6 +104,7 @@ def run_task(body):
         message['difference'] = not flake_matched and difference > 0.1
         message['flakeMatched'] = flake_matched
 
+    message['imageLocation'] = image_location
     send_message(message)
 
 
