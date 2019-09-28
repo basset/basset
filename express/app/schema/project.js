@@ -5,9 +5,15 @@ const { paginateQuery } = require('../utils/graphql/paginate');
 const { getModelLoader, primeLoaders } = require('../utils/graphql/dataloader');
 
 const typeDefs = `
+enum ProjectType {
+  web
+  image
+}
+
 type Project implements Node {
   id: ID!
   name: String
+  type: ProjectType
   key: String
   provider: String
   repoOwner: String
@@ -53,7 +59,7 @@ input ProjectInput {
 extend type Mutation {
   unlinkProviderToProject(id: ID!, provider: String): Project @authField
   linkProviderToProject(id: ID!, provider: String!): Project @authField
-  createProject(name: String!, organizationId: ID!): Project @authField
+  createProject(name: String!, type: ProjectType, organizationId: ID!): Project @authField
   editProject(id: ID!, projectInput: ProjectInput): Project @authField
   deleteProject(id: ID!): Boolean @authField
 }
@@ -86,7 +92,7 @@ const resolvers = {
       getModelLoader(context, Organization).load(project.organizationId),
   },
   Mutation: {
-    createProject: async (object, { name, organizationId }, context, info) => {
+    createProject: async (object, { name, type, organizationId }, context, info) => {
       const { user } = context.req;
 
       const organization = await Organization.authorizationFilter(
@@ -101,6 +107,7 @@ const resolvers = {
       const project = Project.fromJson({
         name,
         organizationId,
+        type,
       });
 
       if (!(await project.canCreate(user))) {

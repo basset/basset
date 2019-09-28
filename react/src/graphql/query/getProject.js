@@ -4,6 +4,7 @@ export default gql`
   query project($id: ID!) {
     project(id: $id) {
       id
+      type
       name
       key
       hasToken

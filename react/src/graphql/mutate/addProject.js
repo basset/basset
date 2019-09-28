@@ -1,10 +1,11 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  mutation createProject($name: String!, $organizationId: ID!) {
-    createProject(name: $name, organizationId: $organizationId) {
+  mutation createProject($name: String!, $type: ProjectType, $organizationId: ID!) {
+    createProject(name: $name, type: $type, organizationId: $organizationId) {
       id
       name
+      type
       key
       hasToken
       provider

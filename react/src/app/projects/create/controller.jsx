@@ -10,6 +10,9 @@ import addProjectMutation from '../../../graphql/mutate/addProject.js';
 import { getCurrentOrganization } from '../../../redux/organizations/selectors.js';
 import { addProject } from '../../../redux/projects/actions.js';
 import { goHome } from '../../../redux/router/actions.js';
+import { projectTypeOptions } from '../helper.js'
+
+
 
 export class CreateProject extends React.PureComponent {
   static propTypes = {
@@ -19,6 +22,7 @@ export class CreateProject extends React.PureComponent {
 
   state = {
     name: '',
+    type: projectTypeOptions[0],
     nameError: '',
     isRequesting: false,
     error: '',
@@ -32,12 +36,13 @@ export class CreateProject extends React.PureComponent {
       error: '',
       requestError: '',
     }));
-    const { name } = this.state;
+    const { name, type } = this.state;
     try {
       const { data } = await ApolloClient.mutate({
         mutation: addProjectMutation,
         variables: {
           name,
+          type: type.value,
           organizationId: this.props.organization.id,
         },
       });
@@ -98,14 +103,26 @@ export class CreateProject extends React.PureComponent {
     }));
   };
 
+  handleChangeType = event => {
+    const { value } = event;
+    const type = projectOptions.find(o => o.value === value.value)
+    this.setState(state => ({
+      ...state,
+      type,
+    }));
+  };
+
   render() {
     return (
       <CreateProjectPage
         error={this.state.error}
         requestError={this.state.requestError}
         name={this.state.name}
+        type={this.state.type}
+        projectTypes={projectTypeOptions}
         nameError={this.state.nameError}
         onChangeName={this.handleChangeName}
+        onChangeType={this.handleChangeType}
         onSubmit={this.handleSubmit}
       />
     );

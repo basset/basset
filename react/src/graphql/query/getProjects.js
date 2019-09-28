@@ -11,6 +11,7 @@ export default gql`
         node {
           id
           name
+          type
           key
           hasToken
           provider
