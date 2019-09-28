@@ -160,7 +160,6 @@ const checkBody = (type) => (req, res, next) => {
   if (!sha) {
     return res.status(403).json({ error: 'Invalid headers'});
   }
-  console.log(title);
   next();
 };
 
