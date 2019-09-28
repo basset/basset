@@ -40,8 +40,6 @@ export default class CreateProject extends React.PureComponent {
   );
 
   render() {
-    console.log(this.props.type)
-    console.log(this.props.projectTypes)
     return (
       <Box fill align="center" justify="center">
         {this.props.requestError && this.renderRequestError()}
