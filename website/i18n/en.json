@@ -23,6 +23,9 @@
       "node-client": {
         "title": "node-client"
       },
+      "python-client": {
+        "title": "python-client"
+      },
       "usage": {
         "title": "Using basset"
       }
