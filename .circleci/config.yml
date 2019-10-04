@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build_and_test_backend:
+  test_backend:
     working_directory: ~/basset/express
     docker:
       - image: circleci/node:10.14.1
@@ -16,47 +16,61 @@ jobs:
         environment:
           POSTGRES_USER: basset
           POSTGRES_DB: bassettest
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: /tmp/test-results/
     steps:
       - checkout:
           path: ~/basset
+      - run: mkdir -p /tmp/test-results/
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
       - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: basset-fe-cache-{{ checksum "package.json" }}
       - run:
           name: install-npm
           command: npm install
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: basset-fe-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run:
           name: Unit test backend
-          command: npm run test:unit -- -i
+          command: npm run test:unit -- -i --reporters=default --reporters=jest-junit
+      - store_test_results:
+          path: /tmp/test-results/
+      - store_artifacts:
+          path: /tmp/test-results/
 
-  build_and_test_frontend:
+  test_frontend:
     working_directory: ~/basset/react
     docker:
       - image: circleci/node:10.14.1
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: /tmp/test-results/
     steps:
       - checkout:
           path: ~/basset
+      - run: mkdir -p /tmp/test-reports
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
       - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: basset-be-cache-{{ checksum "package.json" }}
       - run:
           name: install-npm
           command: npm install
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: basset-be-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
-      - run: npm run test -- -i
+      - run: npm run test -- -i --reporters=default --reporters=jest-junit
+      - store_test_results:
+          path: /tmp/test-results/
+      - store_artifacts:
+          path: /tmp/test-results/
 
-  build_and_test_diff:
+  test_diff:
     working_directory: ~/basset/diff
     docker:
       - image: circleci/python:3.6.7-browsers
@@ -67,16 +81,17 @@ jobs:
     steps:
       - checkout:
           path: ~/basset
+      - run: mkdir -p /tmp/test-reports
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - restore_cache:
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: basset-diff-{{ checksum "Pipfile.lock" }}
       - run:
           command: |
             sudo pip install pipenv
             pipenv install
       - save_cache:
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: basset-diff-{{ checksum "Pipfile.lock" }}
           paths:
             - ".venv"
             - "/usr/local/bin"
@@ -86,13 +101,17 @@ jobs:
             mkdir tests/images/
       - run:
           command: |
-            pipenv run python -m unittest discover tests -v
+            pipenv run python -m pytest --junitxml=/tmp/test-results/junit.xml
+      - store_test_results:
+          path: /tmp/test-results/
+      - store_artifacts:
+          path: /tmp/test-results/
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - build_and_test_backend
-      - build_and_test_frontend
-      - build_and_test_diff
+      - test_backend
+      - test_frontend
+      - test_diff
 
