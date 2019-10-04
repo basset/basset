@@ -1,3 +1,8 @@
+export const PROJECT_TYPES = {
+  WEB: 'web',
+  IMAGE: 'image',
+};
+
 const projectTypes = [
   'web',
   'image',
@@ -5,13 +10,13 @@ const projectTypes = [
 export const projectTypeOptions = [
   {
     label: 'Web application',
-    value:  projectTypes[0],
+    value:  PROJECT_TYPES.WEB,
   },
   {
     label: 'Image (mobile or misc projects)',
-    value: projectTypes[1],
+    value: PROJECT_TYPES.IMAGE,
   }
 ];
 
-export const isWebProject = project => project.type === projectTypes[0];
-export const isImageProject = project => project.type === projectTypes[1];
+export const isWebProject = project => project.type === PROJECT_TYPES.WEB;
+export const isImageProject = project => project.type === PROJECT_TYPES.IMAGE;

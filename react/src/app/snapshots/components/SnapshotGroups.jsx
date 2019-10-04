@@ -28,6 +28,7 @@ import Snapshot from './Snapshot.jsx';
 import SnapshotType from './SnapshotType.jsx';
 import Loader from '../../../components/Loader/Loader.jsx';
 import LoadMoreButton from '../../../components/LoadMoreButton/LoadMoreButton.jsx';
+import {getCurrentProject} from "../../../redux/projects/selectors";
 
 class SnapshotGroups extends React.PureComponent {
   static propTypes = {
@@ -120,6 +121,7 @@ class SnapshotGroups extends React.PureComponent {
                         }
                         onExpand={() => this.props.onExpand(snapshot)}
                         type={this.props.type}
+                        projectType={this.props.projectType}
                         isApproving={this.props.isApproving}
                         active={this.props.currentSnapshotId === snapshot.id}
                         onToggleFlake={() =>
@@ -182,6 +184,7 @@ const mapState = state => {
     pageInfo: getGroupsPageInfo(state),
     canApproveAll: build.approvedSnapshots < build.modifiedSnapshots,
     build,
+    projectType: getCurrentProject(state).type,
     currentSnapshotId: getCurrentSnapshotId(state),
   };
 };

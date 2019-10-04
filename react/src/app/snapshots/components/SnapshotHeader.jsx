@@ -19,6 +19,7 @@ import {
   Multiple,
   History,
 } from 'grommet-icons';
+import { PROJECT_TYPES } from '../../projects/helper.js';
 
 import Tooltip from '../../../components/Tooltip/Tooltip.jsx';
 import Link from '../../../components/Link/Link.jsx';
@@ -70,6 +71,7 @@ const SnapshotHeader = React.memo(
     index,
     view,
     type,
+    projectType,
     isApproving,
     canShrink,
     canExpand,
@@ -310,9 +312,8 @@ const SnapshotHeader = React.memo(
 
     const [dropOpen, setDropOpen] = useState(false);
     const renderDropdownMenu = () => {
-      const url = `/snapshots/history/${snapshot.projectId}/${btoa(
-        snapshot.title,
-      )}/${snapshot.width}/${snapshot.browser}`;
+      let url = `/snapshots/history/${snapshot.projectId}/${btoa(snapshot.title)}/`;
+      url = `${url}${projectType === PROJECT_TYPES.WEB ? `${snapshot.width}/${snapshot.browser}` : 'null/null?image=true'}`;
       return (
         <DropButton
           data-test-id="snapshot-dropdown"
@@ -360,10 +361,14 @@ const SnapshotHeader = React.memo(
       return (
         <Box direction="row" align="center" {...props} wrap>
           {showingMoreThanOne && renderDropdownMenu()}
-          {showingMoreThanOne && getBrowserType(snapshot.browser)}
-          <Box title="width">
-            <Header>{snapshot.width}px</Header>
-          </Box>
+          {projectType === PROJECT_TYPES.WEB && (
+            <React.Fragment>
+              {showingMoreThanOne && getBrowserType(snapshot.browser)}
+              <Box title="width">
+                <Header>{snapshot.width}px</Header>
+              </Box>
+            </React.Fragment>
+          )}
           <Box direction="row" margin={{ right: 'small' }}>
             {renderShrinkButton()}
             {renderExpandButton()}
@@ -416,6 +421,7 @@ SnapshotHeader.propTypes = {
   canExpand: PropTypes.bool.isRequired,
   index: PropTypes.number,
   type: PropTypes.string,
+  projectType: PropTypes.string,
   view: PropTypes.number.isRequired,
   onShrink: PropTypes.func.isRequired,
   onExpand: PropTypes.func.isRequired,
