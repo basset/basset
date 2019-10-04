@@ -16,11 +16,12 @@ jobs:
         environment:
           POSTGRES_USER: basset
           POSTGRES_DB: bassettest
-          JEST_JUNIT_OUTPUT_DIR: /tmp/test-results/
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: /tmp/test-results/
     steps:
       - checkout:
           path: ~/basset
-      - run: mkdir -p /tmp/test-reports
+      - run: mkdir -p /tmp/test-results/
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
@@ -38,11 +39,15 @@ jobs:
           command: npm run test:unit -- -i --reporters=default --reporters=jest-junit
       - store_test_results:
           path: /tmp/test-results/
+      - store_artifacts:
+          path: /tmp/test-results/
 
   build_and_test_frontend:
     working_directory: ~/basset/react
     docker:
       - image: circleci/node:10.14.1
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: /tmp/test-results/
     steps:
       - checkout:
           path: ~/basset
@@ -61,6 +66,8 @@ jobs:
             - ./node_modules
       - run: npm run test -- -i --reporters=default --reporters=jest-junit
       - store_test_results:
+          path: /tmp/test-results/
+      - store_artifacts:
           path: /tmp/test-results/
 
   build_and_test_diff:
@@ -94,8 +101,10 @@ jobs:
             mkdir tests/images/
       - run:
           command: |
-            pipenv run python -m pytest --junitxml=/tmp/test-reports/junit.xml
+            pipenv run python -m pytest --junitxml=/tmp/test-results/junit.xml
       - store_test_results:
+          path: /tmp/test-results/
+      - store_artifacts:
           path: /tmp/test-results/
 
 workflows:
