@@ -36,6 +36,7 @@ type SnapshotDiff implements Node {
   imageLocation: String
   snapshotToId: ID
   snapshotFromId: ID
+  url: String
 }
 type Snapshot implements Node {
   id: ID!
@@ -57,6 +58,7 @@ type Snapshot implements Node {
   snapshotDiff: SnapshotDiff
   snapshotFlake: SnapshotFlake
   snapshotFlakeMatched: SnapshotFlake
+  url: String
 }
 type SnapshotConnection {
   pageInfo: PageInfo!

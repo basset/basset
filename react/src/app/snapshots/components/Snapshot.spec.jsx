@@ -90,8 +90,8 @@ describe('<Snapshot />', () => {
     fireEvent.click(getByTestId('show-original'));
     expect(getAllByTestId('snapshot')).toHaveLength(1);
     expect(queryAllByTestId('snapshot-overlay')).toHaveLength(0);
-    expect(getByTestId('snapshot').getAttribute('src')).toEqual(
-      'previousSnapshot',
+    expect(getByTestId('snapshot').getAttribute('src')).toBe(
+      '/screenshots/2',
     );
   });
   test('show only the new snapshot', () => {
@@ -101,6 +101,6 @@ describe('<Snapshot />', () => {
     fireEvent.click(getByTestId('show-new'));
     expect(getAllByTestId('snapshot')).toHaveLength(1);
     expect(getAllByTestId('snapshot-overlay')).toHaveLength(1);
-    expect(getByTestId('snapshot').getAttribute('src')).toEqual('snapshot');
+    expect(getByTestId('snapshot').getAttribute('src')).toEqual('/screenshots/1');
   });
 });

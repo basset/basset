@@ -32,13 +32,13 @@ const SnapshotImage = ({ snapshot, diff, onToggleDiff }) => {
       <ImageBox border={{ color: 'light-4' }}>
         <Image
           data-test-id="snapshot"
-          src={snapshot.imageLocation}
+          src={`/screenshots/${snapshot.id}`}
           onClick={() => onToggleDiff(snapshot)}
         />
         {diff && snapshot.snapshotDiff && (
           <ImageDiff
             data-test-id="snapshot-overlay"
-            src={snapshot.snapshotDiff.imageLocation}
+            src={`/screenshots/diff/${snapshot.snapshotDiff.id}`}
             onClick={() => onToggleDiff(snapshot)}
           />
         )}

@@ -1,7 +1,6 @@
 export default `
 fragment snapshotFragment on Snapshot {
   id
-  imageLocation
   approved
   approvedOn
   title
@@ -30,12 +29,12 @@ fragment snapshotFragment on Snapshot {
     }
   }
   snapshotDiff {
+    id
     snapshotFromId
     snapshotToId
-    imageLocation
   }
   snapshotFlake {
-    imageLocation
+    id
     ignoredCount
     createdBy {
       user {

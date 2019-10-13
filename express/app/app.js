@@ -126,6 +126,7 @@ app.get(
 );
 
 app.use('/build', require('./routes/build'));
+app.use('/screenshots', require('./routes/screenshot'));
 
 const public_urls = ['/reset*', '/forgot', '/signup', '/login'];
 

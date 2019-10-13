@@ -224,28 +224,28 @@ describe('<SnapshotHistory />', () => {
     const { getByTestId } = renderApp(<SnapshotHistory />);
     const image = getByTestId('snapshot-image');
     const next = getByTestId('next-snapshot');
-    expect(image.getAttribute('src')).toBe(snapshotData[0].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[0].node.id}`);
     next.click();
-    expect(image.getAttribute('src')).toBe(snapshotData[1].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[1].node.id}`);
     next.click();
-    expect(image.getAttribute('src')).toBe(snapshotData[2].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[2].node.id}`);
     next.click();
-    expect(image.getAttribute('src')).toBe(snapshotData[3].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[3].node.id}`);
     next.click();
-    expect(image.getAttribute('src')).toBe(snapshotData[0].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[0].node.id}`);
   });
 
   test('prev button', () => {
     const { getByTestId } = renderApp(<SnapshotHistory />);
     const image = getByTestId('snapshot-image');
     const prev = getByTestId('prev-snapshot');
-    expect(image.getAttribute('src')).toBe(snapshotData[0].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[0].node.id}`);
     prev.click();
-    expect(image.getAttribute('src')).toBe(snapshotData[3].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[3].node.id}`);
     prev.click();
-    expect(image.getAttribute('src')).toBe(snapshotData[2].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[2].node.id}`);
     prev.click();
-    expect(image.getAttribute('src')).toBe(snapshotData[1].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[1].node.id}`);
   });
 
   test('show change over time', async () => {
@@ -253,11 +253,11 @@ describe('<SnapshotHistory />', () => {
     let image = getByTestId('snapshot-image');
     const slideshow = getByTestId('snapshot-slideshow');
     slideshow.click();
-    expect(image.getAttribute('src')).toBe(snapshotData[0].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[0].node.id}`);
     act(() => {
       jest.advanceTimersByTime('2000');
     });
     image = getByTestId('snapshot-image');
-    expect(image.getAttribute('src')).toBe(snapshotData[1].node.imageLocation);
+    expect(image.getAttribute('src')).toBe(`/screenshots/${snapshotData[1].node.id}`);
   });
 });
