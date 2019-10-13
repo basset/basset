@@ -1,6 +1,7 @@
 export default `
 fragment snapshotFragment on Snapshot {
   id
+  url
   approved
   approvedOn
   title
@@ -18,7 +19,7 @@ fragment snapshotFragment on Snapshot {
   }
   previousApproved {
     id
-    imageLocation
+    url
     approved
     approvedOn
     approvedBy {
@@ -30,11 +31,13 @@ fragment snapshotFragment on Snapshot {
   }
   snapshotDiff {
     id
+    url
     snapshotFromId
     snapshotToId
   }
   snapshotFlake {
     id
+    url
     ignoredCount
     createdBy {
       user {

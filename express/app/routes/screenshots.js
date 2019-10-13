@@ -34,12 +34,12 @@ const streamObject = (imageLocation, req, res) => {
 router.get('/diff/:diffId', async (req, res) => {
   const { diffId } = req.params;
   if (!req.isAuthenticated || !req.isAuthenticated() || !req.user) {
-    return res.status(404);
+    return res.send(404);
   }
 
   const snapshotDiff = await SnapshotDiff.query().findById(diffId);
   if (!(await snapshotDiff.canRead(req.user))) {
-    return res.status(404);
+    return res.send(404);
   }
   streamObject(snapshotDiff.imageLocation, req, res);
 });
@@ -47,12 +47,12 @@ router.get('/diff/:diffId', async (req, res) => {
 router.get('/:snapshotId', async (req, res) => {
   const { snapshotId } = req.params;
   if (!req.isAuthenticated || !req.isAuthenticated() || !req.user) {
-    return res.status(404);
+    return res.send(404);
   }
 
   const snapshot = await Snapshot.query().findById(snapshotId);
   if (!(await snapshot.canRead(req.user))) {
-    return res.status(404);
+    return res.send(404);
   }
   streamObject(snapshot.imageLocation, req, res);
 });

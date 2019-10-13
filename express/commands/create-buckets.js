@@ -17,7 +17,7 @@ const putBucketPolicy = util.promisify(s3.putBucketPolicy).bind(s3);
 const deleteBucketPolicy = util.promisify(s3.deleteBucketPolicy).bind(s3);
 
 const assetsBucket = settings.s3.assetsBucket;
-const snapshotsBucket = settings.s3.snapshotsBucket;
+const screenshotBucket = settings.s3.screenshotBucket;
 
 const createBucket = async bucket => {
   try {
@@ -78,7 +78,7 @@ const updatePolicy = async bucket => {
 };
 
 const main = async () => {
-  let findBuckets = [snapshotsBucket, assetsBucket];
+  let findBuckets = [screenshotBucket, assetsBucket];
   //checkBucket(snapshotsBucket);
   //checkBucket(assetsBucket);
   const data = await listBuckets();

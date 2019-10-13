@@ -82,6 +82,8 @@ ENV BASSET_URL bassetUrl
 ENV S3_ENDPOINT s3Url
 ENV SCREENSHOT_BUCKET bucketName
 ENV ASSETS_BUCKET buckName
+# 0 means assets use the s3 url; 1 means assets use the basset site to retrieve them
+ENV PRIVATE_ASSETS 0
 
 ENV AMPQ_HOST amqp://host
 ENV AMPQ_BUILD_QUEUE queue_name

@@ -20,7 +20,7 @@ if (settings.s3.accessKeyId && settings.s3.secretAccessKey) {
 }
 const s3 = new aws.S3(config);
 
-const assetsUrl = `${settings.s3.endpoint}/${settings.s3.assetsBucket}`;
+const assetsUrl = settings.s3.privateAssets ? `/snapshot_source` : `${settings.s3.endpoint}/${settings.s3.assetsBucket}`;
 
 const createBucket = async bucket => {
   try {
@@ -94,7 +94,6 @@ const getAssetContentType = (req, file, cb) => {
     stream = transformer.transformCSS(req.locals.assets, url, currentPath);
     cb(null, mimeType || 'text/plain', file.stream.pipe(stream));
   } else {
-    stream = file.stream;
     cb(null, mimeType || 'text/plain');
   }
 };
