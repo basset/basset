@@ -15,7 +15,7 @@ const replaceUrl = (assets, str, assetsUrl, relativePath) => {
       let url = `url(${assetsUrl}/${getAssetsPath(
         asset.relativePath,
         asset.sha,
-      )}`;
+      )})`;
       if (settings.s3.privateAssets) {
         url = `${url}?token=${settings.token})`
       }

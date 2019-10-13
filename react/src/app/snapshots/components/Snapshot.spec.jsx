@@ -16,7 +16,7 @@ describe('<Snapshot />', () => {
       approved: false,
       browser: 'firefox',
       width: 1280,
-      imageLocation: 'snapshot',
+      url: 'snapshot',
     },
     isApproving: false,
     isExpanded: false,
@@ -32,14 +32,14 @@ describe('<Snapshot />', () => {
     ...PROPS.snapshot,
     snapshotDiff: {
       id: 3,
-      imageLocation: 'snapshotDiff',
+      url: 'snapshotDiff',
     },
   };
   const snapshotWithPrevious = {
     ...snapshotWithDiff,
     previousApproved: {
       id: 2,
-      imageLocation: 'previousSnapshot',
+      url: 'previousSnapshot',
     },
   };
   test('active scrolls into view', () => {
@@ -90,8 +90,8 @@ describe('<Snapshot />', () => {
     fireEvent.click(getByTestId('show-original'));
     expect(getAllByTestId('snapshot')).toHaveLength(1);
     expect(queryAllByTestId('snapshot-overlay')).toHaveLength(0);
-    expect(getByTestId('snapshot').getAttribute('src')).toBe(
-      '/screenshots/2',
+    expect(getByTestId('snapshot').getAttribute('src')).toEqual(
+      'previousSnapshot'
     );
   });
   test('show only the new snapshot', () => {
@@ -101,6 +101,6 @@ describe('<Snapshot />', () => {
     fireEvent.click(getByTestId('show-new'));
     expect(getAllByTestId('snapshot')).toHaveLength(1);
     expect(getAllByTestId('snapshot-overlay')).toHaveLength(1);
-    expect(getByTestId('snapshot').getAttribute('src')).toEqual('/screenshots/1');
+    expect(getByTestId('snapshot').getAttribute('src')).toEqual('snapshot');
   });
 });

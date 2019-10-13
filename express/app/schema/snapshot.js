@@ -365,7 +365,7 @@ const resolvers = {
     url: (snapshotDiff, args, context, info) => settings.s3.privateScreenshots ? `/screenshots/${snapshotDiff.id}` : snapshotDiff.imageLocation,
   },
   SnapshotFlake: {
-    url: (snapshotFlake, args, context, info) => settings.s3.privateScreenshots ?` /screenshots/${snapshotFlake.id}` : snapshotFlake.imageLocation,
+    url: (snapshotFlake, args, context, info) => settings.s3.privateScreenshots ? `/screenshots/${snapshotFlake.id}` : snapshotFlake.imageLocation,
     createdBy: (snapshotFlake, args, context, info) =>
       snapshotFlake.createdById
         ? getModelLoader(context, OrganizationMember).load(
