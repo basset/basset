@@ -89,7 +89,7 @@ jobs:
       - run:
           command: |
             sudo pip install pipenv
-            pipenv install
+            pipenv install -d
       - save_cache:
           key: basset-diff-{{ checksum "Pipfile.lock" }}
           paths:
