@@ -17,7 +17,8 @@ The following infrastructure is required to run basset on AWS:
 
 ## Configure and deploy
 
-1. Ensure your aws credentials are setup
+1. Ensure your aws credentials and region are set up [see packer docs](https://www.packer.io/docs/builders/amazon.html#authentication)
+    > The recommended method is to use environmental variables or [aws-vault](https://github.com/99designs/aws-vault)
 2. Follow step 1 - 2 from [Local installation](installation.md)
 3. Update the file at `infrastructure/packer/vars.json`
    > Modify the file at `infrastructure/playbook/roles/basset/vars/main.yml` if you are restoring from a database dump.
@@ -25,6 +26,7 @@ The following infrastructure is required to run basset on AWS:
 
     ```shell-session
     zip -r --exclude='node_modules/*' app.zip .
+    mv app.zip ../infrastructure/playbook/roles/basset/files/
     ```
 
 5. Navigate to the `infrastructure/packer` folder and run:
@@ -35,9 +37,11 @@ The following infrastructure is required to run basset on AWS:
 
 6. Update the file at `infrastructure/terraform/userdata.tpl` which will be used to set the environment [variables](environmental-variables.md) for the ec2 instance.
 7. Update the file at  `infrastructure/terraform/terraform.tfvars`
+   > Be sure to update `zone` and `domain_name` as the default values will not work
 8. Navigate to the `infrastructure/terraform` folder and run:
 
     ```shell-session
+    terraform init
     terraform plan
     terraform apply
     ```
