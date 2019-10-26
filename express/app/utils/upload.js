@@ -1,4 +1,3 @@
-const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const mime = require('mime-types');
@@ -8,17 +7,7 @@ const uuidv4 = require('uuid/v4');
 const { getAssetsPath } = require('./build');
 const transformer = require('./stream-transformer');
 const settings = require('../settings');
-
-const config = {
-  endpoint: settings.s3.endpoint,
-  s3ForcePathStyle: true, // needed with minio?
-  signatureVersion: 'v4',
-};
-if (settings.s3.accessKeyId && settings.s3.secretAccessKey) {
-  config.accessKeyId = settings.s3.accessKeyId;
-  config.secretAccessKey = settings.s3.secretAccessKey;
-}
-const s3 = new aws.S3(config);
+const s3 = require('../utils/s3config');
 
 const assetsUrl = settings.s3.privateAssets ? `/snapshot_source` : `${settings.s3.endpoint}/${settings.s3.assetsBucket}`;
 

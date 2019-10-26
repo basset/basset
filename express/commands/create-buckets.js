@@ -1,15 +1,7 @@
-var aws = require('aws-sdk');
 const util = require('util');
 
 const settings = require('../app/settings');
-
-const s3 = new aws.S3({
-  accessKeyId: settings.s3.accessKeyId,
-  secretAccessKey: settings.s3.secretAccessKey,
-  endpoint: settings.s3.endpoint,
-  s3ForcePathStyle: true, // needed with minio?
-  signatureVersion: 'v4',
-});
+const s3 = require('../app/utils/s3config');
 
 const listBuckets = util.promisify(s3.listBuckets).bind(s3);
 const getBucketPolicy = util.promisify(s3.getBucketPolicy).bind(s3);

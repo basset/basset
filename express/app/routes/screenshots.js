@@ -1,22 +1,11 @@
 const express = require('express');
-const aws = require('aws-sdk');
 const url = require('url');
 
 const Snapshot = require('../models/Snapshot');
 const SnapshotDiff = require('../models/SnapshotDiff');
 const settings = require('../settings');
-
-const config = {
-  endpoint: settings.s3.endpoint,
-  s3ForcePathStyle: true, // needed with minio?
-  signatureVersion: 'v4',
-};
-if (settings.s3.accessKeyId && settings.s3.secretAccessKey) {
-  config.accessKeyId = settings.s3.accessKeyId;
-  config.secretAccessKey = settings.s3.secretAccessKey;
-}
+const s3 = require('../utils/s3config');
 const router = express.Router();
-const s3 = new aws.S3(config);
 
 const streamObject = (imageLocation, req, res) => {
   const key = url.parse(imageLocation).path.split('/').slice(2).join('/');

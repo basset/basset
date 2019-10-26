@@ -1,20 +1,9 @@
 const express = require('express');
-const aws = require('aws-sdk');
-const url = require('url');
+
+const s3 = require('../utils/s3config');
 const settings = require('../settings');
 
-const config = {
-  endpoint: settings.s3.endpoint,
-  s3ForcePathStyle: true, // needed with minio?
-  signatureVersion: 'v4',
-};
-if (settings.s3.accessKeyId && settings.s3.secretAccessKey) {
-  config.accessKeyId = settings.s3.accessKeyId;
-  config.secretAccessKey = settings.s3.secretAccessKey;
-}
 const router = express.Router();
-const s3 = new aws.S3(config);
-
 
 router.get('*', async (req, res) => {
   const { token } = req.query;
