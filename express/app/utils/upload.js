@@ -70,22 +70,22 @@ const uploadSnapshot = multer({
   }),
 });
 
-const getScreenshotKey = (req, file, cb) => {
+const getImageKey = (req, file, cb) => {
   const build = req.locals.build;
   const randomValue = crypto.randomBytes(16).toString('hex');
   let key = `${build.organizationId}/${build.projectId}/${
     build.id
-  }/screenshots/${randomValue}${path.extname(file.originalname)}`;
+  }/images/${randomValue}${path.extname(file.originalname)}`;
   console.log(`uploading: ${key}`);
 
   cb(null, key);
-}
+};
 
-const uploadScreenshot = multer({
+const uploadImage = multer({
   storage: multerS3({
     s3,
-    bucket: settings.s3.assetsBucket,
-    key: getScreenshotKey,
+    bucket: settings.s3.screenshotBucket,
+    key: getImageKey,
   }),
 });
 
@@ -166,7 +166,7 @@ const copySnapshotDiffToFlake = async (snapshotDiff, snapshot) => {
 module.exports = {
   uploadSnapshot,
   uploadAsset,
-  uploadScreenshot,
+  uploadImage,
   deleteFile,
   checkBucket,
   createBucket,
@@ -174,6 +174,6 @@ module.exports = {
   getAssetKey,
   getSnapshotContentType,
   getSnapshotKey,
-  getScreenshotKey,
+  getImageKey,
   copySnapshotDiffToFlake,
 };

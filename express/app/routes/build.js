@@ -5,7 +5,7 @@ const Project = require('../models/Project');
 const Asset = require('../models/Asset');
 const BuildAsset = require('../models/BuildAsset');
 const Snapshot = require('../models/Snapshot');
-const { uploadSnapshot, uploadAsset, deleteFile, uploadScreenshot } = require('../utils/upload');
+const { uploadSnapshot, uploadAsset, deleteFile, uploadImage } = require('../utils/upload');
 const { verifySignature } = require('../utils/verify-hmac-signature');
 const { checkBuild, getProject, getToken } = require('../utils/build');
 
@@ -224,9 +224,9 @@ router.post(
 );
 
 router.post(
-  '/upload/screenshot',
+  '/upload/image',
   checkBuild,
-  uploadScreenshot.single('screenshot'),
+  uploadImage.single('image'),
   checkBody(Project.TYPE.IMAGE),
   async (req, res) => {
     const build = req.locals.build;

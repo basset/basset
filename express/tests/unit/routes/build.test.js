@@ -43,7 +43,7 @@ jest.mock('../../../app/utils/upload', () => {
         return (req, res, next) => next(req, res);
       },
     },
-    uploadScreenshot: {
+    uploadImage: {
       single: () => {
         return (req, res, next) => next(req, res);
       }
