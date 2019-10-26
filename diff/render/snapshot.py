@@ -1,6 +1,8 @@
 import io
 import uuid
 
+from urllib.parse import urlparse
+
 from utils.s3 import upload_file
 from utils.settings import *
 
@@ -13,13 +15,17 @@ render = Render()
 def render_snapshot(source_location, organization_id, project_id, build_id,
                     title, width, browser, selector, hide_selectors, save_snapshot=True):
     key_path = '{}/{}/{}'.format(organization_id, project_id, build_id)
-
+    if PRIVATE_ASSETS:
+        snapshot_source_key = urlparse(source_location).path.split('/', 2)[2]
+        url = "{}/{}/{}?token={}".format(BASSET_URL, "snapshot_source", snapshot_source_key, TOKEN)
+    else:
+        url = source_location
     if not browser == render.browser and render.browser is not None:
         render.close_browser()
     if not render.is_open:
         render.open_browser(browser)
     try:
-        image = render.render(source_location, width, selector, hide_selectors)
+        image = render.render(url, width, selector, hide_selectors)
     except:
         render.close_browser()
         raise
@@ -33,7 +39,7 @@ def render_snapshot(source_location, organization_id, project_id, build_id,
         key_path, browser, width, file_name)
         upload_file(image_blob, image_key)
         image_location = '{}/{}/{}'.format(S3_ENDPOINT,
-                                        SCREENSHOT_BUCKET, image_key)
+                                           SCREENSHOT_BUCKET, image_key)
     else:
         image_location = None
 

@@ -1,15 +1,7 @@
-var aws = require('aws-sdk');
 const util = require('util');
 
 const settings = require('../app/settings');
-
-const s3 = new aws.S3({
-  accessKeyId: settings.s3.accessKeyId,
-  secretAccessKey: settings.s3.secretAccessKey,
-  endpoint: settings.s3.endpoint,
-  s3ForcePathStyle: true, // needed with minio?
-  signatureVersion: 'v4',
-});
+const s3 = require('../app/utils/s3config');
 
 const listBuckets = util.promisify(s3.listBuckets).bind(s3);
 const getBucketPolicy = util.promisify(s3.getBucketPolicy).bind(s3);
@@ -17,7 +9,7 @@ const putBucketPolicy = util.promisify(s3.putBucketPolicy).bind(s3);
 const deleteBucketPolicy = util.promisify(s3.deleteBucketPolicy).bind(s3);
 
 const assetsBucket = settings.s3.assetsBucket;
-const snapshotsBucket = settings.s3.snapshotsBucket;
+const screenshotBucket = settings.s3.screenshotBucket;
 
 const createBucket = async bucket => {
   try {
@@ -78,7 +70,7 @@ const updatePolicy = async bucket => {
 };
 
 const main = async () => {
-  let findBuckets = [snapshotsBucket, assetsBucket];
+  let findBuckets = [screenshotBucket, assetsBucket];
   //checkBucket(snapshotsBucket);
   //checkBucket(assetsBucket);
   const data = await listBuckets();

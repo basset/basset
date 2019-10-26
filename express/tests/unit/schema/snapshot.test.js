@@ -234,7 +234,7 @@ describe('snapshot schema', () => {
                   cursor
                   node {
                     id
-                    imageLocation
+                    url
                     approved
                     approvedOn
                     title
@@ -249,7 +249,7 @@ describe('snapshot schema', () => {
                     }
                     previousApproved {
                       id
-                      imageLocation
+                      url
                       approved
                       approvedOn
                       approvedBy {
@@ -262,7 +262,7 @@ describe('snapshot schema', () => {
                     snapshotDiff {
                       snapshotFromId
                       snapshotToId
-                      imageLocation
+                      url
                     }
                   }
                 }
@@ -433,7 +433,7 @@ describe('snapshot schema', () => {
         mutation addSnapshotFlake($id: ID!) {
           addSnapshotFlake(id: $id) {
             id
-            imageLocation
+            url
             createdBy {
               user {
                 id
@@ -446,7 +446,7 @@ describe('snapshot schema', () => {
           id: newSnapshot.id,
         };
         const result = await runQuery(query, user, variables);
-        expect(result.data.addSnapshotFlake.imageLocation).toBe(
+        expect(result.data.addSnapshotFlake.url).toBe(
           'imageLocation',
         );
         expect(result.data.addSnapshotFlake.createdBy.user.id).toBe(user.id);
@@ -507,7 +507,7 @@ describe('snapshot schema', () => {
         mutation addSnapshotFlake($id: ID!) {
           addSnapshotFlake(id: $id) {
             id
-            imageLocation
+            url
             createdBy {
               user {
                 id
@@ -588,7 +588,7 @@ describe('snapshot schema', () => {
         mutation addSnapshotFlake($id: ID!) {
           addSnapshotFlake(id: $id) {
             id
-            imageLocation
+            url
             createdBy {
               user {
                 id
@@ -682,7 +682,7 @@ describe('snapshot schema', () => {
         mutation addSnapshotFlake($id: ID!) {
           addSnapshotFlake(id: $id) {
             id
-            imageLocation
+            url
             createdBy {
               user {
                 id
