@@ -11,17 +11,25 @@ const { checkBuild, getProject, getToken } = require('../utils/build');
 
 const router = express.Router();
 
-const checkBody = (type) => (req, res, next) => {
-  const { title } = req.body;
-  const noTitle =  title ||  title.trim() === '';
-  const sha = req.headers['x-sha'];
+
+const checkType = (type) => (req, res, next) => {
   const project = req.locals.build.project;
-  const wrongType = project.type !== type;
-  if (!req.file || noTitle || wrongType) {
-    let error = 'Invalid build';
-    if (wrongType) {
-      error = `This endpoint is only for projects with type: ${type}`;
-    } else if (noTitle) {
+  if (project.type !== type) {
+    const error = `This endpoint is only for projects with type: ${type}`;
+    if (req.file) {
+      deleteFile(req.file.bucket, req.file.key);
+    }
+    return res.status(403).json({ error });
+  }
+  next();
+};
+
+const checkBody = (req, res, next) => {
+  const noTitle = !req.body.title || req.body.title.trim() === '';
+  const sha = req.headers['x-sha'];
+  if (!req.file || noTitle) {
+    let error;
+    if (noTitle) {
       error = 'Title must be included';
     }
     if (!req.file) {
@@ -117,7 +125,8 @@ router.post(
   '/upload/asset',
   checkBuild,
   uploadAsset.single('asset'),
-  checkBody(Project.TYPE.IMAGE),
+  checkBody,
+  checkType(Project.TYPE.IMAGE),
   async (req, res) => {
     const build = req.locals.build;
     if (!build || !req.file) {
@@ -168,7 +177,8 @@ router.post(
   '/upload/snapshot',
   checkBuild,
   uploadSnapshot.single('snapshot'),
-  checkBody(Project.TYPE.WEB),
+  checkBody,
+  checkType(Project.TYPE.WEB),
   async (req, res) => {
     const project = req.locals.build.project;
     const build = req.locals.build;
@@ -227,7 +237,8 @@ router.post(
   '/upload/image',
   checkBuild,
   uploadImage.single('image'),
-  checkBody(Project.TYPE.IMAGE),
+  checkBody,
+  checkType(Project.TYPE.IMAGE),
   async (req, res) => {
     const build = req.locals.build;
     const { title } = req.body;

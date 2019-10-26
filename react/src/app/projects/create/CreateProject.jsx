@@ -69,12 +69,11 @@ export default class CreateProject extends React.PureComponent {
           </Box>
           <Box margin={{bottom: 'medium'}}>
             <Select
-              data-test-id="create-project-type-select"
               value={this.props.type}
               options={this.props.projectTypes}
               onChange={this.props.onChangeType}
               valueLabel={
-                <Box direction="row" gap="small" align="center" pad="small">
+                <Box direction="row" gap="small" align="center" pad="small" data-test-id="create-project-type-select">
                   {this.props.type.value === PROJECT_TYPES.WEB && <Domain />}
                   {this.props.type.value === PROJECT_TYPES.IMAGE && <Image/>}
                   {this.props.type.label || 'Select...'}

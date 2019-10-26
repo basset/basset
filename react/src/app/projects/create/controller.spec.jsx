@@ -88,12 +88,12 @@ describe('<CreateProject />', () => {
     const { getByText } = bindElementToQueries(document.body);
     const select = getByTestId('create-project-type-select');
     const button = getByLabelText('Open Drop');
-    const text = 'Image (mobile or misc projects)'
+    const text = 'Image (mobile or misc projects)';
     window.scrollTo = () => {};
     button.click();
     const item = getByText(text);
     item.click();
-    expect(select.value).toBe(text);
+    expect(select.textContent).toBe(text);
     const input = getByTestId('create-project-name-input');
     fireEvent.change(input, {
       target: {
