@@ -27,6 +27,7 @@ export class Projects extends React.PureComponent {
       PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
       }).isRequired,
     ).isRequired,
     selectedProject: PropTypes.object,

@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, Form, FormField, Heading, Text, Select } from 'grommet';
-import { Alert } from 'grommet-icons';
+import { Alert, Domain, Image } from 'grommet-icons';
 
-import Notification from 'components/Notification/Notification.jsx';
+import Notification from '../../../components/Notification/Notification.jsx';
+import { PROJECT_TYPES } from "../helper";
 
 export default class CreateProject extends React.PureComponent {
   static propTypes = {
@@ -13,6 +14,12 @@ export default class CreateProject extends React.PureComponent {
       label: PropTypes.string,
       value: PropTypes.string,
     }).isRequired,
+    projectTypes: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        value: PropTypes.string.isRequired,
+      })
+    ),
     nameError: PropTypes.string.isRequired,
     onChangeName: PropTypes.func.isRequired,
     onChangeType: PropTypes.func.isRequired,
@@ -61,14 +68,27 @@ export default class CreateProject extends React.PureComponent {
             <Text margin={{bottom: 'small'}} color="dark-3">Value cannot be changed after creation</Text>
           </Box>
           <Box margin={{bottom: 'medium'}}>
-          <Select
-            data-test-id="create-project-type-select"
-            value={this.props.type}
-            options={this.props.projectTypes}
-            onChange={this.props.onChangeType}
-            labelKey="label"
-            valueKey="value"
-            />
+            <Select
+              data-test-id="create-project-type-select"
+              value={this.props.type}
+              options={this.props.projectTypes}
+              onChange={this.props.onChangeType}
+              valueLabel={
+                <Box direction="row" gap="small" align="center" pad="small">
+                  {this.props.type.value === PROJECT_TYPES.WEB && <Domain />}
+                  {this.props.type.value === PROJECT_TYPES.IMAGE && <Image/>}
+                  {this.props.type.label || 'Select...'}
+                </Box>
+              }
+            >
+              {(option, index) => (
+                <Box key={index} direction="row" gap="small" align="center" pad="small">
+                  {option.value === PROJECT_TYPES.WEB && <Domain />}
+                  {option.value === PROJECT_TYPES.IMAGE && <Image/>}
+                  {option.label}
+                </Box>
+              )}
+            </Select>
           </Box>
           <Button
             data-test-id="create-project-submit"
