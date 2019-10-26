@@ -30,7 +30,8 @@ title: API
   ```
 
   > `assets` is an object of relative paths as keys and the file SHA1 (secure hashing algorithm 1) as their values.
-  >
+  > assets are only used for web projects
+  > 
   > eg `"path/to/file.png": "SHA1"`
   >
   > **These are any files required for your site to be rendered**
@@ -53,6 +54,8 @@ title: API
     > **You only need to upload these assets**
 
 ## `/builds/upload/snapshot`
+
+> this endpoint is only for web projects
 
 * Description: Upload a snapshot (static html)
 * Method: `POST`
@@ -91,6 +94,8 @@ title: API
 
 ## `/builds/upload/asset`
 
+> this endpoint is only for web projects
+
 * Description: Upload an asset file (image, css, etc..)
 * Method: `POST`
 * Content-type: `multipart/form-data`
@@ -118,6 +123,41 @@ title: API
       {
         "uploaded": <boolean>
       }
+    ```
+
+## `/builds/upload/image`
+
+> this endpoint is only for image projects
+
+* Description: Upload a screen (image)
+* Method: `POST`
+* Content-type: `multipart/form-data`
+* Additional Header parameters:
+
+  ```http
+  X-BUILD-ID: buildId
+  X-RELATIVE-PATH: path/to/file.ext
+  X-SHA: SHA_1
+  ```
+
+* Form data:
+
+  ```json
+  {
+    "title": <string>,
+  }
+  ```
+
+  > To send multiple `widths`, `browsers` and `hideSelectors` comma separate each value.
+
+* Success response:
+  * Status code: `200`
+  * Content:
+
+    ```json
+    {
+      "uploaded": <boolean>
+    }
     ```
 
 ## `/builds/finish`
