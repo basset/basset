@@ -100,10 +100,10 @@ export const Snapshots = ({ snapshots }) => {
           </Box>
         </Box>
         <ImageBox style={{ position: 'relative' }}>
-          <ImageDiv imageLocation={snapshot.imageLocation}>
+          <ImageDiv imageLocation={snapshot.url}>
             <ImageComponent
               data-test-id="snapshot-image"
-              src={snapshot.imageLocation}
+              src={snapshot.url}
             />
           </ImageDiv>
         </ImageBox>

@@ -35,7 +35,11 @@ ENV S3_ENDPOINT s3Url
 ENV S3_ACCESS_KEY_ID s3Key
 ENV S3_SECRET_ACCESS_KEY s3Secret
 ENV SCREENSHOT_BUCKET bucketName
+# 0 means screenshots use the s3 url; 1 means screenshots use the basset site to retrieve them
+ENV PRIVATE_SCREENSHOTS 0
 ENV ASSETS_BUCKET buckName
+# 0 means assets use the s3 url; 1 means assets use the basset site to retrieve them
+ENV PRIVATE_ASSETS 0
 ENV AWS_BATCH_JOB_DEFINITION job-definition
 ENV AWS_BATCH_JOB_QUEUE job-queue
 

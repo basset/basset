@@ -35,5 +35,7 @@ echo export USE_SQS=1 >> /var/basset/.env
 echo export SQS_BUILD_QUEUE_URL=${sqs_build_queue} >> /var/basset/.env
 echo export SQS_TASK_QUEUE_URL=${sqs_task_queue} >> /var/basset/.env
 echo export AWS_REGION=${aws_region} >> /var/basset/.env
+echo export PRIVATE_ASSETS=${private_assets} >> /var/basset/.env
+echo export PRIVATE_SCREENSHOTS=${private_screenshots} >> /var/basset/.env
 
 chown -R ubuntu.ubuntu /var/basset

@@ -34,6 +34,7 @@ Here is a list of environmental variables Basset uses:
 | `SQS_TASK_QUEUE_URL` | SQS URL for running tasks |
 | `AMPQ_TASK_QUEUE` | queue name to send tasks to (if you're not using SQS) |
 | `NODE_ENV` | set to PRODUCTION unless you're testing or developing |
+| `PRIVATE_SCREENSHOTS` | set to 0 to use the s3 url for snapshots (requires the screenshot bucket policy to allow public access for `GetObject`), setting to 1 will use the basset web service to retrieve the snapshot image
 
 ## Both services
 
@@ -49,3 +50,4 @@ Here is a list of environmental variables Basset uses:
 | `AMPQ_HOST` | RabbitMQ host (if you're not using SQS) |
 | `AMPQ_BUILD_QUEUE` | queue name to send tasks to (if you're not using SQS) |
 | `TOKEN` | should be a random generated key, used for communicating between web service and diff service (can be generated running `node commands/generate-secret.js` in the `express` folder) |
+| `PRIVATE_ASSETS` | set to 0 to use the s3 url for assets (requires the assets bucket policy to allow public access for `GetObject`, setting to 1 will use the basset web service to retrieve assets

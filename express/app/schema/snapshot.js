@@ -6,6 +6,7 @@ const Asset = require('../models/Asset');
 const Organization = require('../models/Organization');
 const OrganizationMember = require('../models/OrganizationMember');
 const Project = require('../models/Project');
+const settings = require('../settings');
 
 const { paginateQuery } = require('../utils/graphql/paginate');
 const {
@@ -25,7 +26,7 @@ enum SnapshotType {
 }
 type SnapshotFlake implements Node {
   id: ID!
-  imageLocation: String
+  url: String
   ignoredCount: Int
   updatedAt: String
   createdAt: String
@@ -33,7 +34,7 @@ type SnapshotFlake implements Node {
 }
 type SnapshotDiff implements Node {
   id: ID!
-  imageLocation: String
+  url: String
   snapshotToId: ID
   snapshotFromId: ID
 }
@@ -43,7 +44,7 @@ type Snapshot implements Node {
   width: Int
   diff: Boolean
   browser: String
-  imageLocation: String
+  url: String
   approved: Boolean
   approvedOn: String
   approvedBy: OrganizationMember
@@ -330,6 +331,7 @@ const resolvers = {
     },
   },
   Snapshot: {
+    url: (snapshot, args, context, info) => settings.s3.privateScreenshots ? `/screenshots/${snapshot.id}` : snapshot.imageLocation,
     build: (snapshot, args, context, info) =>
       getModelLoader(context, Build).load(snapshot.buildId),
     organization: (snapshot, args, context, info) =>
@@ -359,7 +361,11 @@ const resolvers = {
         snapshot.snapshotFlakeMatchedId,
       ),
   },
+  SnapshotDiff: {
+    url: (snapshotDiff, args, context, info) => settings.s3.privateScreenshots ? `/screenshots/${snapshotDiff.id}` : snapshotDiff.imageLocation,
+  },
   SnapshotFlake: {
+    url: (snapshotFlake, args, context, info) => settings.s3.privateScreenshots ? `/screenshots/${snapshotFlake.id}` : snapshotFlake.imageLocation,
     createdBy: (snapshotFlake, args, context, info) =>
       snapshotFlake.createdById
         ? getModelLoader(context, OrganizationMember).load(

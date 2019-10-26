@@ -3,7 +3,6 @@ variable "compute_name" {
   default = "basset-batch-compute"
 }
 
-
 variable "batch_queue_name" {
   type    = "string"
   default = "basset-batch-queue"
@@ -229,6 +228,7 @@ resource "aws_batch_job_definition" "basset_definition" {
         {"name": "S3_ENDPOINT", "value": "https://s3.${aws_s3_bucket.screenshots_bucket.region}.amazonaws.com"},
         {"name": "SCREENSHOT_BUCKET", "value": "${var.screenshots_bucket}"},
         {"name": "ASSETS_BUCKET", "value": "${var.assets_bucket}"},
+        {"name": "PRIVATE_ASSETS", "value": "${var.private_assets}"},
         {"name": "TOKEN", "value": "${var.token}"},
         {"name": "SQS_BUILD_QUEUE_URL", "value": "${aws_sqs_queue.basset_build_queue.id}"},
         {"name": "AWS_REGION", "value": "${aws_s3_bucket.screenshots_bucket.region}"},

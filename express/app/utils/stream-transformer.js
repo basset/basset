@@ -3,6 +3,7 @@ const through = require('through');
 const through2 = require('through2');
 
 const { getAssetsPath } = require('./build');
+const settings = require('../settings');
 
 const validPath = /(http|ftp|https|data):/;
 const urlRegex = /url\((?!['"]?(?:data|http|https|ftp):)['"]?([^'"\)]*)['"]?\)/g;
@@ -11,10 +12,14 @@ const replaceUrl = (assets, str, assetsUrl, relativePath) => {
   const replacer = (match, p1, offset, str) => {
     const asset = findAsset(assets, p1, relativePath);
     if (asset) {
-      return `url(${assetsUrl}/${getAssetsPath(
+      let url = `url(${assetsUrl}/${getAssetsPath(
         asset.relativePath,
         asset.sha,
       )})`;
+      if (settings.s3.privateAssets) {
+        url = `${url}?token=${settings.token})`
+      }
+      return url;
     }
     return `url(${p1})`;
   };
@@ -41,9 +46,13 @@ const transformHTML = (assets, assetsUrl, relativePath) => {
     if (!validPath.test(attribute)) {
       const asset = findAsset(assets, attribute);
       if (asset) {
+        let url = `${assetsUrl}/${getAssetsPath(asset.relativePath, asset.sha)}`;
+        if (settings.s3.privateAssets) {
+          url = `${url}?token=${settings.token})`
+        }
         element.setAttribute(
           name,
-          `${assetsUrl}/${getAssetsPath(asset.relativePath, asset.sha)}`,
+          url,
         );
       }
     }

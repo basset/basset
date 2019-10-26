@@ -58,7 +58,9 @@ const s3 = {
   secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
   endpoint: process.env.S3_ENDPOINT,
   assetsBucket: process.env.ASSETS_BUCKET,
+  privateAssets: parseInt(process.env.PRIVATE_ASSETS) === 1,
   screenshotBucket: process.env.SCREENSHOT_BUCKET,
+  privateScreenshots: parseInt(process.env.PRIVATE_SCREENSHOTS) === 1,
 };
 
 const sqs = {

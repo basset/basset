@@ -26,7 +26,7 @@ export default gql`
         cursor
         node {
           id
-          imageLocation
+          url
           approved
           approvedOn
           title
