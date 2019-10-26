@@ -136,7 +136,6 @@ title: API
 
   ```http
   X-BUILD-ID: buildId
-  X-RELATIVE-PATH: path/to/file.ext
   X-SHA: SHA_1
   ```
 
