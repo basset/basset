@@ -11,6 +11,32 @@ const { checkBuild, getProject, getToken } = require('../utils/build');
 
 const router = express.Router();
 
+const checkBody = (type) => (req, res, next) => {
+  const { title } = req.body;
+  const noTitle =  title ||  title.trim() === '';
+  const sha = req.headers['x-sha'];
+  const project = req.locals.build.project;
+  const wrongType = project.type !== type;
+  if (!req.file || noTitle || wrongType) {
+    let error = 'Invalid build';
+    if (wrongType) {
+      error = `This endpoint is only for projects with type: ${type}`;
+    } else if (noTitle) {
+      error = 'Title must be included';
+    }
+    if (!req.file) {
+      error = 'No file included';
+    } else {
+      deleteFile(req.file.bucket, req.file.key);
+    }
+    return res.status(403).json({ error });
+  }
+  if (!sha) {
+    return res.status(403).json({ error: 'Invalid headers'});
+  }
+  next();
+};
+
 router.post('/start', async (req, res) => {
   const project = await getProject(req);
   if (!project) {
@@ -91,6 +117,7 @@ router.post(
   '/upload/asset',
   checkBuild,
   uploadAsset.single('asset'),
+  checkBody(Project.TYPE.IMAGE),
   async (req, res) => {
     const build = req.locals.build;
     if (!build || !req.file) {
@@ -137,32 +164,6 @@ router.post(
   },
 );
 
-const checkBody = (type) => (req, res, next) => {
-  const title = req.body.title;
-  const noTitle = !req.body.title || req.body.title.trim() === '';
-  const sha = req.headers['x-sha'];
-  const project = req.locals.build.project;
-  const wrongType = project.type !== type;
-  if (!req.file || noTitle || wrongType) {
-    let error = 'Invalid build';
-    if (wrongType) {
-      error = `This endpoint is only for projects with type: ${type}`;
-    } else if (noTitle) {
-      error = 'Title must be included';
-    }
-    if (!req.file) {
-      error = 'No file included';
-    } else {
-      deleteFile(req.file.bucket, req.file.key);
-    }
-    return res.status(403).json({ error });
-  }
-  if (!sha) {
-    return res.status(403).json({ error: 'Invalid headers'});
-  }
-  next();
-};
-
 router.post(
   '/upload/snapshot',
   checkBuild,
@@ -171,7 +172,7 @@ router.post(
   async (req, res) => {
     const project = req.locals.build.project;
     const build = req.locals.build;
-    const title = req.body.title;
+    const { title } = req.body;
     const sha = req.headers['x-sha'];
     const relativePath = req.headers['x-relative-path'] || 'base';
     let browsers = project.browsers.split(',');
@@ -229,7 +230,7 @@ router.post(
   checkBody(Project.TYPE.IMAGE),
   async (req, res) => {
     const build = req.locals.build;
-    const title = req.body.title;
+    const { title } = req.body;
     const sha = req.headers['x-sha'];
 
     try {
