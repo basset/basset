@@ -20,7 +20,7 @@ jest.mock('../../../app/tasks/queueCompareSnapshots', () => ({
   queueCompareSnapshots: jest.fn(),
 }));
 
-const githubPr = require('../../../app/integrations/github/pr');
+const githubPr = require('../../../app/integrations/github/pullRequest');
 const slack = require('../../../app/integrations/slack/slack');
 const tasks = require('../../../app/tasks/queueCompareSnapshots');
 
@@ -58,10 +58,12 @@ describe('Build', () => {
       defaultBranch: 'basset',
     });
     project2 = await createProject('test', organization.id, {
-      repoName: 'basset',
-      repoOwner: 'basset',
-      provider: 'prov',
-      repoActive: true,
+      scmConfig: JSON.stringify({
+        repoName: 'basset',
+        repoOwner: 'basset',
+      }),
+      scmProvider: 'prov',
+      scmActive: true,
     });
     otherProject = await createProject('test', otherOrganization.id);
     build = await createBuild('test', project);
