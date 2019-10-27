@@ -31,9 +31,9 @@ const getPullRequest = async ({ url, token }) => {
 
 const getBaseSHA = async (project, sha) => {
   const pullRequests = await getPullRequests({
-    owner: project.repoOwner,
-    repo: project.repoName,
-    token: project.repoToken,
+    owner: project.scmConfig.repoOwner,
+    repo: project.scmConfig.repoName,
+    token: project.scmToken,
     sha,
   });
   if (pullRequests && pullRequests.length > 0) {

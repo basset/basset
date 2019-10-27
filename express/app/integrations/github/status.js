@@ -43,9 +43,9 @@ const updateStatus = ({
 
 const snapshotsPending = (project, build) => {
   return updateStatus({
-    token: project.repoToken,
-    owner: project.repoOwner,
-    repo: project.repoName,
+    token: project.scmToken,
+    owner: project.scmConfig.repoOwner,
+    repo: project.scmConfig.repoName,
     sha: build.commitSha,
     url: `${settings.site.url}/projects/${project.id}`,
     state: 'pending',
@@ -56,9 +56,9 @@ const snapshotsPending = (project, build) => {
 
 const snapshotsApproved = (project, build) => {
   return updateStatus({
-    token: project.repoToken,
-    owner: project.repoOwner,
-    repo: project.repoName,
+    token: project.scmToken,
+    owner: project.scmConfig.repoOwner,
+    repo: project.scmConfig.repoName,
     sha: build.commitSha,
     url: `${settings.site.url}/builds/${build.id}`,
     state: 'success',
@@ -69,9 +69,9 @@ const snapshotsApproved = (project, build) => {
 
 const snapshotsNoDiffs = (project, build) => {
   return updateStatus({
-    token: project.repoToken,
-    owner: project.repoOwner,
-    repo: project.repoName,
+    token: project.scmToken,
+    owner: project.scmConfig.repoOwner,
+    repo: project.scmConfig.repoName,
     sha: build.commitSha,
     url: `${settings.site.url}/builds/${build.id}`,
     state: 'success',
@@ -82,9 +82,9 @@ const snapshotsNoDiffs = (project, build) => {
 
 const snapshotsNeedApproving = (project, build) => {
   return updateStatus({
-    token: project.repoToken,
-    owner: project.repoOwner,
-    repo: project.repoName,
+    token: project.scmToken,
+    owner: project.scmConfig.repoOwner,
+    repo: project.scmConfig.repoName,
     sha: build.commitSha,
     url: `${settings.site.url}/builds/${build.id}`,
     state: 'failure',
