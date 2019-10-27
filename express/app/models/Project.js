@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { Model } = require('objection');
 const BaseModel = require('./BaseModel');
 const Asset = require('./Asset');
+const { getSCM } = require('../integrations/scm');
 
 class Project extends BaseModel {
   $beforeInsert(queryContext) {
@@ -34,6 +35,10 @@ class Project extends BaseModel {
       !!this.provider &&
       this.provider.trim() !== ''
     );
+  }
+
+  get scm() {
+    return getSCM(this);
   }
 
   get hasToken() {
