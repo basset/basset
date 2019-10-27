@@ -96,12 +96,11 @@ const saveRedirect = (req, res, next) => {
   return next();
 };
 
-app.get('/oauth/:provider(github|bitbucket)', saveRedirect, (req, res, next) => passport.authenticate(req.params.provider)(req, res, next));
+app.get('/oauth/:provider(github|bitbucket|gitlab)', saveRedirect, (req, res, next) => passport.authenticate(req.params.provider)(req, res, next));
 
 app.get(
-  '/oauth/:provider(github|bitbucket)/callback',
+  '/oauth/:provider(github|bitbucket|gitlab)/callback',
   (req, res, next) => {
-    console.log(req.params.provider);
     passport.authenticate(req.params.provider, (error, user, info) => {
       if (error) {
         return res.status(500);

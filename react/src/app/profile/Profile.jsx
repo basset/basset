@@ -6,6 +6,7 @@ import Notification from '../../components/Notification/Notification.jsx';
 import InlineField from '../../components/InlineField/InlineField.jsx';
 import GithubLogin from '../../components/LoginButtons/GithubLogin.jsx';
 import BitbucketLogin from '../../components/LoginButtons/BitbucketLogin.jsx';
+import GitLabLogin from '../../components/LoginButtons/GitLabLogin.jsx';
 
 const Profile = React.memo(
   ({
@@ -25,6 +26,7 @@ const Profile = React.memo(
     const loginsEnabled = __BASSET__.logins;
     const hasGithubLogin = user.providers.some(p => p.provider === 'github');
     const hasBitbucketLogin = user.providers.some(p => p.provider === 'bitbucket');
+    const hasGitLabLogin = user.providers.some(p => p.provider === 'gitlab');
     return (
       <Box pad="medium" width="large">
         {changePasswordSuccess && (
@@ -119,6 +121,18 @@ const Profile = React.memo(
             ) : (
               <React.Fragment>
                 <BitbucketLogin label="Link my Bitbucket account" multiple={false} redirect="/profile" />
+              </React.Fragment>
+            )}
+          </Box>
+        )}
+        {loginsEnabled.gitlab && (
+          <Box direction="row" justify="between" align="center">
+            <Text margin={{ vertical: 'small' }}>GitLab</Text>
+            {hasGitLabLogin ? (
+              <React.Fragment>Your GitLab account is linked</React.Fragment>
+            ) : (
+              <React.Fragment>
+                <GitLabLogin label="Link my GitLab account" multiple={false} redirect="/profile" />
               </React.Fragment>
             )}
           </Box>

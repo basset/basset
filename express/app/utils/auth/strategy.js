@@ -2,6 +2,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
 const BitbucketStrategy = require('passport-bitbucket-oauth2').Strategy;
+const GitLabStrategy = require('passport-gitlab2').Strategy;
 
 const settings = require('../../settings');
 
@@ -11,6 +12,22 @@ const { loginUserWithPassword, loginUserWithProvider } = require('./login');
 const localLoginStrategy = async (email, password, done) => {
   try {
     const { user, error } = await loginUserWithPassword({ email, password });
+    if (error) {
+      return done(null, false, error);
+    }
+    return done(null, user);
+  } catch (error) {
+    return done(error, false);
+  }
+};
+
+const tryLoginWithProvider = async (req, userInfo, providerInfo, done) => {
+  try {
+    const { user, error } = await loginUserWithProvider({
+      req,
+      userInfo,
+      providerInfo,
+    });
     if (error) {
       return done(null, false, error);
     }
@@ -43,20 +60,31 @@ const bitbucketLoginStrategy = async (
     email,
     profileImage,
   };
+  await tryLoginWithProvider(req, userInfo, providerInfo, done);
 
-  try {
-    const { user, error } = await loginUserWithProvider({
-      req,
-      userInfo,
-      providerInfo,
-    });
-    if (error) {
-      return done(null, false, error);
-    }
-    return done(null, user);
-  } catch (error) {
-    return done(error, false);
-  }
+};
+const gitLabLoginStrategy = async (
+  req,
+  accessToken,
+  refreshToken,
+  profile,
+  done
+) => {
+  const providerInfo = {
+    providerId: profile.id,
+    provider: 'gitlab',
+    token: accessToken,
+  };
+  const profileImage = profile.avatarUrl;
+  const email = profile.emails[0].value;
+
+  const userInfo = {
+    name: profile.displayName,
+    email,
+    profileImage,
+  };
+
+  await tryLoginWithProvider(req, userInfo, providerInfo, done);
 };
 
 const githubLoginStrategy = async (
@@ -82,20 +110,10 @@ const githubLoginStrategy = async (
     email,
     profileImage,
   };
-  try {
-    const { user, error } = await loginUserWithProvider({
-      req,
-      userInfo,
-      providerInfo,
-    });
-    if (error) {
-      return done(null, false, error);
-    }
-    return done(null, user);
-  } catch (error) {
-    return done(error, false);
-  }
+  await tryLoginWithProvider(req, userInfo, providerInfo, done);
 };
+
+
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, localLoginStrategy));
 
@@ -124,6 +142,20 @@ if (settings.oauth.strategy.bitbucket.use) {
         passReqToCallback: true,
       },
       bitbucketLoginStrategy,
+    )
+  )
+}
+
+if (settings.oauth.strategy.gitlab.use) {
+  passport.use(
+    new GitLabStrategy(
+      {
+        clientID: settings.oauth.strategy.gitlab.clientId,
+        clientSecret: settings.oauth.strategy.gitlab.clientSecret,
+        callbackURL: `${settings.site.url}/oauth/gitlab/callback`,
+        passReqToCallback: true,
+      },
+      gitLabLoginStrategy,
     )
   )
 }

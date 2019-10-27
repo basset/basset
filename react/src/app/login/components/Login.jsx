@@ -9,6 +9,7 @@ import Logo from '../../../components/Logo/Logo.jsx';
 import Notification from '../../../components/Notification/Notification.jsx';
 import GithubLogin from '../../../components/LoginButtons/GithubLogin.jsx';
 import BitbucketLogin from '../../../components/LoginButtons/BitbucketLogin.jsx';
+import GitLabLogin from '../../../components/LoginButtons/GitLabLogin.jsx';
 
 const LogoContainer = styled(Box)`
   min-height: 64px;
@@ -55,6 +56,7 @@ export default class LoginPage extends React.PureComponent {
   );
 
   render() {
+
     return (
       <Box fill basis="80%" direction="column" align="center" justify="center">
         {this.props.requestError && this.renderRequestError()}
@@ -68,6 +70,11 @@ export default class LoginPage extends React.PureComponent {
         />
         <BitbucketLogin
           label="Login with Bitbucket"
+          redirect={this.props.redirect}
+          multiple
+        />
+        <GitLabLogin
+          label="Login with GitLab"
           redirect={this.props.redirect}
           multiple
         />

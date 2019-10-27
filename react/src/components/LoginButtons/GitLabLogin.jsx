@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Heading } from 'grommet';
-import { Github } from 'grommet-icons';
+import GitLab from '../Icons/Gitlab.jsx';
 
-const GithubLogin = ({ label, multiple, redirect }) => {
-  let href = '/oauth/github';
+const GitLabLogin = ({ label, multiple, redirect }) => {
+  let href = '/oauth/gitlab';
   if (redirect) {
     href = `${href}?redirect=${redirect}`;
   }
-  if (!__BASSET__.logins.github) {
+  if (!__BASSET__.logins.gitlab) {
     return null;
   }
 
@@ -16,11 +16,11 @@ const GithubLogin = ({ label, multiple, redirect }) => {
     <React.Fragment>
       <Button
         alignSelf="center"
-        data-test-id="test-github"
+        data-test-id="test-gitlab"
         color="dark-2"
         label={label}
-        icon={<Github />}
         href={href}
+        icon={<GitLab />}
       />
       {multiple && (
         <Heading size="small" level="4" alignSelf="center" margin="xsmall">
@@ -31,12 +31,12 @@ const GithubLogin = ({ label, multiple, redirect }) => {
   );
 };
 
-GithubLogin.propTypes = {
+GitLabLogin.propTypes = {
   label: PropTypes.string.isRequired,
   redirect: PropTypes.string,
   multiple: PropTypes.bool.isRequired,
 };
-GithubLogin.defaultProps = {
+GitLabLogin.defaultProps = {
   redirect: null,
 };
-export default GithubLogin;
+export default GitLabLogin;
