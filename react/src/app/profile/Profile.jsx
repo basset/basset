@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Heading, Button, TextInput, Text, Form } from 'grommet';
+import { Checkmark } from 'grommet-icons';
 
 import Notification from '../../components/Notification/Notification.jsx';
 import InlineField from '../../components/InlineField/InlineField.jsx';
@@ -100,16 +101,14 @@ const Profile = React.memo(
             </Box>
           )}
         </Box>
-        <Heading level={4}>Login methods</Heading>
+        <Heading level={4}>Linked accounts for login</Heading>
         {loginsEnabled.github && (
           <Box direction="row" justify="between" align="center">
             <Text margin={{ vertical: 'small' }}>Github</Text>
             {hasGithubLogin ? (
-              <React.Fragment>Your GitHub account is linked</React.Fragment>
+              <Checkmark color="brand" />
             ) : (
-              <React.Fragment>
-                <GithubLogin label="Link my GitHub account" multiple={false} redirect="/profile" />
-              </React.Fragment>
+              <GithubLogin label="Link my GitHub account" multiple={false} redirect="/profile" />
             )}
           </Box>
         )}
@@ -117,11 +116,9 @@ const Profile = React.memo(
           <Box direction="row" justify="between" align="center">
             <Text margin={{ vertical: 'small' }}>Bitbucket</Text>
             {hasBitbucketLogin ? (
-              <React.Fragment>Your Bitbucket account is linked</React.Fragment>
+              <Checkmark color="brand" />
             ) : (
-              <React.Fragment>
-                <BitbucketLogin label="Link my Bitbucket account" multiple={false} redirect="/profile" />
-              </React.Fragment>
+              <BitbucketLogin label="Link my Bitbucket account" multiple={false} redirect="/profile" />
             )}
           </Box>
         )}
@@ -129,11 +126,9 @@ const Profile = React.memo(
           <Box direction="row" justify="between" align="center">
             <Text margin={{ vertical: 'small' }}>GitLab</Text>
             {hasGitLabLogin ? (
-              <React.Fragment>Your GitLab account is linked</React.Fragment>
+              <Checkmark color="brand" />
             ) : (
-              <React.Fragment>
-                <GitLabLogin label="Link my GitLab account" multiple={false} redirect="/profile" />
-              </React.Fragment>
+              <GitLabLogin label="Link my GitLab account" multiple={false} redirect="/profile" />
             )}
           </Box>
         )}
