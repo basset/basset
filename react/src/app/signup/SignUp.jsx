@@ -6,7 +6,7 @@ import { Alert } from 'grommet-icons';
 import Link from '../../components/Link/Link.jsx';
 import Notification from '../../components/Notification/Notification.jsx';
 import Logo from '../../components/Logo/Logo.jsx';
-import GithubLogin from '../../components/GithubLogin/GithubLogin.jsx';
+import GithubLogin from '../../components/LoginButtons/GithubLogin.jsx';
 
 export default class SignUpPage extends React.PureComponent {
   static propTypes = {

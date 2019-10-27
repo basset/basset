@@ -4,7 +4,8 @@ import { Box, Heading, Button, TextInput, Text, Form } from 'grommet';
 
 import Notification from '../../components/Notification/Notification.jsx';
 import InlineField from '../../components/InlineField/InlineField.jsx';
-import GithubLogin from '../../components/GithubLogin/GithubLogin.jsx';
+import GithubLogin from '../../components/LoginButtons/GithubLogin.jsx';
+import BitbucketLogin from '../../components/LoginButtons/BitbucketLogin.jsx';
 
 const Profile = React.memo(
   ({
@@ -21,8 +22,9 @@ const Profile = React.memo(
     onSavePassword,
     onChangePassword,
   }) => {
-    const gitHubEnabled = __BASSET__.logins.github;
+    const loginsEnabled = __BASSET__.logins;
     const hasGithubLogin = user.providers.some(p => p.provider === 'github');
+    const hasBitbucketLogin = user.providers.some(p => p.provider === 'bitbucket');
     return (
       <Box pad="medium" width="large">
         {changePasswordSuccess && (
@@ -97,14 +99,26 @@ const Profile = React.memo(
           )}
         </Box>
         <Heading level={4}>Login methods</Heading>
-        {gitHubEnabled && (
-          <Box direction="row" justify="between">
+        {loginsEnabled.github && (
+          <Box direction="row" justify="between" align="center">
             <Text margin={{ vertical: 'small' }}>Github</Text>
             {hasGithubLogin ? (
-              <React.Fragment>Your github account is linked</React.Fragment>
+              <React.Fragment>Your GitHub account is linked</React.Fragment>
             ) : (
               <React.Fragment>
-                <GithubLogin label="Link my github account" multiple={false} />
+                <GithubLogin label="Link my GitHub account" multiple={false} redirect="/profile" />
+              </React.Fragment>
+            )}
+          </Box>
+        )}
+        {loginsEnabled.bitbucket && (
+          <Box direction="row" justify="between" align="center">
+            <Text margin={{ vertical: 'small' }}>Bitbucket</Text>
+            {hasBitbucketLogin ? (
+              <React.Fragment>Your Bitbucket account is linked</React.Fragment>
+            ) : (
+              <React.Fragment>
+                <BitbucketLogin label="Link my Bitbucket account" multiple={false} redirect="/profile" />
               </React.Fragment>
             )}
           </Box>

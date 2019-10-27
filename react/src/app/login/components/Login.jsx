@@ -7,7 +7,8 @@ import { Alert } from 'grommet-icons';
 import Link from '../../../components/Link/Link.jsx';
 import Logo from '../../../components/Logo/Logo.jsx';
 import Notification from '../../../components/Notification/Notification.jsx';
-import GithubLogin from '../../../components/GithubLogin/GithubLogin.jsx';
+import GithubLogin from '../../../components/LoginButtons/GithubLogin.jsx';
+import BitbucketLogin from '../../../components/LoginButtons/BitbucketLogin.jsx';
 
 const LogoContainer = styled(Box)`
   min-height: 64px;
@@ -61,7 +62,12 @@ export default class LoginPage extends React.PureComponent {
           <Logo size="64px" />
         </LogoContainer>
         <GithubLogin
-          label="Login with Github"
+          label="Login with GitHub"
+          redirect={this.props.redirect}
+          multiple
+        />
+        <BitbucketLogin
+          label="Login with Bitbucket"
           redirect={this.props.redirect}
           multiple
         />

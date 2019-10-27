@@ -39,6 +39,7 @@
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",
     "passport-local": "^1.0.0",
+    "passport-bitbucket-oauth2": "git+https://git@github.com/basset/passport-bitbucket-oauth2.git",
     "pg": "^7.11.0",
     "pg-native": "^3.0.0",
     "request": "^2.88.0",

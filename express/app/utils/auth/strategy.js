@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
+const BitbucketStrategy = require('passport-bitbucket-oauth2').Strategy;
 
 const settings = require('../../settings');
 
@@ -10,6 +11,45 @@ const { loginUserWithPassword, loginUserWithProvider } = require('./login');
 const localLoginStrategy = async (email, password, done) => {
   try {
     const { user, error } = await loginUserWithPassword({ email, password });
+    if (error) {
+      return done(null, false, error);
+    }
+    return done(null, user);
+  } catch (error) {
+    return done(error, false);
+  }
+};
+
+const bitbucketLoginStrategy = async (
+  req,
+  accessToken,
+  refreshToken,
+  profile,
+  done
+) => {
+
+  const providerInfo = {
+    providerId: profile.id,
+    provider: 'bitbucket',
+    token: accessToken,
+  };
+  const profileImage = profile.profileImage;
+  const email = profile.emails
+    .filter(email => email.primary)
+    .map(email => email.value)[0];
+
+  const userInfo = {
+    name: profile.displayName,
+    email,
+    profileImage,
+  };
+
+  try {
+    const { user, error } = await loginUserWithProvider({
+      req,
+      userInfo,
+      providerInfo,
+    });
     if (error) {
       return done(null, false, error);
     }
@@ -32,6 +72,7 @@ const githubLoginStrategy = async (
     token: accessToken,
   };
   const profileImage = profile.photos.map(p => p.value)[0];
+
   const email = profile.emails
     .filter(email => email.primary)
     .map(email => email.value)[0];
@@ -71,6 +112,20 @@ if (settings.oauth.strategy.github.use) {
       githubLoginStrategy,
     ),
   );
+}
+
+if (settings.oauth.strategy.bitbucket.use) {
+  passport.use(
+    new BitbucketStrategy(
+      {
+        clientID: settings.oauth.strategy.bitbucket.clientId,
+        clientSecret: settings.oauth.strategy.bitbucket.clientSecret,
+        callbackURL: `${settings.site.url}/oauth/bitbucket/callback`,
+        passReqToCallback: true,
+      },
+      bitbucketLoginStrategy,
+    )
+  )
 }
 
 passport.serializeUser((user, done) => done(null, user.id));
