@@ -137,7 +137,7 @@ describe('project schema', () => {
           name
           key
           hasToken
-          provider
+          scmProvider
           scmConfig {
             repoOwner
             repoName

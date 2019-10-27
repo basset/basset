@@ -1,16 +1,13 @@
-jest.mock('../../../app/integrations/github/status', () => ({
+jest.mock('../../../app/integrations/github/index', () => ({
   snapshotsPending: jest.fn(),
   snapshotsNeedApproving: jest.fn(),
   snapshotsNoDiffs: jest.fn(),
   snapshotsApproved: jest.fn(),
+  getBaseSHA: jest.fn(),
 }));
 
 let mockGetPRsValue = [];
 let mockGetPRValue = {};
-jest.mock('../../../app/integrations/github/pr', () => ({
-  getPRs: jest.fn(() => mockGetPRsValue),
-  getPR: jest.fn(() => mockGetPRValue),
-}));
 
 jest.mock('../../../app/integrations/slack/slack', () => ({
   notifySnapshotsNeedApproving: jest.fn(),
@@ -20,14 +17,10 @@ jest.mock('../../../app/tasks/queueCompareSnapshots', () => ({
   queueCompareSnapshots: jest.fn(),
 }));
 
-const githubPr = require('../../../app/integrations/github/pullRequest');
+const github = require('../../../app/integrations/github/index');
 const slack = require('../../../app/integrations/slack/slack');
 const tasks = require('../../../app/tasks/queueCompareSnapshots');
-
-const github = require('../../../app/integrations/github/status');
-
 const Build = require('../../../app/models/Build');
-
 const { createSnapshot } = require('../../utils/snapshot');
 const { createBuild } = require('../../utils/build');
 const { createProject } = require('../../utils/project');
@@ -42,6 +35,7 @@ describe('Build', () => {
   let organization, otherOrganization;
   let project, project2, otherProject;
   let build, build2, build3, otherBuild;
+  let fakeProject = { hasSCM: true, scmProvider: 'github', get scm() { return github } };
 
   beforeAll(async () => {
     user = await createUser('snapshot@snapshotmodel.io');
@@ -62,7 +56,7 @@ describe('Build', () => {
         repoName: 'basset',
         repoOwner: 'basset',
       }),
-      scmProvider: 'prov',
+      scmProvider: 'github',
       scmActive: true,
     });
     otherProject = await createProject('test', otherOrganization.id);
@@ -101,18 +95,16 @@ describe('Build', () => {
     await build.notifyPending({ hasSCM: false });
     expect(github.snapshotsPending).not.toHaveBeenCalled();
 
-    const p = { hasSCM: true };
-    await build.notifyPending(p);
-    expect(github.snapshotsPending).toHaveBeenCalledWith(p, build);
+    await build.notifyPending(fakeProject);
+    expect(github.snapshotsPending).toHaveBeenCalledWith(fakeProject, build);
   });
 
   test('notifyApproved', async () => {
     await build.notifyApproved(null, { hasSCM: false });
     expect(github.snapshotsApproved).not.toHaveBeenCalled();
 
-    const p = { hasSCM: true };
-    await build.notifyApproved(null, p);
-    expect(github.snapshotsApproved).toHaveBeenCalledWith(p, build);
+    await build.notifyApproved(null, fakeProject);
+    expect(github.snapshotsApproved).toHaveBeenCalledWith(fakeProject, build);
   });
 
   test('notifyChanges', async () => {
@@ -120,12 +112,10 @@ describe('Build', () => {
     expect(build.buildVerified).toBe(true);
     expect(github.snapshotsNeedApproving).not.toHaveBeenCalled();
 
-    const p = { hasSCM: true };
-    await build.notifyChanges(0, p);
-    expect(github.snapshotsNeedApproving).toHaveBeenCalledWith(p, build);
+    await build.notifyChanges(0, fakeProject);
+    expect(github.snapshotsNeedApproving).toHaveBeenCalledWith(fakeProject, build);
     expect(slack.notifySnapshotsNeedApproving).not.toHaveBeenCalled();
-
-    p.hasSlack = true;
+    const p = { ...fakeProject, hasSlack: true };
     await build.notifyChanges(0, p);
     expect(slack.notifySnapshotsNeedApproving).toHaveBeenCalledWith(
       0,
@@ -138,25 +128,13 @@ describe('Build', () => {
     await build2.notifyNoChanges(null, { hasSCM: false });
     expect(github.snapshotsNoDiffs).not.toHaveBeenCalled();
     expect(build2.buildVerified).toBe(true);
-    const p = { hasSCM: true };
-    await build2.notifyNoChanges(null, p);
-    expect(github.snapshotsNoDiffs).toHaveBeenCalledWith(p, build2);
+    await build2.notifyNoChanges(null, fakeProject);
+    expect(github.snapshotsNoDiffs).toHaveBeenCalledWith(fakeProject, build2);
   });
 
   describe('getPreviousBuild', () => {
     it('should return the previous build based on the PR', async () => {
-      mockGetPRsValue = [
-        {
-          pull_request: {
-            url: 'PR_URL',
-          },
-        },
-      ];
-      mockGetPRValue = {
-        base: {
-          sha: '123ea',
-        },
-      };
+      github.getBaseSHA.mockImplementationOnce(() => Promise.resolve('123ea'));
       const firstBuild = await createBuild('repoBranch', project2, {
         buildVerified: true,
         completedAt: Build.knex().fn.now(),
@@ -170,19 +148,7 @@ describe('Build', () => {
     });
 
     it('should return the previous build based on a PRs base branch commit SHA1', async () => {
-      mockGetPRsValue = [
-        {
-          pull_request: {
-            url: 'PR_URL',
-          },
-        },
-      ];
-      mockGetPRValue = {
-        base: {
-          sha: 'sha1',
-        },
-      };
-
+      github.getBaseSHA.mockImplementationOnce(() => Promise.resolve('sha1'));
       const baseBuild = await createBuild('baseBranch', project2, {
         commitSha: 'sha1',
         buildVerified: true,
