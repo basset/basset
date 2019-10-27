@@ -155,7 +155,7 @@ const resolvers = {
 
       const { token } = await user
         .$relatedQuery('providers')
-        .where('scmProvider', provider)
+        .where('provider', provider)
         .orderBy('createdAt')
         .first();
       if (!token) {
@@ -205,8 +205,18 @@ const resolvers = {
       if (!(await project.canEdit(user))) {
         throw new Error('You do not have permission to edit projects.');
       }
-
-      const scmConfig = projectInput.scmConfig || project.scmConfig;
+      let scmConfig;
+      if (projectInput.scmConfig) {
+        scmConfig = {
+          repoOwner: projectInput.scmConfig.repoOwner || project.scmConfig.repoOwner,
+          repoName: projectInput.scmConfig.repoName || project.scmConfig.repoName,
+          repoSlug: projectInput.scmConfig.repoSlug || project.scmConfig.repoSlug,
+          username: projectInput.scmConfig.username || project.scmConfig.username,
+          projectId: projectInput.scmConfig.projectId || project.scmConfig.projectId,
+        };
+      } else {
+        scmConfig = project.scmConfig;
+      }
 
       return project.$query().updateAndFetch({
         name: projectInput.name || project.name,

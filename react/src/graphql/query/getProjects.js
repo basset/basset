@@ -1,6 +1,8 @@
 import gql from 'graphql-tag';
+import projectFragment from '../fragments/project.js';
 
 export default gql`
+  ${projectFragment}
   query projects($organizationId: ID!, $first: Int!, $after: String) {
     projects(organizationId: $organizationId, first: $first, after: $after) {
       pageInfo {
@@ -9,21 +11,7 @@ export default gql`
       edges {
         cursor
         node {
-          id
-          name
-          key
-          hasToken
-          provider
-          repoOwner
-          repoName
-          repoActive
-          defaultBranch
-          defaultWidth
-          browsers
-          slackWebhook
-          slackActive
-          slackVariable
-          hideSelectors
+          ...projectFragment
         }
       }
     }

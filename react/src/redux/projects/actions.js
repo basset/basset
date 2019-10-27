@@ -118,14 +118,14 @@ export const changeProject = ({ id }) => async (dispatch, getState) => {
   await dispatch(getBuilds());
 };
 
-export const linkProjectToGithub = projectId => async (dispatch, getState) => {
+export const linkProjectToProvider = (projectId, provider) => async (dispatch, getState) => {
   dispatch(isUpdating());
   try {
     const { data } = await ApolloClient.mutate({
       mutation: linkProviderToProjectMutation,
       variables: {
         id: projectId,
-        provider: 'github',
+        provider,
       },
     });
 
@@ -139,15 +139,15 @@ export const linkProjectToGithub = projectId => async (dispatch, getState) => {
   }
 };
 
-export const linkToGitHub = () => async (dispatch, getState) => {
+export const linkToProvider = (provider) => async (dispatch, getState) => {
   const state = getState();
   const { currentProjectId } = state.projects;
   const user = getUser(state);
-  const hasGitHub = user.providers.some(p => p.provider === 'github');
-  if (hasGitHub) {
-    dispatch(linkProjectToGithub(currentProjectId));
+  const hasProvider = user.providers.some(p => p.provider === provider);
+  if (hasProvider) {
+    dispatch(linkProjectToProvider(currentProjectId, provider));
   } else {
-    window.location.href = '/oauth/github';
+    window.location.href = `/oauth/${provider}`;
   }
 };
 
@@ -180,7 +180,7 @@ export const saveProject = project => async (dispatch, getState) => {
   }
 };
 
-export const removeGithub = () => async (dispatch, getState) => {
+export const removeCurrentProvider = () => async (dispatch, getState) => {
   const state = getState();
   const { currentProjectId } = state.projects;
   dispatch(isUpdating());
