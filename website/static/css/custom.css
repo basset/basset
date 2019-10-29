@@ -13,13 +13,16 @@
 }
 
 .navigationSlider .slidingNav ul {
-  margin-top: 70px;
+  margin-top: 69px;
 }
 .fixedHeaderContainer header img {
   margin-right: 12px;
 }
 .highlightBackground {
   background: #ef6bb4;
+}
+.navPusher {
+  padding-top: 119px;
 }
 #features .blockImage > img {
     height: 80px;
@@ -35,6 +38,9 @@
   }
   .navigationSlider .slidingNav ul {
     margin: 0
+  }
+  .navPusher {
+    padding-top: 69px;
   }
 }
 

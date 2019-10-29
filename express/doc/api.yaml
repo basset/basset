@@ -1,11 +1,14 @@
 openapi: '3.0.0'
 info:
-  title: Basset build API
+  title: Basset Build API
   version: 1.0.0
 paths:
   /builds/start:
     post:
+      security:
+        - TokenAuth: []
       summary: 'Create a build'
+      operationId: createBuild
       parameters:
         - $ref: '#/components/parameters/Authorization'
       requestBody:
@@ -60,16 +63,13 @@ paths:
           content:
             'application/json':
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: 'The error message'
+                $ref: '#/components/schemas/Error'
   /builds/upload/snapshot:
     post:
+      security:
+        - TokenAuth: []
       summary: 'Upload and create snapshot entry'
       parameters:
-        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/xBuildId'
         - $ref: '#/components/parameters/xRelativePath'
         - $ref: '#/components/parameters/xSha'
@@ -79,6 +79,7 @@ paths:
             schema:
               properties:
                 snapshot:
+                  required: true
                   type: string
                   format: binary
                 widths:
@@ -88,6 +89,7 @@ paths:
                 title:
                   type: string
                   description: 'Title of the snapshot'
+                  required: true
                 selectors:
                   type: string
                   description: 'CSS selectors used to take a snapshot of elements'
@@ -114,16 +116,13 @@ paths:
           content:
             'application/json':
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: 'The error message'
+                $ref: '#/components/schemas/Error'
   /builds/upload/asset:
     post:
+      security:
+        - TokenAuth: []
       summary: 'Upload an asset'
       parameters:
-        - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/xBuildId'
         - $ref: '#/components/parameters/xRelativePath'
         - $ref: '#/components/parameters/xSha'
@@ -133,6 +132,7 @@ paths:
             schema:
               properties:
                 asset:
+                  required: true
                   type: string
                   format: binary
       responses:
@@ -151,16 +151,12 @@ paths:
           content:
             'application/json':
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: 'The error message'
+                $ref: '#/components/schemas/Error'
   /builds/finish:
     post:
+      security:
+        - TokenAuth: []
       summary: 'Finish the build'
-      parameters:
-        - $ref: '#/components/parameters/Authorization'
       requestBody:
         content:
           'application/json':
@@ -185,12 +181,13 @@ paths:
           content:
             'application/json':
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: 'The error message'
+                $ref: '#/components/schemas/Error'
 components:
+  securitySchemes:
+    TokenAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: TOKEN
   parameters:
     Authorization:
       in: header
@@ -224,8 +221,17 @@ components:
       required: true
       description: 'The SHA1 of the file'
   schemas:
+    Build:
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 'The error message'
     Assets:
       type: object
+      description: 'A HashTable of file names as the key and SHA1 as the value'
       additionalProperties:
         type: string
       example:
