@@ -7,6 +7,8 @@ import Link from '../../components/Link/Link.jsx';
 import Notification from '../../components/Notification/Notification.jsx';
 import Logo from '../../components/Logo/Logo.jsx';
 import GithubLogin from '../../components/LoginButtons/GithubLogin.jsx';
+import BitbucketLogin from '../../components/LoginButtons/BitbucketLogin.jsx';
+import GitLabLogin from '../../components/LoginButtons/GitLabLogin.jsx';
 
 export default class SignUpPage extends React.PureComponent {
   static propTypes = {
@@ -90,7 +92,7 @@ export default class SignUpPage extends React.PureComponent {
         direction="column"
         align="end"
         margin={{ top: 'medium' }}
-        gap="large"
+        gap="medium"
       >
         <Button
           data-test-id="signup-submit"
@@ -114,9 +116,24 @@ export default class SignUpPage extends React.PureComponent {
         <Box margin="medium">
           <Logo size="64px" />
         </Box>
-        <GithubLogin label="Signup with Github" multiple />
         <Box width="medium" gap="medium" elevation="medium" pad="medium">
           {render}
+          {!this.props.signupSuccess && (
+            <Box gap="small">
+              <GithubLogin
+                label="Signup with GitHub"
+                redirect={this.props.redirect}
+              />
+              <BitbucketLogin
+                label="Signup with Bitbucket"
+                redirect={this.props.redirect}
+              />
+              <GitLabLogin
+                label="Signup with GitLab"
+                redirect={this.props.redirect}
+              />
+            </Box>
+          )}
         </Box>
       </Box>
     );

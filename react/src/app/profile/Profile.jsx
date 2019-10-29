@@ -108,7 +108,7 @@ const Profile = React.memo(
             {hasGithubLogin ? (
               <Checkmark color="brand" />
             ) : (
-              <GithubLogin label="Link my GitHub account" multiple={false} redirect="/profile" />
+              <GithubLogin label="Link my GitHub account" redirect="/profile" />
             )}
           </Box>
         )}
@@ -118,7 +118,7 @@ const Profile = React.memo(
             {hasBitbucketLogin ? (
               <Checkmark color="brand" />
             ) : (
-              <BitbucketLogin label="Link my Bitbucket account" multiple={false} redirect="/profile" />
+              <BitbucketLogin label="Link my Bitbucket account" redirect="/profile" />
             )}
           </Box>
         )}
@@ -128,7 +128,7 @@ const Profile = React.memo(
             {hasGitLabLogin ? (
               <Checkmark color="brand" />
             ) : (
-              <GitLabLogin label="Link my GitLab account" multiple={false} redirect="/profile" />
+              <GitLabLogin label="Link my GitLab account" redirect="/profile" />
             )}
           </Box>
         )}

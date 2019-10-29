@@ -15,7 +15,6 @@ const BitbucketLogin = ({ label, multiple, redirect }) => {
   return (
     <React.Fragment>
       <Button
-        alignSelf="center"
         data-test-id="test-bitbucket"
         color="dark-2"
         label={label}
@@ -34,9 +33,10 @@ const BitbucketLogin = ({ label, multiple, redirect }) => {
 BitbucketLogin.propTypes = {
   label: PropTypes.string.isRequired,
   redirect: PropTypes.string,
-  multiple: PropTypes.bool.isRequired,
+  multiple: PropTypes.bool,
 };
 BitbucketLogin.defaultProps = {
   redirect: null,
+  multiple: false,
 };
 export default BitbucketLogin;

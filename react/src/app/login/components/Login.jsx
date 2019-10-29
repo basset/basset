@@ -63,24 +63,8 @@ export default class LoginPage extends React.PureComponent {
         <LogoContainer margin="medium">
           <Logo size="64px" />
         </LogoContainer>
-        <GithubLogin
-          label="Login with GitHub"
-          redirect={this.props.redirect}
-          multiple
-        />
-        <BitbucketLogin
-          label="Login with Bitbucket"
-          redirect={this.props.redirect}
-          multiple
-        />
-        <GitLabLogin
-          label="Login with GitLab"
-          redirect={this.props.redirect}
-          multiple
-        />
         <BoxContainer
           elevation="small"
-          height="medium"
           width="medium"
           pad="medium"
           gap="medium"
@@ -124,6 +108,20 @@ export default class LoginPage extends React.PureComponent {
             {this.props.error && this.renderError()}
           </Form>
           <Link alignSelf="center" href="/signup/" label="Sign up" />
+          <Box gap="small">
+            <GithubLogin
+              label="Login with GitHub"
+              redirect={this.props.redirect}
+            />
+            <BitbucketLogin
+              label="Login with Bitbucket"
+              redirect={this.props.redirect}
+            />
+            <GitLabLogin
+              label="Login with GitLab"
+              redirect={this.props.redirect}
+            />
+          </Box>
         </BoxContainer>
       </Box>
     );

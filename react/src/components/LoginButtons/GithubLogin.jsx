@@ -15,7 +15,6 @@ const GithubLogin = ({ label, multiple, redirect }) => {
   return (
     <React.Fragment>
       <Button
-        alignSelf="center"
         data-test-id="test-github"
         color="dark-2"
         label={label}
@@ -34,9 +33,10 @@ const GithubLogin = ({ label, multiple, redirect }) => {
 GithubLogin.propTypes = {
   label: PropTypes.string.isRequired,
   redirect: PropTypes.string,
-  multiple: PropTypes.bool.isRequired,
+  multiple: PropTypes.bool,
 };
 GithubLogin.defaultProps = {
+  multiple: false,
   redirect: null,
 };
 export default GithubLogin;
