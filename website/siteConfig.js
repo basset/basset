@@ -30,7 +30,7 @@ const siteConfig = {
   organizationName: 'basset',
   headerLinks: [
     { doc: 'getting-started', label: 'Docs' },
-    { page: 'api', label: 'API' },
+    { page: 'api/', label: 'API' },
     { blog: true, label: 'Blog' },
     { href: "https://github.com/basset/basset", label: "GitHub" },
   ],
