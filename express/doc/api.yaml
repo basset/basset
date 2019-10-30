@@ -1,0 +1,239 @@
+openapi: '3.0.0'
+info:
+  title: Basset Build API
+  version: 1.0.0
+paths:
+  /builds/start:
+    post:
+      security:
+        - TokenAuth: []
+      summary: 'Create a build'
+      operationId: createBuild
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              properties:
+                branch:
+                  type: string
+                  description: 'The branch used to create the snapshots'
+                commitSha:
+                  type: string
+                  description: 'The SHA1 from the current'
+                committerName:
+                  type: string
+                  description: 'The name from the current'
+                commiterEmail:
+                  type: string
+                  description: 'The email from the commit'
+                commitDate:
+                  type: string
+                  description: 'The commit date of the commit (YYYY-MM-DDThh-mm-ss-Z)'
+                  example: '2019-10-26T12:58:18-07:00'
+                authorName:
+                  type: string
+                  description: 'The author of the commit'
+                authorEmail:
+                  type: string
+                  description: 'The author email of the commit'
+                authorDate:
+                  type: string
+                  description: 'The author date of the commit (YYYY-MM-DDThh-mm-ss-Z)'
+                  example: '2019-10-26T12:58:18-07:00'
+                assets:
+                  $ref: '#/components/schemas/Assets'
+      responses:
+        '200':
+          description: Build object
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: 'The buildId from the build created'
+                  assets:
+                    $ref: '#/components/schemas/Assets'
+        '403':
+          description: Error
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+  /builds/upload/snapshot:
+    post:
+      security:
+        - TokenAuth: []
+      summary: 'Upload and create snapshot entry'
+      parameters:
+        - $ref: '#/components/parameters/xBuildId'
+        - $ref: '#/components/parameters/xRelativePath'
+        - $ref: '#/components/parameters/xSha'
+      requestBody:
+        content:
+          'multipart/form-data':
+            schema:
+              properties:
+                snapshot:
+                  required: true
+                  type: string
+                  format: binary
+                widths:
+                  type: string
+                  description: 'Single or Multiple (comma separated) width(s)'
+                  example: '1280, 720, 360'
+                title:
+                  type: string
+                  description: 'Title of the snapshot'
+                  required: true
+                selectors:
+                  type: string
+                  description: 'CSS selectors used to take a snapshot of elements'
+                hideSelectors:
+                  type: string
+                  description: 'CSS selectors used to hide elements'
+                browsers:
+                  type: string
+                  description: 'Browser(s) to render snapshots on (comma separated) firefox or chrome'
+                  example: 'firefox, chrome'
+      responses:
+        '200':
+          description: Uploaded object
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  uploaded:
+                    type: boolean
+                    description: 'Whether the snapshot was uploaded'
+        '403':
+          description: Error
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+  /builds/upload/asset:
+    post:
+      security:
+        - TokenAuth: []
+      summary: 'Upload an asset'
+      parameters:
+        - $ref: '#/components/parameters/xBuildId'
+        - $ref: '#/components/parameters/xRelativePath'
+        - $ref: '#/components/parameters/xSha'
+      requestBody:
+        content:
+          'multipart/form-data':
+            schema:
+              properties:
+                asset:
+                  required: true
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Uploaded object
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  uploaded:
+                    type: boolean
+                    description: 'Whether the snapshot was uploaded'
+        '403':
+          description: Error
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+  /builds/finish:
+    post:
+      security:
+        - TokenAuth: []
+      summary: 'Finish the build'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              properties:
+                buildId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Submitted object
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  submitted:
+                    type: boolean
+                    description: 'Whether the build was submitted'
+        '403':
+          description: Error
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    TokenAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: TOKEN
+  parameters:
+    Authorization:
+      in: header
+      name: Authorization
+      schema:
+        type: string
+      required: true
+      description: 'Token authorization from project'
+      example: 'Token <token>'
+    xBuildId:
+      in: header
+      name: X-BUILD-ID
+      schema:
+        type: string
+        format: uuid
+      required: true
+      description: 'The buildId from the created build'
+    xRelativePath:
+      in: header
+      name: X-RELATIVE-PATH
+      schema:
+        type: string
+      required: true
+      description: 'The relative path of the file'
+      example: 'path/to/file.png'
+    xSha:
+      in: header
+      name: X-SHA
+      schema:
+        type: string
+      required: true
+      description: 'The SHA1 of the file'
+  schemas:
+    Build:
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 'The error message'
+    Assets:
+      type: object
+      description: 'A HashTable of file names as the key and SHA1 as the value'
+      additionalProperties:
+        type: string
+      example:
+        'base/file/image.png': '1234abcdef'
+        'base/other/image.png': 'abcdef1234'
