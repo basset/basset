@@ -5,9 +5,6 @@
     "previous": "Previous",
     "tagline": "Visual regression testing platform",
     "docs": {
-      "api": {
-        "title": "API"
-      },
       "aws": {
         "title": "Setup on AWS"
       },
