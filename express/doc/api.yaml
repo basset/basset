@@ -69,6 +69,7 @@ paths:
       security:
         - TokenAuth: []
       summary: 'Upload and create snapshot entry'
+      operationId: uploadSnapshot
       parameters:
         - $ref: '#/components/parameters/xBuildId'
         - $ref: '#/components/parameters/xRelativePath'
@@ -122,6 +123,7 @@ paths:
       security:
         - TokenAuth: []
       summary: 'Upload an asset'
+      operationId: uploadAsset
       parameters:
         - $ref: '#/components/parameters/xBuildId'
         - $ref: '#/components/parameters/xRelativePath'
@@ -157,6 +159,7 @@ paths:
       security:
         - TokenAuth: []
       summary: 'Finish the build'
+      operationId: finishBuild
       requestBody:
         content:
           'application/json':
