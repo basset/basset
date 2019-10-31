@@ -22,7 +22,9 @@
     <script>
       __BASSET__ = {
         logins: {
-          github: <%= settings.oauth.strategy.github.use %>
+          github: <%= settings.oauth.strategy.github.use %>,
+          bitbucket: <%= settings.oauth.strategy.bitbucket.use %>,
+          gitlab: <%= settings.oauth.strategy.gitlab.use %>,
         },
         private: <%= settings.site.private %>
       }
