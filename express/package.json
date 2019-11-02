@@ -41,6 +41,7 @@
     "passport-github": "^1.1.0",
     "passport-gitlab2": "^5.0.0",
     "passport-local": "^1.0.0",
+    "passport-saml": "^1.2.0",
     "pg": "^7.11.0",
     "pg-native": "^3.0.0",
     "request": "^2.88.0",

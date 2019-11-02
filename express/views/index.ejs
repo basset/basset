@@ -26,7 +26,8 @@
           bitbucket: <%= settings.oauth.strategy.bitbucket.use %>,
           gitlab: <%= settings.oauth.strategy.gitlab.use %>,
         },
-        private: <%= settings.site.private %>
+        private: <%= settings.site.private %>,
+        saml: <%= settings.saml.enabled %>,
       }
     </script>
     <% if (settings.env === 'production') { %>

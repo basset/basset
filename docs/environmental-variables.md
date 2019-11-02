@@ -12,6 +12,20 @@ Here is a list of environmental variables Basset uses:
 | `OUTH_GITHUB` | set to 1 to enable Github integration |
 | `OAUTH_GITHUB_CLIENT_ID` | your Github Client ID |
 | `OAUTH_GITHUB_CLIENT_SECRET` | your Github Client Secret |
+| `OUTH_BITBUCKET` | set to 1 to enable Bitbucket integration |
+| `OAUTH_BITBUCKET_CLIENT_ID` | your Bitbucket Key |
+| `OAUTH_BITBUCKET_CLIENT_SECRET` | your Bitbucket Secret |
+| `OUTH_GITLAB` | set to 1 to enable Gitlab integration |
+| `OAUTH_GITLAB_CLIENT_ID` | your Gitlab Client ID |
+| `OAUTH_GITLAB_CLIENT_SECRET` | your Gitlab Client Secret |
+| `SAML_ENALBED` | set to 1 to enable SAML integration |
+| `SAML_ENTRY_POINT` | the identity provider entry point url  |
+| `SAML_AUTHN_CONTEXT` | set to specify an authn context |
+| `SAML_ISSUER` | set to specify the issuer |
+| `SAML_ATTR_DISPLAY_NAME` | the attribute in the SAML Response which maps to display name |
+| `SAML_ATTR_PROFILE_IMAGE` | the attribute in the SAML Response which maps to profile image |
+| `SAML_ATTR_EMAIL` | the attribute in the SAML Response which maps to email |
+| `SAML_ATTTR_ID` | the attribute in the SAML Response which maps to a unique identifier |
 | `MAIL_HOST` | the host used to send user emails |
 | `MAIL_PORT` | the port used to connect to the host |
 | `MAIL_EMAIL` | the email address used to send emails from |

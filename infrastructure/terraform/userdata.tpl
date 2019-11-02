@@ -6,6 +6,23 @@ echo export OAUTH_GITHUB=1 > /var/basset/.env
 echo export OAUTH_GITHUB_CLIENT_ID=ID >> /var/basset/.env
 echo export OAUTH_GITHUB_CLIENT_SECRET=SECRET >> /var/basset/.env
 
+echo export OAUTH_BITBUCKET=1 >> /var/basset/.env
+echo export OAUTH_BITBUCKET_CLIENT_ID=ID >> /var/basset/.env
+echo export OAUTH_BITBUCKET_CLIENT_SECRET=SECRET >> /var/basset/.env
+echo export OAUTH_GITLAB=1 >> /var/basset/.env
+echo export OAUTH_GITLAB_CLIENT_ID=ID >> /var/basset/.env
+echo export OAUTH_GITLAB_CLIENT_SECRET=SECRET >> /var/basset/.env
+
+echo export SAML_ENABLED=0 >> /var/basset/.env
+echo export SAML_ENTRY_POINT=url >> /var/basset/.env
+echo export SAML_ATTR_DISPLAY_NAME=displayname >> /var/basset/.env
+echo export SAML_ATTR_PROFILE_IMAGE=profileimage >> /var/basset/.env
+echo export SAML_ATTR_EMAIL=email >> /var/basset/.env
+echo export SAML_ATTTR_ID=nameID >> /var/basset/.env
+echo export SAML_CERT=nameID >> /var/basset/.env
+echo export SAML_AUTHN_CONTEXT="" >> /var/basset/.env
+echo export SAML_ISSUER="" >> /var/basset/.env
+
 echo export NODE_ENV=production >> /var/basset/.env
 
 echo export MAIL_HOST=localhost >> /var/basset/.env

@@ -10,6 +10,7 @@ import Notification from '../../../components/Notification/Notification.jsx';
 import GithubLogin from '../../../components/LoginButtons/GithubLogin.jsx';
 import BitbucketLogin from '../../../components/LoginButtons/BitbucketLogin.jsx';
 import GitLabLogin from '../../../components/LoginButtons/GitLabLogin.jsx';
+import SamlLogin from '../../../components/LoginButtons/SamlLogin.jsx';
 
 const LogoContainer = styled(Box)`
   min-height: 64px;
@@ -118,6 +119,10 @@ export default class LoginPage extends React.PureComponent {
             />
             <GitLabLogin
               label="Login with GitLab"
+              redirect={this.props.redirect}
+            />
+            <SamlLogin
+              label="Login with SAML"
               redirect={this.props.redirect}
             />
           </Box>

@@ -96,17 +96,13 @@ const saveRedirect = (req, res, next) => {
   return next();
 };
 
-app.get(
-  '/oauth/:provider(github|bitbucket|gitlab)',
-  saveRedirect,
-  (req, res, next) =>
-    passport.authenticate(req.params.provider)(req, res, next),
-);
-
-app.get(
-  '/oauth/:provider(github|bitbucket|gitlab)/callback',
+const redirect = (req, res) => {
+  res.redirect(req.session.redirect || '/');
+  req.session.redirect = '';
+};
+const authenticate = provider => (
   (req, res, next) => {
-    passport.authenticate(req.params.provider, (error, user, info) => {
+    passport.authenticate(provider, (error, user, info) => {
       if (error) {
         return res.status(500);
       }
@@ -121,13 +117,31 @@ app.get(
           return next(err);
         }
         return next();
-      });
-    })(req, res, next);
-  },
-  (req, res) => {
-    res.redirect(req.session.redirect || '/');
-    req.session.redirect = '';
-  },
+      })
+    })(req, res, next)
+  }
+);
+
+app.get(
+  '/oauth/:provider(github|bitbucket|gitlab)',
+  saveRedirect,
+  (req, res, next) =>
+    passport.authenticate(req.params.provider)(req, res, next),
+);
+app.get(
+  '/saml/',
+  saveRedirect,
+  passport.authenticate('saml')
+);
+app.post(
+  '/saml/callback',
+  authenticate('saml'),
+  redirect,
+);
+app.get(
+  '/oauth/:provider(github|bitbucket|gitlab)/callback',
+  (req, res, next) => authenticate(req.params.provider)(req, res, next),
+  redirect
 );
 
 app.use('/build', require('./routes/build'));
@@ -152,6 +166,6 @@ app.get('*', csrfProtection, (req, res) => {
   res.render(...render);
 });
 
-const render = ['index', { settings }];
+const render = ['index', {settings}];
 
 module.exports = app;
