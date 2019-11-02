@@ -213,7 +213,7 @@ const resolvers = {
             ...obj,
             [key]: value
           }),
-          { }
+          project.scmConfig
         );
       } else {
         scmConfig = project.scmConfig;

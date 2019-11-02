@@ -39,12 +39,12 @@ export class GithubIntegration extends React.PureComponent {
     showDelete: false,
     provider: this.props.project.scmProvider,
     isEditing: false,
-    scmConfig: this.props.project.scmConfig || {
-      repoName: '',
-      repoOwner: '',
-      repoSlug: '',
-      projectId: '',
-      username: '',
+    scmConfig: {
+      repoName: this.props.project.scmConfig.repoName || '',
+      repoOwner: this.props.project.scmConfig.repoOwner || '',
+      repoSlug: this.props.project.scmConfig.repoSlug || '',
+      projectId: this.props.project.scmConfig.projectId || '',
+      username: this.props.project.scmConfig.username || '',
     },
   };
 
@@ -63,9 +63,23 @@ export class GithubIntegration extends React.PureComponent {
     this.props.onToggleSCMActive(toggle);
   };
 
-  handleToggleEdit = () => {
+  handleEdit = () => {
     this.setState(state => ({
       isEditing: !state.isEditing,
+    }))
+  };
+
+  handleCancel = () => {
+    this.setState(state => ({
+      isEditing: false,
+      provider: this.props.project.scmProvider,
+      scmConfig: {
+        repoName: this.props.project.scmConfig.repoName || '',
+        repoOwner: this.props.project.scmConfig.repoOwner || '',
+        repoSlug: this.props.project.scmConfig.repoSlug || '',
+        projectId: this.props.project.scmConfig.projectId || '',
+        username: this.props.project.scmConfig.username || '',
+      },
     }))
   };
 
@@ -97,7 +111,7 @@ export class GithubIntegration extends React.PureComponent {
       }
       const usingProvider = this.props.project.hasToken && this.props.project.scmProvider === this.state.provider;
       if (!usingProvider) {
-        await this.props.onLinkToProvider(this.state.provider);
+        this.props.onLinkToProvider(this.state.provider);
       }
       this.props.onSave({
         scmProvider: this.state.provider,
@@ -107,6 +121,13 @@ export class GithubIntegration extends React.PureComponent {
 
     this.setState(state => ({
       isEditing: false,
+      scmConfig: {
+        repoName: this.props.project.scmConfig.repoName || '',
+        repoOwner: this.props.project.scmConfig.repoOwner || '',
+        repoSlug: this.props.project.scmConfig.repoSlug || '',
+        projectId: this.props.project.scmConfig.projectId || '',
+        username: this.props.project.scmConfig.username || '',
+      },
     }));
   };
 
@@ -149,10 +170,16 @@ export class GithubIntegration extends React.PureComponent {
     return (
       <React.Fragment>
         {render}
-        <Box direction="row" justify="end" align="center">
+        <Box direction="row" justify="end" align="center" gap="small">
+          <Button
+            onClick={this.handleCancel}
+            data-test-id="cancel"
+            label="Cancel"
+          />
           <Button
             onClick={this.handleSave}
             label="Save"
+            data-test-id="save"
           />
         </Box>
       </React.Fragment>
@@ -212,7 +239,7 @@ export class GithubIntegration extends React.PureComponent {
             <TextInput
               data-test-id="repo-owner-input"
               value={this.state.scmConfig.repoOwner}
-              onChange={event => this.handleChangeSCMConfigValue('repoName', event.target.value)}
+              onChange={event => this.handleChangeSCMConfigValue('repoOwner', event.target.value)}
             />
           </Box>
         </Box>
@@ -253,6 +280,7 @@ export class GithubIntegration extends React.PureComponent {
           <Text>Provider</Text>
           {this.state.isEditing ? (
             <Select
+              data-test-id="scm-provider-select"
               value={this.state.provider}
               onChange={this.handleChangeProvider}
               options={loginOptions}
@@ -261,11 +289,11 @@ export class GithubIntegration extends React.PureComponent {
             <React.Fragment>
             <Button
               data-test-id="edit-scm-provider"
-              onClick={this.handleToggleEdit}
+              onClick={this.handleEdit}
               disabled={this.props.isUpdating}
             >
               <Box direction="row" gap="small" align="center">
-                <Text>{this.props.project.scmProvider}</Text>
+                <Text data-test-id="scm-provider">{this.props.project.scmProvider}</Text>
               <Edit color="brand" />
               </Box>
             </Button>

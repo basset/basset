@@ -2,13 +2,11 @@ import React from 'react';
 import {
   fireEvent,
   cleanup,
-  getByTestId as _getByTestId,
   wait,
 } from 'react-testing-library';
 import { store, renderApp } from '../../../tests/render-redux.js';
 
 import * as organizationActions from '../../../redux/organizations/actions.js';
-import * as buildActions from '../../../redux/builds/actions.js';
 import * as userActions from '../../../redux/user/actions.js';
 import * as projectActions from '../../../redux/projects/actions.js';
 
@@ -23,12 +21,17 @@ jest.mock('../../../graphql/client.js', () => {
   };
 });
 
-import ApolloClient from '../../../graphql/client.js';
-
 afterEach(cleanup);
 
 describe('<Project />', () => {
   beforeEach(() => {
+    global.window.__BASSET__ = {
+      logins: {
+        github: true,
+        gitlab: false,
+        bitbucket: false,
+      },
+    };
     projectActions.saveProject = jest.fn(() => (dispatch, getState) => {});
     store.dispatch(
       userActions.receiveUser({
@@ -57,10 +60,12 @@ describe('<Project />', () => {
           defaultWidth: '1280',
           hasToken: true,
           key: 'randomkey',
-          provider: null,
-          repoActive: null,
-          repoName: null,
-          repoOwner: null,
+          scmProvider: null,
+          scmActive: null,
+          scmConfig: {
+            repoName: null,
+            repoOwner: null,
+          },
           slackActive: null,
           slackVariable: null,
           slackWebhook: null,
@@ -96,8 +101,6 @@ describe('<Project />', () => {
   test.each([
     ['name', 'basset', 'project-name'],
     ['defaultBranch', 'branchie', 'project-branch'],
-    ['repoName', 'me', 'repo-name'],
-    ['repoOwner', 'owner', 'repo-owner'],
     ['slackWebhook', 'webhook', 'slack-webhook'],
     ['slackVariable', 'var', 'slack-variable'],
     ['defaultWidth', '1280,720', 'project-widths'],
@@ -117,37 +120,7 @@ describe('<Project />', () => {
     fireEvent.submit(input);
     expect(projectActions.saveProject).toHaveBeenCalledWith({ [name]: value });
   });
-  test('setup github integration', async () => {
-    store.dispatch(
-      projectActions.receiveProjects([
-        {
-          id: '12345',
-          name: 'Basset',
-          browsers: 'firefox',
-          defaultBranch: 'master',
-          defaultWidth: '1280',
-          hasToken: false,
-          key: 'randomkey',
-          provider: null,
-          repoActive: null,
-          repoName: null,
-          repoOwner: null,
-          slackActive: null,
-          slackVariable: null,
-          slackWebhook: null,
-        },
-      ]),
-    );
-    store.dispatch(projectActions.setCurrentProject('12345'));
-    projectActions.linkToGitHub = jest.fn(() => (dispatch, getState) => {});
-    const { getByTestId } = renderApp(<Project />);
-    const configuration = getByTestId('project-configuration');
-    configuration.click();
-    const useGithub = getByTestId('setup-github');
-    useGithub.click();
-    expect(projectActions.linkToGitHub).toHaveBeenCalled();
-  });
-  test('github integration', async () => {
+  test('set github scm integration', async () => {
     store.dispatch(
       userActions.receiveUser({
         name: '',
@@ -164,12 +137,14 @@ describe('<Project />', () => {
           browsers: 'firefox',
           defaultBranch: 'master',
           defaultWidth: '1280',
-          hasToken: false,
+          hasToken: true,
           key: 'randomkey',
-          provider: null,
-          repoActive: null,
-          repoName: null,
-          repoOwner: null,
+          scmProvider: null,
+          scmActive: null,
+          scmConfig: {
+            repoName: null,
+            repoOwner: null,
+          },
           slackActive: null,
           slackVariable: null,
           slackWebhook: null,
@@ -177,49 +152,61 @@ describe('<Project />', () => {
       ]),
     );
     store.dispatch(projectActions.setCurrentProject('12345'));
-    projectActions.linkToGitHub = jest.fn(() => (dispatch, getState) => {});
-    const { getByTestId } = renderApp(<Project />);
+    projectActions.linkToProvider = jest.fn(() => (dispatch, getState) => {});
+    const { getByTestId, getByText, debug } = renderApp(<Project />);
     const configuration = getByTestId('project-configuration');
     configuration.click();
-    const useGithub = getByTestId('use-github');
-    useGithub.click();
-    expect(projectActions.linkToGitHub).toHaveBeenCalled();
+    const editScmProvider = getByTestId('edit-scm-provider');
+    const scmLabel = getByTestId('scm-provider');
+    expect(scmLabel.textContent).toEqual('');
+
+    editScmProvider.click();
+    const scmSelect = getByTestId('scm-provider-select');
+    scmSelect.click();
+    const github = getByText('github');
+    github.click();
+
+    const repoOwnerInput = getByTestId('repo-owner-input');
+    const repoNameInput = getByTestId('repo-name-input');
+    fireEvent.change(repoOwnerInput, {
+      target: {
+        value: 'basset-owner',
+      },
+    });
+    fireEvent.change(repoNameInput, {
+      target: {
+        value: 'basset-name',
+      },
+    });
+
+    const save = getByTestId('save');
+    save.click();
+    expect(projectActions.linkToProvider).toHaveBeenCalled();
+    expect(projectActions.saveProject).toHaveBeenCalledWith({
+      scmProvider: 'github',
+      scmConfig: {
+        repoName: 'basset-name',
+        repoOwner: 'basset-owner',
+      }
+    });
+
   });
-  test('remove github integration', () => {
-    projectActions.removeGithub = jest.fn(() => (dispatch, getState) => {});
+  test('toggle scm active', async () => {
     const { getByTestId } = renderApp(<Project />);
     const configuration = getByTestId('project-configuration');
     configuration.click();
-
-    const remove = getByTestId('remove-github');
-    remove.click();
-
-    const cancel = _getByTestId(document, 'cancel-remove-github');
-    cancel.click();
-    expect(projectActions.removeGithub).not.toHaveBeenCalled();
-
-    remove.click();
-
-    let confirm = _getByTestId(document, 'confirm-remove-github');
-    confirm.click();
-    expect(projectActions.removeGithub).toHaveBeenCalled();
-  });
-  test('toggle github active', async () => {
-    const { getByTestId } = renderApp(<Project />);
-    const configuration = getByTestId('project-configuration');
-    configuration.click();
-    const button = getByTestId('toggle-repo-active');
+    const button = getByTestId('toggle-scm-active');
     button.click();
     expect(projectActions.saveProject).toHaveBeenCalledWith({
-      repoActive: true,
+      scmActive: true,
     });
     store.dispatch(
       projectActions.updateProject({
-        repoActive: true,
+        scmActive: true,
       }),
     );
     await wait(
-      () => getByTestId('toggle-repo-active').attributes['checked'] === true,
+      () => getByTestId('toggle-scm-active').attributes['checked'] === true,
     );
   });
   test('toggle firefox', async () => {
@@ -234,10 +221,12 @@ describe('<Project />', () => {
           defaultWidth: '1280',
           hasToken: true,
           key: 'randomkey',
-          provider: null,
-          repoActive: null,
-          repoName: null,
-          repoOwner: null,
+          scmProvider: null,
+          scmActive: null,
+          scmConfig: {
+            repoName: null,
+            repoOwner: null,
+          },
           slackActive: null,
           slackVariable: null,
           slackWebhook: null,
