@@ -44,7 +44,7 @@ export default class CreateOrganization extends React.PureComponent {
           </Heading>
           <FormField
             data-test-id="create-organization-name-input"
-            label="name"
+            label="Name"
             name="name"
             type="text"
             value={this.props.name}

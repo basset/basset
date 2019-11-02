@@ -9,6 +9,14 @@ class Project extends BaseModel {
     this.key = crypto.randomBytes(16).toString('hex');
     return super.$beforeInsert(queryContext);
   }
+
+  static get TYPE() {
+    return {
+      WEB: 'web',
+      IMAGE: 'image',
+    };
+  }
+
   static get allowedBrowsers() {
     return ['firefox', 'chrome'];
   }

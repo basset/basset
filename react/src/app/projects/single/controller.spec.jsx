@@ -51,6 +51,7 @@ describe('<Project />', () => {
         {
           id: '12345',
           name: 'Basset',
+          type: 'web',
           browsers: 'firefox',
           defaultBranch: 'master',
           defaultWidth: '1280',
@@ -122,6 +123,7 @@ describe('<Project />', () => {
         {
           id: '12345',
           name: 'Basset',
+          type: 'web',
           browsers: 'firefox',
           defaultBranch: 'master',
           defaultWidth: '1280',
@@ -168,6 +170,7 @@ describe('<Project />', () => {
         {
           id: '12345',
           name: 'Basset',
+          type: 'web',
           browsers: 'firefox',
           defaultBranch: 'master',
           defaultWidth: '1280',
@@ -249,6 +252,7 @@ describe('<Project />', () => {
         {
           id: '12345',
           name: 'Basset',
+          type: 'web',
           browsers: 'chrome',
           defaultBranch: 'master',
           defaultWidth: '1280',

@@ -12,6 +12,7 @@ import {
 import Snapshot from './Snapshot.jsx';
 import SnapshotType from './SnapshotType.jsx';
 import Loader from '../../../components/Loader/Loader.jsx';
+import {getProject} from "../../../redux/projects/actions";
 
 class FoundSnapshots extends React.PureComponent {
   static propTypes = {
@@ -48,6 +49,7 @@ class FoundSnapshots extends React.PureComponent {
             onApprove={() => this.props.onApproveSnapshot(snapshot)}
             onExpand={() => this.props.onExpand(snapshot)}
             type={snapshot.type}
+            type={this.props.projectType}
             isApproving={this.props.isApproving}
           />
         ))}
@@ -59,6 +61,7 @@ class FoundSnapshots extends React.PureComponent {
 const mapState = state => {
   return {
     isApproving: getIsApproving(state),
+    projectType: getProject(state).type,
   };
 };
 

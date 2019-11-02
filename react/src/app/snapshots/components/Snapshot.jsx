@@ -16,6 +16,7 @@ class Snapshot extends React.PureComponent {
     isApproving: PropTypes.bool.isRequired,
     index: PropTypes.number,
     type: PropTypes.string,
+    projectType: PropTypes.string,
     onShrink: PropTypes.func,
     onExpand: PropTypes.func,
     onApprove: PropTypes.func,
@@ -192,6 +193,7 @@ class Snapshot extends React.PureComponent {
           view={this.state.view}
           onChangeView={this.handleChangeView}
           type={this.props.type}
+          projectType={this.props.projectType}
           isApproving={this.props.isApproving}
           onShowMoreFromGroup={this.props.onShowMoreFromGroup}
           onToggleFlake={this.props.onToggleFlake}

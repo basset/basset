@@ -68,7 +68,7 @@ paths:
     post:
       security:
         - TokenAuth: []
-      summary: 'Upload and create snapshot entry'
+      summary: 'Upload and create snapshot entry (for web based projects)'
       operationId: uploadSnapshot
       parameters:
         - $ref: '#/components/parameters/xBuildId'
@@ -101,6 +101,46 @@ paths:
                   type: string
                   description: 'Browser(s) to render snapshots on (comma separated) firefox or chrome'
                   example: 'firefox, chrome'
+      responses:
+        '200':
+          description: Uploaded object
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  uploaded:
+                    type: boolean
+                    description: 'Whether the snapshot was uploaded'
+        '403':
+          description: Error
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+  /builds/upload/image:
+    post:
+      security:
+        - TokenAuth: []
+      summary: 'Upload and create image entry (for image type projects)'
+      operationId: uploadImage
+      parameters:
+        - $ref: '#/components/parameters/xBuildId'
+        - $ref: '#/components/parameters/xRelativePath'
+        - $ref: '#/components/parameters/xSha'
+      requestBody:
+        content:
+          'multipart/form-data':
+            schema:
+              properties:
+                image:
+                  required: true
+                  type: string
+                  format: binary
+                title:
+                  type: string
+                  description: 'Title of the snapshot'
+                  required: true
       responses:
         '200':
           description: Uploaded object

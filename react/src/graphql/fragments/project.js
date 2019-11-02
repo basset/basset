@@ -3,6 +3,7 @@ fragment projectFragment on Project {
   id
   name
   key
+  type
   hasToken
   scmProvider
   scmConfig {

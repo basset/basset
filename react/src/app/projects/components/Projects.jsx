@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Box, Text } from 'grommet';
+import { Domain, Image } from 'grommet-icons';
 
 import {
   getProjects,
@@ -12,6 +13,7 @@ import {
 } from '../../../redux/projects/selectors.js';
 import { getCurrentOrganization } from '../../../redux/organizations/selectors.js';
 import { changeProject, loadMore } from '../../../redux/projects/actions.js';
+import { isWebProject, isImageProject } from '../helper.js';
 
 import LoadMoreButton from '../../../components/LoadMoreButton/LoadMoreButton.jsx';
 import Link from '../../../components/Link/Link.jsx';
@@ -25,6 +27,7 @@ export class Projects extends React.PureComponent {
       PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
       }).isRequired,
     ).isRequired,
     selectedProject: PropTypes.object,
@@ -112,6 +115,8 @@ export class Projects extends React.PureComponent {
               }
             >
               <Box
+                direction="row"
+                gap="small"
                 key={project.id}
                 pad="small"
                 border={{
@@ -119,7 +124,9 @@ export class Projects extends React.PureComponent {
                   color: 'light-4',
                 }}
               >
-                <Text>{project.name}</Text>
+                {isWebProject(project) && <Domain />}
+                {isImageProject(project) && <Image />}
+                <Text flex>{project.name}</Text>
               </Box>
             </Link.Button>
           ))}

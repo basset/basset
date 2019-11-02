@@ -5,11 +5,45 @@ const Project = require('../models/Project');
 const Asset = require('../models/Asset');
 const BuildAsset = require('../models/BuildAsset');
 const Snapshot = require('../models/Snapshot');
-const { uploadSnapshot, uploadAsset, deleteFile } = require('../utils/upload');
+const { uploadSnapshot, uploadAsset, deleteFile, uploadImage } = require('../utils/upload');
 const { verifySignature } = require('../utils/verify-hmac-signature');
 const { checkBuild, getProject, getToken } = require('../utils/build');
 
 const router = express.Router();
+
+
+const checkType = (type) => (req, res, next) => {
+  const project = req.locals.build.project;
+  if (project.type !== type) {
+    const error = `This endpoint is only for projects with type: ${type}`;
+    if (req.file) {
+      deleteFile(req.file.bucket, req.file.key);
+    }
+    return res.status(403).json({ error });
+  }
+  next();
+};
+
+const checkBody = (req, res, next) => {
+  const noTitle = !req.body.title || req.body.title.trim() === '';
+  const sha = req.headers['x-sha'];
+  if (!req.file || noTitle) {
+    let error;
+    if (noTitle) {
+      error = 'Title must be included';
+    }
+    if (!req.file) {
+      error = 'No file included';
+    } else {
+      deleteFile(req.file.bucket, req.file.key);
+    }
+    return res.status(403).json({ error });
+  }
+  if (!sha) {
+    return res.status(403).json({ error: 'Invalid headers'});
+  }
+  next();
+};
 
 router.post('/start', async (req, res) => {
   const project = await getProject(req);
@@ -35,6 +69,7 @@ router.post('/start', async (req, res) => {
 
   const compareBranch = req.body.compareBranch || null;
   const baseBuild = await build.getPreviousBuild({ project, compareBranch });
+  const responseData = {};
   let missingAssets = [];
 
   if (baseBuild) {
@@ -43,16 +78,19 @@ router.post('/start', async (req, res) => {
 
   build = await Build.create(data);
 
-  if (req.body.assets) {
-    missingAssets = await project.getMissingAssets(req.body.assets);
-    await project.createAssets(missingAssets);
-    await build.createAssets(project, req.body.assets);
+  if (project.type === Project.TYPE.WEB) {
+    if (req.body.assets) {
+      missingAssets = await project.getMissingAssets(req.body.assets);
+      await project.createAssets(missingAssets);
+      await build.createAssets(project, req.body.assets);
+    }
+    responseData.assets = missingAssets;
   }
+
   await build.started();
-  return res.json({
-    id: build.id,
-    assets: missingAssets,
-  });
+
+  responseData.id = build.id;
+  return res.json(responseData);
 });
 
 router.post('/finish', async (req, res) => {
@@ -87,6 +125,8 @@ router.post(
   '/upload/asset',
   checkBuild,
   uploadAsset.single('asset'),
+  checkBody,
+  checkType(Project.TYPE.IMAGE),
   async (req, res) => {
     const build = req.locals.build;
     if (!build || !req.file) {
@@ -137,29 +177,14 @@ router.post(
   '/upload/snapshot',
   checkBuild,
   uploadSnapshot.single('snapshot'),
+  checkBody,
+  checkType(Project.TYPE.WEB),
   async (req, res) => {
-    const build = req.locals.build;
-    const title = req.body.title;
-    const selector = req.body.selector || '';
-    const relativePath = req.headers['x-relative-path'] || 'base';
-    const sha = req.headers['x-sha'];
-    if (!build || !req.file || !title) {
-      let error = 'Invalid build';
-      if (!title) {
-        error = 'Title must be included';
-      }
-      if (!req.file) {
-        error = 'No file included';
-      } else {
-        deleteFile(req.file.bucket, req.file.key);
-      }
-      return res.status(403).json({ error });
-    }
-
     const project = req.locals.build.project;
-    if (!sha) {
-      return res.status(403).json({ error: 'Invalid headers' });
-    }
+    const build = req.locals.build;
+    const { title } = req.body;
+    const sha = req.headers['x-sha'];
+    const relativePath = req.headers['x-relative-path'] || 'base';
     let browsers = project.browsers.split(',');
     if (req.body.browsers && req.body.browsers.trim() !== '') {
       browsers = req.body.browsers
@@ -175,10 +200,12 @@ router.post(
         .split(',')
         .filter(w => w.trim() !== '' && !isNaN(parseInt(w, 10)));
     }
+
     let hideSelectors = project.hideSelectors;
     if (req.body.hideSelectors && req.body.hideSelectors.trim() !== '') {
       hideSelectors = req.body.hideSelectors;
     }
+
     let selectors = [''];
     if (req.body.selectors && req.body.selectors.trim() !== '') {
       selectors = req.body.selectors.split(',').map(s => s.trim());
@@ -196,7 +223,37 @@ router.post(
         hideSelectors,
         selectors,
         sourceLocation: req.file.location,
-        selector,
+        sha,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error });
+    }
+    return res.json({ uploaded: true });
+  },
+);
+
+router.post(
+  '/upload/image',
+  checkBuild,
+  uploadImage.single('image'),
+  checkBody,
+  checkType(Project.TYPE.IMAGE),
+  async (req, res) => {
+    const build = req.locals.build;
+    const { title } = req.body;
+    const sha = req.headers['x-sha'];
+
+    try {
+      await Snapshot.createSnapshots({
+        build,
+        title,
+        widths: [''],
+        browsers: [''],
+        relativePath: '',
+        hideSelectors: '',
+        selectors: [''],
+        imageLocation: req.file.location,
         sha,
       });
     } catch (error) {

@@ -9,6 +9,8 @@ import Notification from '../../../components/Notification/Notification.jsx';
 import InlineField from '../../../components/InlineField/InlineField.jsx';
 import Loader from '../../../components/Loader/Loader.jsx';
 
+import { isWebProject } from '../helper.js';
+
 export class Project extends React.PureComponent {
   static propTypes = {
     buildCount: PropTypes.number.isRequired,
@@ -87,22 +89,26 @@ export class Project extends React.PureComponent {
                 onSubmit={value => this.props.onSave('defaultBranch', value)}
                 isUpdating={this.props.isUpdating}
               />
-              <InlineField
-                testId="project-widths"
-                canChange={this.props.organization.admin}
-                title="Default widths (comma separated)"
-                value={this.props.project.defaultWidth}
-                onSubmit={value => this.props.onSave('defaultWidth', value)}
-                isUpdating={this.props.isUpdating}
-              />
-              <InlineField
-                testId="project-hide-selectors"
-                canChange={this.props.organization.admin}
-                title="Default hide selectors (comma separated)"
-                value={this.props.project.hideSelectors}
-                onSubmit={value => this.props.onSave('hideSelectors', value)}
-                isUpdating={this.props.isUpdating}
-              />
+              {isWebProject(this.props.project) && (
+                <React.Fragment>
+                  <InlineField
+                    testId="project-widths"
+                    canChange={this.props.organization.admin}
+                    title="Default widths (comma separated)"
+                    value={this.props.project.defaultWidth}
+                    onSubmit={value => this.props.onSave('defaultWidth', value)}
+                    isUpdating={this.props.isUpdating}
+                  />
+                  <InlineField
+                    testId="project-hide-selectors"
+                    canChange={this.props.organization.admin}
+                    title="Default hide selectors (comma separated)"
+                    value={this.props.project.hideSelectors}
+                    onSubmit={value => this.props.onSave('hideSelectors', value)}
+                    isUpdating={this.props.isUpdating}
+                  />
+                </React.Fragment>
+              )}
               <Box
                 margin={{ vertical: 'small' }}
                 direction="row"
@@ -111,50 +117,52 @@ export class Project extends React.PureComponent {
                 <Text>Api key</Text>
                 <Text>{this.props.project.key}</Text>
               </Box>
-              <Box fill="horizontal">
-                <Heading level={5}>
-                  Default browsers (at least one required)
-                </Heading>
-                <Box
-                  margin={{ vertical: 'small' }}
-                  direction="row"
-                  justify="between"
-                >
-                  <Box direction="row" align="center" gap="small">
-                    <Firefox color="plain" /> Firefox
+              {isWebProject(this.props.project) && (
+                <Box fill="horizontal">
+                  <Heading level={5}>
+                    Default browsers (at least one required)
+                  </Heading>
+                  <Box
+                    margin={{ vertical: 'small' }}
+                    direction="row"
+                    justify="between"
+                  >
+                    <Box direction="row" align="center" gap="small">
+                      <Firefox color="plain" /> Firefox
+                    </Box>
+                    <CheckBox
+                      data-test-id="toggle-firefox"
+                      checked={this.hasBrowser('firefox')}
+                      onChange={this.handleToggleBrowser('firefox')}
+                      disabled={
+                        this.props.isUpdating || !this.props.organization.admin
+                      }
+                      reverse
+                      toggle
+                    />
                   </Box>
-                  <CheckBox
-                    data-test-id="toggle-firefox"
-                    checked={this.hasBrowser('firefox')}
-                    onChange={this.handleToggleBrowser('firefox')}
-                    disabled={
-                      this.props.isUpdating || !this.props.organization.admin
-                    }
-                    reverse
-                    toggle
-                  />
-                </Box>
-                <Box
-                  margin={{ vertical: 'small' }}
-                  direction="row"
-                  justify="between"
-                  align="center"
-                >
-                  <Box direction="row" align="center" gap="small">
-                    <Chrome color="plain" /> Chrome
+                  <Box
+                    margin={{ vertical: 'small' }}
+                    direction="row"
+                    justify="between"
+                    align="center"
+                  >
+                    <Box direction="row" align="center" gap="small">
+                      <Chrome color="plain" /> Chrome
+                    </Box>
+                    <CheckBox
+                      data-test-id="toggle-chrome"
+                      checked={this.hasBrowser('chrome')}
+                      onChange={this.handleToggleBrowser('chrome')}
+                      disabled={
+                        this.props.isUpdating || !this.props.organization.admin
+                      }
+                      reverse
+                      toggle
+                    />
                   </Box>
-                  <CheckBox
-                    data-test-id="toggle-chrome"
-                    checked={this.hasBrowser('chrome')}
-                    onChange={this.handleToggleBrowser('chrome')}
-                    disabled={
-                      this.props.isUpdating || !this.props.organization.admin
-                    }
-                    reverse
-                    toggle
-                  />
                 </Box>
-              </Box>
+              )}
               <Integration />
             </Box>
           </Tab>

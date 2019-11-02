@@ -18,9 +18,12 @@ def get_sha1(bytes):
     return hash.hexdigest()
 
 
+def get_image(image_path):
+    key = urlparse(image_path).path.split('/', 2)[2]
+    return get_file(key)
+
 def diff_snapshot(snapshot, organization_id, project_id, build_id, browser, title, width, compare_snapshot, flake_sha_list, save_snapshot=False):
-    snapshot_key = urlparse(compare_snapshot).path.split('/', 2)[2]
-    old_snapshot = get_file(snapshot_key)
+    old_snapshot = get_image(compare_snapshot)
     diff_snapshot, difference, diff_pixels = compare(old_snapshot, snapshot)
     snapshot_location = compare_snapshot
     key_path = '{}/{}/{}'.format(organization_id, project_id, build_id)

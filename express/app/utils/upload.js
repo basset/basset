@@ -3,6 +3,7 @@ const multerS3 = require('multer-s3');
 const mime = require('mime-types');
 const crypto = require('crypto');
 const uuidv4 = require('uuid/v4');
+const path = require('path');
 
 const { getAssetsPath } = require('./build');
 const transformer = require('./stream-transformer');
@@ -49,6 +50,7 @@ const getSnapshotContentType = (req, file, cb) => {
   const stream = transformer.transformHTML(req.locals.assets, url, currentPath);
   cb(null, 'text/html', file.stream.pipe(stream));
 };
+
 const getSnapshotKey = (req, file, cb) => {
   const build = req.locals.build;
   const randomValue = crypto.randomBytes(16).toString('hex');
@@ -63,10 +65,29 @@ const getSnapshotKey = (req, file, cb) => {
 
 const uploadSnapshot = multer({
   storage: multerS3({
-    s3: s3,
+    s3,
     bucket: settings.s3.assetsBucket,
     contentType: getSnapshotContentType,
     key: getSnapshotKey,
+  }),
+});
+
+const getImageKey = (req, file, cb) => {
+  const build = req.locals.build;
+  const randomValue = crypto.randomBytes(16).toString('hex');
+  let key = `${build.organizationId}/${build.projectId}/${
+    build.id
+  }/images/${randomValue}${path.extname(file.originalname)}`;
+  console.log(`uploading: ${key}`);
+
+  cb(null, key);
+};
+
+const uploadImage = multer({
+  storage: multerS3({
+    s3,
+    bucket: settings.s3.screenshotBucket,
+    key: getImageKey,
   }),
 });
 
@@ -105,7 +126,7 @@ const getAssetKey = (req, file, cb) => {
 
 const uploadAsset = multer({
   storage: multerS3({
-    s3: s3,
+    s3,
     bucket: settings.s3.assetsBucket,
     contentType: getAssetContentType,
     key: getAssetKey,
@@ -147,6 +168,7 @@ const copySnapshotDiffToFlake = async (snapshotDiff, snapshot) => {
 module.exports = {
   uploadSnapshot,
   uploadAsset,
+  uploadImage,
   deleteFile,
   checkBucket,
   createBucket,
@@ -154,5 +176,6 @@ module.exports = {
   getAssetKey,
   getSnapshotContentType,
   getSnapshotKey,
+  getImageKey,
   copySnapshotDiffToFlake,
 };
