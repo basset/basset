@@ -120,6 +120,44 @@ describe('<Project />', () => {
     fireEvent.submit(input);
     expect(projectActions.saveProject).toHaveBeenCalledWith({ [name]: value });
   });
+  test('enable github integration', async () => {
+    store.dispatch(
+      projectActions.receiveProjects([
+        {
+          id: '12345',
+          name: 'Basset',
+          browsers: 'firefox',
+          defaultBranch: 'master',
+          defaultWidth: '1280',
+          hasToken: false,
+          key: 'randomkey',
+          scmProvider: null,
+          scmActive: null,
+          scmConfig: {
+            repoName: null,
+            repoOwner: null,
+          },
+          slackActive: null,
+          slackVariable: null,
+          slackWebhook: null,
+        },
+      ]),
+    );
+    store.dispatch(projectActions.setCurrentProject('12345'));
+    projectActions.linkToProvider = jest.fn(() => (dispatch, getState) => {});
+    const { getByTestId, getByText } = renderApp(<Project />);
+    const configuration = getByTestId('project-configuration');
+    configuration.click();
+    const editScmProvider = getByTestId('edit-scm-provider');
+    editScmProvider.click();
+    const scmSelect = getByTestId('scm-provider-select');
+    scmSelect.click();
+    const github = getByText('github');
+    github.click();
+    const useSCM = getByTestId('setup-scm');
+    useSCM.click();
+    expect(projectActions.linkToProvider).toHaveBeenCalled();
+  });
   test('set github scm integration', async () => {
     store.dispatch(
       userActions.receiveUser({
