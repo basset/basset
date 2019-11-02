@@ -95,25 +95,31 @@ const loginUserWithProvider = async ({ req, userInfo, providerInfo }) => {
         await trx.rollback();
         return { error: 'Account is inactive.' };
       }
-      if (user.providers.length == 0) {
+      const foundProvider = user.providers.find(
+        p =>
+          p.providerId === providerInfo.providerId && p.provider === p.provider,
+      );
+      if (foundProvider) {
+        await Project.updateSCMToken(
+          trx,
+          user,
+          foundProvider,
+          providerInfo.token,
+        );
+        await foundProvider.$query(trx).update({
+          ...providerInfo,
+        });
+      } else {
         await UserProvider.query(trx).insert({
           ...providerInfo,
           userId: user.id,
         });
-      } else {
-        await Project.updateSCMToken(
-          trx,
-          user,
-          user.providers[0],
-          providerInfo.token,
-        );
-        await user.providers[0].$query(trx).update({
-          ...providerInfo,
+      }
+      if (!user.profileImage) {
+        await user.$query(trx).update({
+          profileImage: userInfo.profileImage,
         });
       }
-      await user.$query(trx).update({
-        profileImage: userInfo.profileImage,
-      });
       await trx.commit();
       return { user: await updateUserLogin(user) };
     }

@@ -30,7 +30,7 @@ const siteConfig = {
   organizationName: 'basset',
   headerLinks: [
     { doc: 'getting-started', label: 'Docs' },
-    { doc: 'api', label: 'API' },
+    { page: 'api/', label: 'API' },
     { blog: true, label: 'Blog' },
     { href: "https://github.com/basset/basset", label: "GitHub" },
   ],
@@ -75,6 +75,8 @@ const siteConfig = {
   enableUpdateTime: false,
 
   repoUrl: 'https://github.com/basset/basset',
+
+  wrapPagesHTML: true,
 };
 
 module.exports = siteConfig;

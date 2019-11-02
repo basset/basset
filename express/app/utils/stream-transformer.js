@@ -17,7 +17,7 @@ const replaceUrl = (assets, str, assetsUrl, relativePath) => {
         asset.sha,
       )})`;
       if (settings.s3.privateAssets) {
-        url = `${url}?token=${settings.token})`
+        url = `${url}?token=${settings.token})`;
       }
       return url;
     }
@@ -46,14 +46,14 @@ const transformHTML = (assets, assetsUrl, relativePath) => {
     if (!validPath.test(attribute)) {
       const asset = findAsset(assets, attribute);
       if (asset) {
-        let url = `${assetsUrl}/${getAssetsPath(asset.relativePath, asset.sha)}`;
+        let url = `${assetsUrl}/${getAssetsPath(
+          asset.relativePath,
+          asset.sha,
+        )}`;
         if (settings.s3.privateAssets) {
-          url = `${url}?token=${settings.token})`
+          url = `${url}?token=${settings.token})`;
         }
-        element.setAttribute(
-          name,
-          url,
-        );
+        element.setAttribute(name, url);
       }
     }
   };

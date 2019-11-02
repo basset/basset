@@ -1,15 +1,15 @@
 import React from 'react';
-import { Box, Heading } from 'grommet';
+import { Heading } from 'grommet';
 
-import GithubIntegration from './Github.jsx';
 import SlackIntegration from './Slack.jsx';
+import SourceControlManagement from './SourceControlManagement.jsx';
 
 export class Integration extends React.PureComponent {
   render() {
     return (
       <React.Fragment>
         <Heading level={3}>Integrations</Heading>
-        <GithubIntegration />
+        <SourceControlManagement />
         <SlackIntegration />
       </React.Fragment>
     );

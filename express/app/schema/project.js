@@ -5,6 +5,13 @@ const { paginateQuery } = require('../utils/graphql/paginate');
 const { getModelLoader, primeLoaders } = require('../utils/graphql/dataloader');
 
 const typeDefs = `
+type SCMConfig {
+  repoName: String
+  repoOwner: String
+  projectId: String
+  username: String
+  repoSlug: String
+}
 enum ProjectType {
   web
   image
@@ -15,10 +22,9 @@ type Project implements Node {
   name: String
   type: ProjectType
   key: String
-  provider: String
-  repoOwner: String
-  repoName: String
-  repoActive: Boolean
+  scmProvider: String
+  scmConfig: SCMConfig
+  scmActive: Boolean
   hasToken: Boolean
   defaultBranch: String
   defaultWidth: String
@@ -43,11 +49,19 @@ extend type Query {
   projects(first: Int, last: Int, after: String, before: String, organizationId: ID!): ProjectConnection @authField @cost(multipliers: ["first", "last"], complexity: 1)
   project(id: ID!): Project @authField
 }
-input ProjectInput {
-  name: String
+
+input SCMConfigInput {
   repoName: String
   repoOwner: String
-  repoActive: Boolean
+  projectId: String
+  username: String
+  repoSlug: String
+}
+input ProjectInput {
+  name: String
+  scmProvider: String
+  scmConfig: SCMConfigInput
+  scmActive: Boolean
   defaultBranch: String
   defaultWidth: String
   browsers: String
@@ -155,8 +169,8 @@ const resolvers = {
         throw new Error(`You do not have a ${provider} integration setup`);
       }
       return project.$query().updateAndFetch({
-        repoToken: token,
-        provider,
+        scmToken: token,
+        scmProvider: provider,
       });
     },
     unlinkProviderToProject: async (
@@ -180,8 +194,8 @@ const resolvers = {
       }
 
       return project.$query().updateAndFetch({
-        repoToken: null,
-        provider: null,
+        scmToken: null,
+        scmProvider: null,
       });
     },
     editProject: async (object, { id, projectInput }, context, info) => {
@@ -198,14 +212,28 @@ const resolvers = {
       if (!(await project.canEdit(user))) {
         throw new Error('You do not have permission to edit projects.');
       }
+      let scmConfig;
+      if (projectInput.scmConfig) {
+        const entries = Object.entries(projectInput.scmConfig).filter(([key]) =>
+          Project.scmProviderKeys.includes(key),
+        );
+        scmConfig = entries.reduce(
+          (obj, [key, value]) => ({
+            ...obj,
+            [key]: value,
+          }),
+          project.scmConfig,
+        );
+      } else {
+        scmConfig = project.scmConfig;
+      }
 
       return project.$query().updateAndFetch({
         name: projectInput.name || project.name,
-        repoOwner: projectInput.repoOwner || project.repoOwner,
-        repoName: projectInput.repoName || project.repoName,
-        repoActive: projectInput.hasOwnProperty('repoActive')
-          ? projectInput.repoActive
-          : project.repoActive,
+        scmConfig: JSON.stringify(scmConfig),
+        scmActive: projectInput.hasOwnProperty('scmActive')
+          ? projectInput.scmActive
+          : project.scmActive,
         defaultBranch: projectInput.defaultBranch || project.defaultBranch,
         defaultWidth: projectInput.defaultWidth || project.defaultWidth,
         browsers: projectInput.browsers || project.browsers,

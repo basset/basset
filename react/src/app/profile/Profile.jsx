@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Heading, Button, TextInput, Text, Form } from 'grommet';
+import { Checkmark } from 'grommet-icons';
 
 import Notification from '../../components/Notification/Notification.jsx';
 import InlineField from '../../components/InlineField/InlineField.jsx';
-import GithubLogin from '../../components/GithubLogin/GithubLogin.jsx';
+import GithubLogin from '../../components/LoginButtons/GithubLogin.jsx';
+import BitbucketLogin from '../../components/LoginButtons/BitbucketLogin.jsx';
+import GitLabLogin from '../../components/LoginButtons/GitLabLogin.jsx';
 
 const Profile = React.memo(
   ({
@@ -21,8 +24,12 @@ const Profile = React.memo(
     onSavePassword,
     onChangePassword,
   }) => {
-    const gitHubEnabled = __BASSET__.logins.github;
+    const loginsEnabled = __BASSET__.logins;
     const hasGithubLogin = user.providers.some(p => p.provider === 'github');
+    const hasBitbucketLogin = user.providers.some(
+      p => p.provider === 'bitbucket',
+    );
+    const hasGitLabLogin = user.providers.some(p => p.provider === 'gitlab');
     return (
       <Box pad="medium" width="large">
         {changePasswordSuccess && (
@@ -96,16 +103,37 @@ const Profile = React.memo(
             </Box>
           )}
         </Box>
-        <Heading level={4}>Login methods</Heading>
-        {gitHubEnabled && (
-          <Box direction="row" justify="between">
+        <Heading level={4}>Linked accounts for login</Heading>
+        {loginsEnabled.github && (
+          <Box direction="row" justify="between" align="center">
             <Text margin={{ vertical: 'small' }}>Github</Text>
             {hasGithubLogin ? (
-              <React.Fragment>Your github account is linked</React.Fragment>
+              <Checkmark color="brand" />
             ) : (
-              <React.Fragment>
-                <GithubLogin label="Link my github account" multiple={false} />
-              </React.Fragment>
+              <GithubLogin label="Link my GitHub account" redirect="/profile" />
+            )}
+          </Box>
+        )}
+        {loginsEnabled.bitbucket && (
+          <Box direction="row" justify="between" align="center">
+            <Text margin={{ vertical: 'small' }}>Bitbucket</Text>
+            {hasBitbucketLogin ? (
+              <Checkmark color="brand" />
+            ) : (
+              <BitbucketLogin
+                label="Link my Bitbucket account"
+                redirect="/profile"
+              />
+            )}
+          </Box>
+        )}
+        {loginsEnabled.gitlab && (
+          <Box direction="row" justify="between" align="center">
+            <Text margin={{ vertical: 'small' }}>GitLab</Text>
+            {hasGitLabLogin ? (
+              <Checkmark color="brand" />
+            ) : (
+              <GitLabLogin label="Link my GitLab account" redirect="/profile" />
             )}
           </Box>
         )}

@@ -18,9 +18,11 @@ describe('status integration', () => {
   beforeAll(async () => {
     organization = await createOrganization('builder');
     project = await createProject('testr', organization.id, {
-      repoOwner: 'bassetio',
-      repoName: 'basset',
-      repoToken: 'repoToken',
+      scmConfig: JSON.stringify({
+        repoOwner: 'bassetio',
+        repoName: 'basset',
+      }),
+      scmToken: 'repoToken',
     });
     build = await createBuild('master', project, { commitSha: 'sha1' });
   });

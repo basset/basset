@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { Model } = require('objection');
 const BaseModel = require('./BaseModel');
 const Asset = require('./Asset');
+const { getSCM } = require('../integrations/scm');
 
 class Project extends BaseModel {
   $beforeInsert(queryContext) {
@@ -24,6 +25,10 @@ class Project extends BaseModel {
     return 'project';
   }
 
+  static get scmProviderKeys() {
+    return ['repoOwner', 'repoName', 'repoSlug', 'username', 'projectId'];
+  }
+
   get hasSlack() {
     return (
       !!this.slackActive &&
@@ -34,18 +39,19 @@ class Project extends BaseModel {
 
   get hasSCM() {
     return (
-      !!this.repoActive &&
-      !!this.repoName &&
-      this.repoName.trim() !== '' &&
-      !!this.repoOwner &&
-      this.repoOwner.trim() !== '' &&
-      !!this.provider &&
-      this.provider.trim() !== ''
+      !!this.scmActive &&
+      !!this.scmConfig &&
+      !!this.scmProvider &&
+      this.scmProvider.trim() !== ''
     );
   }
 
+  get scm() {
+    return getSCM(this);
+  }
+
   get hasToken() {
-    return !!this.repoToken && this.repoToken.trim() !== '';
+    return !!this.scmToken && this.scmToken.trim() !== '';
   }
 
   async canRead(user) {
@@ -106,9 +112,10 @@ class Project extends BaseModel {
     const organizations = await user.$relatedQuery('organizations');
     return this.query(trx)
       .whereIn('project.organizationId', organizations.map(o => o.id))
-      .where('repoToken', providerRow.token)
+      .where('scmToken', providerRow.token)
+      .andWhere('scmProvider', providerRow.provider)
       .update({
-        repoToken: token,
+        scmToken: token,
       });
   }
   static authorizationFilter(user) {
@@ -166,8 +173,6 @@ class Project extends BaseModel {
       properties: {
         id: { type: 'integer' },
         name: { type: 'string', minLength: 1, maxLength: 255 },
-        repoName: { type: ['string', 'null'], minLength: 1, maxLength: 100 },
-        repoOwner: { type: ['string', 'null'], minLength: 1, maxLength: 39 },
         createdAt: { type: 'string' },
         updatedAt: { type: 'string' },
       },

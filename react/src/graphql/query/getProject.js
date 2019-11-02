@@ -1,25 +1,11 @@
 import gql from 'graphql-tag';
+import projectFragment from '../fragments/project.js';
 
 export default gql`
+  ${projectFragment}
   query project($id: ID!) {
     project(id: $id) {
-      id
-      type
-      name
-      key
-      hasToken
-      provider
-      repoOwner
-      repoName
-      repoActive
-      defaultBranch
-      defaultWidth
-      browsers
-      slackWebhook
-      slackActive
-      slackVariable
-      hideSelectors
-      organizationId
+      ...projectFragment
     }
   }
 `;

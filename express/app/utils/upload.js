@@ -10,7 +10,9 @@ const transformer = require('./stream-transformer');
 const settings = require('../settings');
 const s3 = require('../utils/s3config');
 
-const assetsUrl = settings.s3.privateAssets ? `/snapshot_source` : `${settings.s3.endpoint}/${settings.s3.assetsBucket}`;
+const assetsUrl = settings.s3.privateAssets
+  ? `/snapshot_source`
+  : `${settings.s3.endpoint}/${settings.s3.assetsBucket}`;
 
 const createBucket = async bucket => {
   try {
