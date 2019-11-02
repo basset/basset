@@ -35,7 +35,13 @@ describe('Build', () => {
   let organization, otherOrganization;
   let project, project2, otherProject;
   let build, build2, build3, otherBuild;
-  let fakeProject = { hasSCM: true, scmProvider: 'github', get scm() { return github } };
+  let fakeProject = {
+    hasSCM: true,
+    scmProvider: 'github',
+    get scm() {
+      return github;
+    },
+  };
 
   beforeAll(async () => {
     user = await createUser('snapshot@snapshotmodel.io');
@@ -113,7 +119,10 @@ describe('Build', () => {
     expect(github.snapshotsNeedApproving).not.toHaveBeenCalled();
 
     await build.notifyChanges(0, fakeProject);
-    expect(github.snapshotsNeedApproving).toHaveBeenCalledWith(fakeProject, build);
+    expect(github.snapshotsNeedApproving).toHaveBeenCalledWith(
+      fakeProject,
+      build,
+    );
     expect(slack.notifySnapshotsNeedApproving).not.toHaveBeenCalled();
     const p = { ...fakeProject, hasSlack: true };
     await build.notifyChanges(0, p);

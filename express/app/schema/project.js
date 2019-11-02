@@ -207,13 +207,15 @@ const resolvers = {
       }
       let scmConfig;
       if (projectInput.scmConfig) {
-        const entries = Object.entries(projectInput.scmConfig).filter(([key]) => Project.scmProviderKeys.includes(key));
+        const entries = Object.entries(projectInput.scmConfig).filter(([key]) =>
+          Project.scmProviderKeys.includes(key),
+        );
         scmConfig = entries.reduce(
           (obj, [key, value]) => ({
             ...obj,
-            [key]: value
+            [key]: value,
           }),
-          project.scmConfig
+          project.scmConfig,
         );
       } else {
         scmConfig = project.scmConfig;

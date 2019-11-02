@@ -42,9 +42,8 @@ const bitbucketLoginStrategy = async (
   accessToken,
   refreshToken,
   profile,
-  done
+  done,
 ) => {
-
   const providerInfo = {
     providerId: profile.id,
     provider: 'bitbucket',
@@ -61,14 +60,13 @@ const bitbucketLoginStrategy = async (
     profileImage,
   };
   await tryLoginWithProvider(req, userInfo, providerInfo, done);
-
 };
 const gitLabLoginStrategy = async (
   req,
   accessToken,
   refreshToken,
   profile,
-  done
+  done,
 ) => {
   const providerInfo = {
     providerId: profile.id,
@@ -113,8 +111,6 @@ const githubLoginStrategy = async (
   await tryLoginWithProvider(req, userInfo, providerInfo, done);
 };
 
-
-
 passport.use(new LocalStrategy({ usernameField: 'email' }, localLoginStrategy));
 
 if (settings.oauth.strategy.github.use) {
@@ -142,8 +138,8 @@ if (settings.oauth.strategy.bitbucket.use) {
         passReqToCallback: true,
       },
       bitbucketLoginStrategy,
-    )
-  )
+    ),
+  );
 }
 
 if (settings.oauth.strategy.gitlab.use) {
@@ -156,8 +152,8 @@ if (settings.oauth.strategy.gitlab.use) {
         passReqToCallback: true,
       },
       gitLabLoginStrategy,
-    )
-  )
+    ),
+  );
 }
 
 passport.serializeUser((user, done) => done(null, user.id));

@@ -47,7 +47,6 @@ const getBaseSHA = async (project, sha) => {
   return null;
 };
 
-
 module.exports = {
   getBaseSHA,
   getPullRequests,

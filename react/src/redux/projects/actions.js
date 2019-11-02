@@ -118,7 +118,10 @@ export const changeProject = ({ id }) => async (dispatch, getState) => {
   await dispatch(getBuilds());
 };
 
-export const linkProjectToProvider = (projectId, provider) => async (dispatch, getState) => {
+export const linkProjectToProvider = (projectId, provider) => async (
+  dispatch,
+  getState,
+) => {
   dispatch(isUpdating());
   try {
     const { data } = await ApolloClient.mutate({
@@ -139,7 +142,7 @@ export const linkProjectToProvider = (projectId, provider) => async (dispatch, g
   }
 };
 
-export const linkToProvider = (provider) => async (dispatch, getState) => {
+export const linkToProvider = provider => async (dispatch, getState) => {
   const state = getState();
   const { currentProjectId } = state.projects;
   const user = getUser(state);

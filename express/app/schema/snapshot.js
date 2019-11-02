@@ -331,7 +331,10 @@ const resolvers = {
     },
   },
   Snapshot: {
-    url: (snapshot, args, context, info) => settings.s3.privateScreenshots ? `/screenshots/${snapshot.id}` : snapshot.imageLocation,
+    url: (snapshot, args, context, info) =>
+      settings.s3.privateScreenshots
+        ? `/screenshots/${snapshot.id}`
+        : snapshot.imageLocation,
     build: (snapshot, args, context, info) =>
       getModelLoader(context, Build).load(snapshot.buildId),
     organization: (snapshot, args, context, info) =>
@@ -362,10 +365,16 @@ const resolvers = {
       ),
   },
   SnapshotDiff: {
-    url: (snapshotDiff, args, context, info) => settings.s3.privateScreenshots ? `/screenshots/${snapshotDiff.id}` : snapshotDiff.imageLocation,
+    url: (snapshotDiff, args, context, info) =>
+      settings.s3.privateScreenshots
+        ? `/screenshots/${snapshotDiff.id}`
+        : snapshotDiff.imageLocation,
   },
   SnapshotFlake: {
-    url: (snapshotFlake, args, context, info) => settings.s3.privateScreenshots ? `/screenshots/${snapshotFlake.id}` : snapshotFlake.imageLocation,
+    url: (snapshotFlake, args, context, info) =>
+      settings.s3.privateScreenshots
+        ? `/screenshots/${snapshotFlake.id}`
+        : snapshotFlake.imageLocation,
     createdBy: (snapshotFlake, args, context, info) =>
       snapshotFlake.createdById
         ? getModelLoader(context, OrganizationMember).load(

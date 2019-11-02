@@ -56,7 +56,6 @@ export default class LoginPage extends React.PureComponent {
   );
 
   render() {
-
     return (
       <Box fill basis="80%" direction="column" align="center" justify="center">
         {this.props.requestError && this.renderRequestError()}

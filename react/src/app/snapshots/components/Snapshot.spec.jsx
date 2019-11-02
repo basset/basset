@@ -91,7 +91,7 @@ describe('<Snapshot />', () => {
     expect(getAllByTestId('snapshot')).toHaveLength(1);
     expect(queryAllByTestId('snapshot-overlay')).toHaveLength(0);
     expect(getByTestId('snapshot').getAttribute('src')).toEqual(
-      'previousSnapshot'
+      'previousSnapshot',
     );
   });
   test('show only the new snapshot', () => {

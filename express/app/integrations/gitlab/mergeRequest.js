@@ -36,7 +36,6 @@ const getBaseSHA = async (project, sha) => {
     sha,
   });
   if (mergeRequest && mergeRequest.length > 0) {
-
     const mergeRequestData = await getMergeRequest({
       token: project.scmToken,
       projectId: project.scmConfig.projectId,
@@ -46,7 +45,6 @@ const getBaseSHA = async (project, sha) => {
   }
   return null;
 };
-
 
 module.exports = {
   getBaseSHA,

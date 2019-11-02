@@ -18,13 +18,7 @@ class Project extends BaseModel {
   }
 
   static get scmProviderKeys() {
-    return [
-      'repoOwner',
-      'repoName',
-      'repoSlug',
-      'username',
-      'projectId',
-    ];
+    return ['repoOwner', 'repoName', 'repoSlug', 'username', 'projectId'];
   }
 
   get hasSlack() {

@@ -26,7 +26,9 @@ const Profile = React.memo(
   }) => {
     const loginsEnabled = __BASSET__.logins;
     const hasGithubLogin = user.providers.some(p => p.provider === 'github');
-    const hasBitbucketLogin = user.providers.some(p => p.provider === 'bitbucket');
+    const hasBitbucketLogin = user.providers.some(
+      p => p.provider === 'bitbucket',
+    );
     const hasGitLabLogin = user.providers.some(p => p.provider === 'gitlab');
     return (
       <Box pad="medium" width="large">
@@ -118,7 +120,10 @@ const Profile = React.memo(
             {hasBitbucketLogin ? (
               <Checkmark color="brand" />
             ) : (
-              <BitbucketLogin label="Link my Bitbucket account" redirect="/profile" />
+              <BitbucketLogin
+                label="Link my Bitbucket account"
+                redirect="/profile"
+              />
             )}
           </Box>
         )}

@@ -38,7 +38,7 @@ const getBaseSHA = async (project, sha) => {
   });
   if (pullRequests && pullRequests.length > 0) {
     const pullRequestData = await getPullRequest({
-      url:  pullRequests[0].pull_request.url,
+      url: pullRequests[0].pull_request.url,
       token,
     });
 
@@ -46,7 +46,6 @@ const getBaseSHA = async (project, sha) => {
   }
   return null;
 };
-
 
 module.exports = {
   getBaseSHA,

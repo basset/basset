@@ -25,7 +25,6 @@ import {
   linkToProvider,
 } from '../../../../redux/projects/actions.js';
 
-
 export class GithubIntegration extends React.PureComponent {
   static propTypes = {
     user: PropTypes.object.isRequired,
@@ -66,7 +65,7 @@ export class GithubIntegration extends React.PureComponent {
   handleEdit = () => {
     this.setState(state => ({
       isEditing: !state.isEditing,
-    }))
+    }));
   };
 
   handleCancel = () => {
@@ -80,13 +79,13 @@ export class GithubIntegration extends React.PureComponent {
         projectId: this.props.project.scmConfig.projectId || '',
         username: this.props.project.scmConfig.username || '',
       },
-    }))
+    }));
   };
 
-  handleChangeProvider = (option) => {
+  handleChangeProvider = option => {
     this.setState(() => ({
       provider: option.value,
-    }))
+    }));
   };
 
   handleLinkProvider = () => {
@@ -109,7 +108,9 @@ export class GithubIntegration extends React.PureComponent {
         scmConfig.repoSlug = this.state.scmConfig.repoSlug;
         scmConfig.username = this.state.scmConfig.username;
       }
-      const usingProvider = this.props.project.hasToken && this.props.project.scmProvider === this.state.provider;
+      const usingProvider =
+        this.props.project.hasToken &&
+        this.props.project.scmProvider === this.state.provider;
       if (!usingProvider) {
         this.props.onLinkToProvider(this.state.provider);
       }
@@ -142,9 +143,15 @@ export class GithubIntegration extends React.PureComponent {
 
     if (provider !== 'None' && !hasProvider && this.props.organization.admin) {
       return (
-        <Box margin={{ vertical: 'small' }} justify="between" direction="row" align="center">
+        <Box
+          margin={{ vertical: 'small' }}
+          justify="between"
+          direction="row"
+          align="center"
+        >
           <Text>
-            To integrate with {provider} you need to login with your {provider} account:
+            To integrate with {provider} you need to login with your {provider}{' '}
+            account:
           </Text>
           <Box align="start">
             <Button
@@ -176,26 +183,29 @@ export class GithubIntegration extends React.PureComponent {
             data-test-id="cancel"
             label="Cancel"
           />
-          <Button
-            onClick={this.handleSave}
-            label="Save"
-            data-test-id="save"
-          />
+          <Button onClick={this.handleSave} label="Save" data-test-id="save" />
         </Box>
       </React.Fragment>
-    )
+    );
   }
 
   renderGitLabConfig() {
     return (
       <React.Fragment>
-        <Box margin={{ vertical: 'small' }} direction="row" justify="between" align="center">
+        <Box
+          margin={{ vertical: 'small' }}
+          direction="row"
+          justify="between"
+          align="center"
+        >
           <Text>Project Id</Text>
           <Box width="medium">
             <TextInput
               data-test-id="project-id-input"
               value={this.state.scmConfig.projectId}
-              onChange={event => this.handleChangeSCMConfigValue('projectId', event.target.value)}
+              onChange={event =>
+                this.handleChangeSCMConfigValue('projectId', event.target.value)
+              }
             />
           </Box>
         </Box>
@@ -206,23 +216,37 @@ export class GithubIntegration extends React.PureComponent {
   renderBitbucketConfig() {
     return (
       <React.Fragment>
-        <Box margin={{ vertical: 'small' }} direction="row" justify="between" align="center">
+        <Box
+          margin={{ vertical: 'small' }}
+          direction="row"
+          justify="between"
+          align="center"
+        >
           <Text>Repo Slug</Text>
           <Box width="medium">
             <TextInput
               data-test-id="repo-slug-input"
               value={this.state.scmConfig.repoSlug}
-              onChange={event => this.handleChangeSCMConfigValue('repoSlug', event.target.value)}
+              onChange={event =>
+                this.handleChangeSCMConfigValue('repoSlug', event.target.value)
+              }
             />
           </Box>
         </Box>
-        <Box margin={{ vertical: 'small' }} direction="row" justify="between" align="center">
+        <Box
+          margin={{ vertical: 'small' }}
+          direction="row"
+          justify="between"
+          align="center"
+        >
           <Text>Username</Text>
           <Box width="medium">
             <TextInput
               data-test-id="username-input"
               value={this.state.scmConfig.username}
-              onChange={event => this.handleChangeSCMConfigValue('username', event.target.value)}
+              onChange={event =>
+                this.handleChangeSCMConfigValue('username', event.target.value)
+              }
             />
           </Box>
         </Box>
@@ -233,23 +257,37 @@ export class GithubIntegration extends React.PureComponent {
   renderGitHubConfig() {
     return (
       <React.Fragment>
-        <Box margin={{ vertical: 'small' }} direction="row" justify="between" align="center">
+        <Box
+          margin={{ vertical: 'small' }}
+          direction="row"
+          justify="between"
+          align="center"
+        >
           <Text>Repo Owner</Text>
           <Box width="medium">
             <TextInput
               data-test-id="repo-owner-input"
               value={this.state.scmConfig.repoOwner}
-              onChange={event => this.handleChangeSCMConfigValue('repoOwner', event.target.value)}
+              onChange={event =>
+                this.handleChangeSCMConfigValue('repoOwner', event.target.value)
+              }
             />
           </Box>
         </Box>
-        <Box margin={{ vertical: 'small' }} direction="row" justify="between" align="center">
+        <Box
+          margin={{ vertical: 'small' }}
+          direction="row"
+          justify="between"
+          align="center"
+        >
           <Text>Repo Name</Text>
           <Box width="medium">
             <TextInput
               data-test-id="repo-name-input"
               value={this.state.scmConfig.repoName}
-              onChange={event => this.handleChangeSCMConfigValue('repoName', event.target.value)}
+              onChange={event =>
+                this.handleChangeSCMConfigValue('repoName', event.target.value)
+              }
             />
           </Box>
         </Box>
@@ -258,14 +296,21 @@ export class GithubIntegration extends React.PureComponent {
   }
 
   render() {
-    const loginOptions =  [
+    const loginOptions = [
       'None',
-      ...Object.entries(__BASSET__.logins).filter(([, value]) => value).map(([name,]) => name)
+      ...Object.entries(__BASSET__.logins)
+        .filter(([, value]) => value)
+        .map(([name]) => name),
     ];
     return (
       <React.Fragment>
         <Heading level={5}>Source control management</Heading>
-        <Box margin={{ vertical: 'small' }} direction="row" justify="between" align="center">
+        <Box
+          margin={{ vertical: 'small' }}
+          direction="row"
+          justify="between"
+          align="center"
+        >
           <Text>Active</Text>
           <CheckBox
             data-test-id="toggle-scm-active"
@@ -276,7 +321,12 @@ export class GithubIntegration extends React.PureComponent {
             toggle
           />
         </Box>
-        <Box margin={{ vertical: 'small' }} direction="row" justify="between" align="center">
+        <Box
+          margin={{ vertical: 'small' }}
+          direction="row"
+          justify="between"
+          align="center"
+        >
           <Text>Provider</Text>
           {this.state.isEditing ? (
             <Select
@@ -287,22 +337,24 @@ export class GithubIntegration extends React.PureComponent {
             />
           ) : (
             <React.Fragment>
-            <Button
-              data-test-id="edit-scm-provider"
-              onClick={this.handleEdit}
-              disabled={this.props.isUpdating}
-            >
-              <Box direction="row" gap="small" align="center">
-                <Text data-test-id="scm-provider">{this.props.project.scmProvider}</Text>
-              <Edit color="brand" />
-              </Box>
-            </Button>
+              <Button
+                data-test-id="edit-scm-provider"
+                onClick={this.handleEdit}
+                disabled={this.props.isUpdating}
+              >
+                <Box direction="row" gap="small" align="center">
+                  <Text data-test-id="scm-provider">
+                    {this.props.project.scmProvider}
+                  </Text>
+                  <Edit color="brand" />
+                </Box>
+              </Button>
             </React.Fragment>
           )}
         </Box>
         {this.state.isEditing && this.renderIntegrationButton()}
       </React.Fragment>
-    )
+    );
   }
 }
 
@@ -314,10 +366,10 @@ const mapState = state => ({
 });
 
 const mapActions = dispatch => ({
-  onLinkToProvider: (provider) => dispatch(linkToProvider(provider)),
-  onSave: (data) => dispatch(saveProject(data)),
+  onLinkToProvider: provider => dispatch(linkToProvider(provider)),
+  onSave: data => dispatch(saveProject(data)),
   onToggleSCMActive: scmActive => dispatch(saveProject({ scmActive })),
-  onRemoveCurrentProvider: () => dispatch(removeCurrentProvider())
+  onRemoveCurrentProvider: () => dispatch(removeCurrentProvider()),
 });
 
 export default connect(

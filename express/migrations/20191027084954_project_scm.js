@@ -5,7 +5,10 @@ exports.up = async function(knex, Promise) {
     table.renameColumn('repo_active', 'scm_active');
     table.renameColumn('repo_token', 'scm_token');
   });
-  const projects = await knex('project').select(['id', 'repo_owner', 'repo_name']).whereNotNull('repo_owner').orWhereNotNull('repo_name');
+  const projects = await knex('project')
+    .select(['id', 'repo_owner', 'repo_name'])
+    .whereNotNull('repo_owner')
+    .orWhereNotNull('repo_name');
   for await (const project of projects) {
     const scmConfig = {
       repoOwner: project.repo_owner,
@@ -15,7 +18,7 @@ exports.up = async function(knex, Promise) {
     await knex('project')
       .where('id', project.id)
       .update({
-        scm_config:JSON.stringify(scmConfig)
+        scm_config: JSON.stringify(scmConfig),
       });
   }
   await knex.schema.table('project', table => {
@@ -24,13 +27,16 @@ exports.up = async function(knex, Promise) {
   });
 };
 
-
 exports.down = async function(knex) {
   await knex.schema.table('project', table => {
     table.string('repo_owner');
     table.string('repo_name');
   });
-  const projects = await knex.table('project').select(['id', 'scm_config', 'scm_provider']).where('scm_provider', 'github').andWhereNot('scm_config', null);
+  const projects = await knex
+    .table('project')
+    .select(['id', 'scm_config', 'scm_provider'])
+    .where('scm_provider', 'github')
+    .andWhereNot('scm_config', null);
   for await (const project of projects) {
     if (project.scm_config) {
       await knex('project')

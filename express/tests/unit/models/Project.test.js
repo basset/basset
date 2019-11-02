@@ -86,7 +86,7 @@ describe('Project', () => {
     expect(project.hasSCM).toBe(false);
     project.scmActive = true;
     expect(project.hasSCM).toBe(false);
-    project.scmConfig = JSON.stringify({repoName: 'yes', repoToken: 'ok'});
+    project.scmConfig = JSON.stringify({ repoName: 'yes', repoToken: 'ok' });
     expect(project.hasSCM).toBe(true);
     project.scmProvider = ' ';
     expect(project.hasSCM).toBe(false);

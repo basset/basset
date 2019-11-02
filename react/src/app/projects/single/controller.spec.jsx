@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  fireEvent,
-  cleanup,
-  wait,
-} from 'react-testing-library';
+import { fireEvent, cleanup, wait } from 'react-testing-library';
 import { store, renderApp } from '../../../tests/render-redux.js';
 
 import * as organizationActions from '../../../redux/organizations/actions.js';
@@ -225,9 +221,8 @@ describe('<Project />', () => {
       scmConfig: {
         repoName: 'basset-name',
         repoOwner: 'basset-owner',
-      }
+      },
     });
-
   });
   test('toggle scm active', async () => {
     const { getByTestId } = renderApp(<Project />);
