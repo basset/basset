@@ -87,6 +87,22 @@ const session = {
   redisPort: process.env.REDIS_PORT || 6379,
 };
 
+const saml = {
+  enabled: parseInt(process.env.SAML_ENABLED) === 1,
+  config: {
+    cert: process.env.SAML_CERT,
+    entryPoint: process.env.SAML_ENTRY_POINT,
+    issuer: process.env.SAML_ISSUER || 'basset-saml',
+    authnContext: process.env.SAML_AUTHN_CONTEXT,
+  },
+  attributes: {
+    displayName: process.env.SAML_ATTR_DISPLAY_NAME || 'displayName',
+    profileImage: process.env.SAML_ATTR_PROFILE_IMAGE || 'profileImage',
+    email: process.env.SAML_ATTR_EMAIL || 'email',
+    id: process.env.SAML_ATTTR_ID || 'nameId',
+  },
+};
+
 module.exports = {
   mail,
   database,
@@ -101,4 +117,5 @@ module.exports = {
   sqs,
   awsBatch,
   session,
+  saml,
 };

@@ -58,7 +58,6 @@ const loginUserWithProvider = async ({ req, userInfo, providerInfo }) => {
         .where('providers.provider', providerInfo.provider)
         .where('providers.providerId', providerInfo.providerId)
         .first();
-
       if (accountExists) {
         await trx.rollback();
         return {
@@ -68,6 +67,7 @@ const loginUserWithProvider = async ({ req, userInfo, providerInfo }) => {
         };
       }
     }
+
     if (!user) {
       const results = await User.query()
         .leftOuterJoinRelation('providers')
@@ -78,7 +78,6 @@ const loginUserWithProvider = async ({ req, userInfo, providerInfo }) => {
             .where('providers.provider', providerInfo.provider)
             .where('providers.providerId', providerInfo.providerId),
         );
-
       user =
         results.length > 1
           ? results.find(
@@ -152,7 +151,8 @@ const loginUserWithProvider = async ({ req, userInfo, providerInfo }) => {
     return { error: 'User not found.' };
   } catch (error) {
     await trx.rollback();
-    throw error;
+    console.error(error);
+    return { error: 'Error finding user' }
   }
 };
 

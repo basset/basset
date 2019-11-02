@@ -3,15 +3,16 @@ const LocalStrategy = require('passport-local').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
 const BitbucketStrategy = require('passport-bitbucket-oauth2').Strategy;
 const GitLabStrategy = require('passport-gitlab2').Strategy;
+const SamlStrategy = require('passport-saml').Strategy;
 
 const settings = require('../../settings');
 
 const User = require('../../models/User');
-const { loginUserWithPassword, loginUserWithProvider } = require('./login');
+const {loginUserWithPassword, loginUserWithProvider} = require('./login');
 
 const localLoginStrategy = async (email, password, done) => {
   try {
-    const { user, error } = await loginUserWithPassword({ email, password });
+    const { user, error } = await loginUserWithPassword({email, password});
     if (error) {
       return done(null, false, error);
     }
@@ -111,7 +112,30 @@ const githubLoginStrategy = async (
   await tryLoginWithProvider(req, userInfo, providerInfo, done);
 };
 
-passport.use(new LocalStrategy({ usernameField: 'email' }, localLoginStrategy));
+const samlLoginStrategy = async (
+  req,
+  profile,
+  done,
+) => {
+  const email = profile[settings.saml.attributes.email];
+  const displayName = profile[settings.saml.attributes.displayName];
+  const profileImage = profile[settings.saml.attributes.profileImage];
+  const providerInfo = {
+    providerId: email,
+    provider: 'SAML',
+    token: '',
+  };
+
+  const userInfo = {
+    name: displayName,
+    email,
+    profileImage,
+  };
+
+  await tryLoginWithProvider(req, userInfo, providerInfo, done);
+};
+
+passport.use(new LocalStrategy({usernameField: 'email'}, localLoginStrategy));
 
 if (settings.oauth.strategy.github.use) {
   passport.use(
@@ -154,6 +178,20 @@ if (settings.oauth.strategy.gitlab.use) {
       gitLabLoginStrategy,
     ),
   );
+}
+
+if (settings.saml.enabled) {
+  passport.use(
+    new SamlStrategy(
+      {
+        callbackUrl: `${settings.site.url}/saml/callback`,
+        entryPoint: settings.saml.config.entryPoint,
+        issuer: settings.saml.config.issuer,
+        passReqToCallback: true,
+      },
+      samlLoginStrategy,
+    )
+  )
 }
 
 passport.serializeUser((user, done) => done(null, user.id));
