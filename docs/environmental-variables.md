@@ -20,6 +20,8 @@ Here is a list of environmental variables Basset uses:
 | `OAUTH_GITLAB_CLIENT_SECRET` | your Gitlab Client Secret |
 | `SAML_ENALBED` | set to 1 to enable SAML integration |
 | `SAML_ENTRY_POINT` | the identity provider entry point url  |
+| `SAML_AUTHN_CONTEXT` | set to specify an authn context |
+| `SAML_ISSUER` | set to specify the issuer |
 | `SAML_ATTR_DISPLAY_NAME` | the attribute in the SAML Response which maps to display name |
 | `SAML_ATTR_PROFILE_IMAGE` | the attribute in the SAML Response which maps to profile image |
 | `SAML_ATTR_EMAIL` | the attribute in the SAML Response which maps to email |

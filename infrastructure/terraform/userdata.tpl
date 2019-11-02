@@ -19,6 +19,9 @@ echo export SAML_ATTR_DISPLAY_NAME=displayname >> /var/basset/.env
 echo export SAML_ATTR_PROFILE_IMAGE=profileimage >> /var/basset/.env
 echo export SAML_ATTR_EMAIL=email >> /var/basset/.env
 echo export SAML_ATTTR_ID=nameID >> /var/basset/.env
+echo export SAML_CERT=nameID >> /var/basset/.env
+echo export SAML_AUTHN_CONTEXT="" >> /var/basset/.env
+echo export SAML_ISSUER="" >> /var/basset/.env
 
 echo export NODE_ENV=production >> /var/basset/.env
 
