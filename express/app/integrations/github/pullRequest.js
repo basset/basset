@@ -1,7 +1,7 @@
 const promisify = require('util').promisify;
 const request = promisify(require('request'));
 
-const getPRs = async ({ owner, repo, token, sha }) => {
+const getPullRequests = async ({ owner, repo, token, sha }) => {
   const response = await request({
     url: `https://api.github.com/search/issues?q=state:open+type:pr+repo:${owner}/${repo}+SHA:${sha}`,
     headers: {
@@ -15,7 +15,7 @@ const getPRs = async ({ owner, repo, token, sha }) => {
   return JSON.parse(response.body).items;
 };
 
-const getPR = async ({ url, token }) => {
+const getPullRequest = async ({ url, token }) => {
   const response = await request({
     url: url,
     headers: {
@@ -29,7 +29,26 @@ const getPR = async ({ url, token }) => {
   return JSON.parse(response.body);
 };
 
+const getBaseSHA = async (project, sha) => {
+  const pullRequests = await getPullRequests({
+    owner: project.scmConfig.repoOwner,
+    repo: project.scmConfig.repoName,
+    token: project.scmToken,
+    sha,
+  });
+  if (pullRequests && pullRequests.length > 0) {
+    const pullRequestData = await getPullRequest({
+      url: pullRequests[0].pull_request.url,
+      token,
+    });
+
+    return pullRequestData.base.sha;
+  }
+  return null;
+};
+
 module.exports = {
-  getPRs,
-  getPR,
+  getBaseSHA,
+  getPullRequests,
+  getPullRequest,
 };

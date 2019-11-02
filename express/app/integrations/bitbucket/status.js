@@ -2,9 +2,8 @@ const request = require('request');
 const settings = require('../../settings');
 
 const updateStatus = ({
-  owner,
-  repo,
-  token,
+  username,
+  repoSlug,
   sha,
   state,
   url,
@@ -13,11 +12,13 @@ const updateStatus = ({
 }) => {
   return request.post(
     {
-      url: `https://api.github.com/repos/${owner}/${repo}/statuses/${sha}`,
+      url: `https://api.bitbucket.com/2.0/repositories/${username}/${repoSlug}/commit/${sha}/statuses`,
       json: true,
       body: {
         state,
-        target_url: url,
+        name: 'basset-snapshots',
+        key: 'basset-snapshots',
+        url,
         description,
         context,
       },
@@ -44,11 +45,11 @@ const updateStatus = ({
 const snapshotsPending = (project, build) => {
   return updateStatus({
     token: project.scmToken,
-    owner: project.scmConfig.repoOwner,
-    repo: project.scmConfig.repoName,
+    username: project.scmConfig.username,
+    repoSlug: project.scmConfig.repoSlug,
     sha: build.commitSha,
     url: `${settings.site.url}/projects/${project.id}`,
-    state: 'pending',
+    state: 'INPROGRESS',
     description: 'Snapshots are being rendered and compared',
     context: 'Basset',
   });
@@ -57,11 +58,11 @@ const snapshotsPending = (project, build) => {
 const snapshotsApproved = (project, build) => {
   return updateStatus({
     token: project.scmToken,
-    owner: project.scmConfig.repoOwner,
-    repo: project.scmConfig.repoName,
+    username: project.scmConfig.username,
+    repoSlug: project.scmConfig.repoSlug,
     sha: build.commitSha,
     url: `${settings.site.url}/builds/${build.id}`,
-    state: 'success',
+    state: 'SUCCESSFUL',
     description: 'Snapshots have been approved',
     context: 'Basset',
   });
@@ -70,11 +71,11 @@ const snapshotsApproved = (project, build) => {
 const snapshotsNoDiffs = (project, build) => {
   return updateStatus({
     token: project.scmToken,
-    owner: project.scmConfig.repoOwner,
-    repo: project.scmConfig.repoName,
+    username: project.scmConfig.username,
+    repoSlug: project.scmConfig.repoSlug,
     sha: build.commitSha,
     url: `${settings.site.url}/builds/${build.id}`,
-    state: 'success',
+    state: 'SUCCESSFUL',
     description: 'Snapshots have no diffs',
     context: 'Basset',
   });
@@ -83,11 +84,11 @@ const snapshotsNoDiffs = (project, build) => {
 const snapshotsNeedApproving = (project, build) => {
   return updateStatus({
     token: project.scmToken,
-    owner: project.scmConfig.repoOwner,
-    repo: project.scmConfig.repoName,
+    username: project.scmConfig.username,
+    repoSlug: project.scmConfig.repoSlug,
     sha: build.commitSha,
     url: `${settings.site.url}/builds/${build.id}`,
-    state: 'failure',
+    state: 'FAILED',
     description: 'Snapshots need to be approved',
     context: 'Basset',
   });

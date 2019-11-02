@@ -96,7 +96,12 @@ const saveRedirect = (req, res, next) => {
   return next();
 };
 
-app.get('/oauth/:provider(github|bitbucket|gitlab)', saveRedirect, (req, res, next) => passport.authenticate(req.params.provider)(req, res, next));
+app.get(
+  '/oauth/:provider(github|bitbucket|gitlab)',
+  saveRedirect,
+  (req, res, next) =>
+    passport.authenticate(req.params.provider)(req, res, next),
+);
 
 app.get(
   '/oauth/:provider(github|bitbucket|gitlab)/callback',

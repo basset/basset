@@ -1,23 +1,11 @@
 import gql from 'graphql-tag';
+import projectFragment from '../fragments/project.js';
 
 export default gql`
+  ${projectFragment}
   mutation unlinkProviderToProject($id: ID!, $provider: String) {
     unlinkProviderToProject(id: $id, provider: $provider) {
-      id
-      name
-      key
-      hasToken
-      provider
-      repoOwner
-      repoName
-      repoActive
-      defaultBranch
-      defaultWidth
-      browsers
-      slackWebhook
-      slackActive
-      slackVariable
-      hideSelectors
+      ...projectFragment
     }
   }
 `;

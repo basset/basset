@@ -2,8 +2,7 @@ const request = require('request');
 const settings = require('../../settings');
 
 const updateStatus = ({
-  owner,
-  repo,
+  projectId,
   token,
   sha,
   state,
@@ -11,25 +10,19 @@ const updateStatus = ({
   description,
   context,
 }) => {
+  const requestUrl = `https://api.gitlab.com/api/v4/projects/${projectId}/statuses/${sha}?state=${state}&target_url=${url}&description=${description}&context=${context}`;
   return request.post(
     {
-      url: `https://api.github.com/repos/${owner}/${repo}/statuses/${sha}`,
-      json: true,
-      body: {
-        state,
-        target_url: url,
-        description,
-        context,
-      },
+      url: requestUrl,
       headers: {
-        Authorization: `token ${token}`,
+        'PRIVATE-TOKEN': token,
         'User-Agent': 'Basset.io',
       },
     },
     (error, response, body) => {
       if (response.statusCode !== 201) {
         console.error(
-          `There was an error updating the github repo status: ${JSON.parse(
+          `There was an error updating the gitlab commit status: ${JSON.parse(
             response.body,
           )}`,
         );
@@ -42,10 +35,10 @@ const updateStatus = ({
 };
 
 const snapshotsPending = (project, build) => {
+  const token = '';
   return updateStatus({
     token: project.scmToken,
-    owner: project.scmConfig.repoOwner,
-    repo: project.scmConfig.repoName,
+    projectId: project.scmConfig.projectId,
     sha: build.commitSha,
     url: `${settings.site.url}/projects/${project.id}`,
     state: 'pending',
@@ -57,8 +50,7 @@ const snapshotsPending = (project, build) => {
 const snapshotsApproved = (project, build) => {
   return updateStatus({
     token: project.scmToken,
-    owner: project.scmConfig.repoOwner,
-    repo: project.scmConfig.repoName,
+    projectId: project.scmConfig.projectId,
     sha: build.commitSha,
     url: `${settings.site.url}/builds/${build.id}`,
     state: 'success',
@@ -70,8 +62,7 @@ const snapshotsApproved = (project, build) => {
 const snapshotsNoDiffs = (project, build) => {
   return updateStatus({
     token: project.scmToken,
-    owner: project.scmConfig.repoOwner,
-    repo: project.scmConfig.repoName,
+    projectId: project.scmConfig.projectId,
     sha: build.commitSha,
     url: `${settings.site.url}/builds/${build.id}`,
     state: 'success',
@@ -83,11 +74,10 @@ const snapshotsNoDiffs = (project, build) => {
 const snapshotsNeedApproving = (project, build) => {
   return updateStatus({
     token: project.scmToken,
-    owner: project.scmConfig.repoOwner,
-    repo: project.scmConfig.repoName,
+    projectId: project.scmConfig.projectId,
     sha: build.commitSha,
     url: `${settings.site.url}/builds/${build.id}`,
-    state: 'failure',
+    state: 'failed',
     description: 'Snapshots need to be approved',
     context: 'Basset',
   });

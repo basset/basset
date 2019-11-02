@@ -242,7 +242,7 @@ test('loadMore', async () => {
   );
 });
 
-test('linkToGitHub', async () => {
+test('linkToProvider', async () => {
   ApolloClient.mutate = jest.fn(() => Promise.resolve());
   const location = window.location.href;
   store.dispatch(
@@ -253,14 +253,13 @@ test('linkToGitHub', async () => {
       },
     }),
   );
-  await store.dispatch(actions.linkToGitHub());
+  await store.dispatch(actions.linkToProvider('github'));
   expect(ApolloClient.mutate).toHaveBeenCalled();
   expect(window.location.href).toBe(location);
 });
 
-test('linkToGitHub redirects to oauth endpoint', async () => {
+test('linkToProvider redirects to oauth endpoint', async () => {
   ApolloClient.mutate = jest.fn(() => Promise.resolve());
-  const location = window.location.href;
   store.dispatch(
     userActions.receiveUser({
       name: '',
@@ -273,12 +272,12 @@ test('linkToGitHub redirects to oauth endpoint', async () => {
   global.window.location = {
     href: '',
   };
-  await store.dispatch(actions.linkToGitHub());
+  await store.dispatch(actions.linkToProvider('github'));
   expect(ApolloClient.mutate).not.toHaveBeenCalled();
   expect(window.location.href).toBe('/oauth/github');
 });
 
-test('linkProjectToGithub', async () => {
+test('linkProjectToProvider', async () => {
   const projectData = {
     data: {
       linkProviderToProject: {
@@ -296,7 +295,7 @@ test('linkProjectToGithub', async () => {
   const projects = [{ id: '1' }, { id: '2' }, { id: '3' }];
   store.dispatch(actions.receiveProjects(projects));
 
-  const link = store.dispatch(actions.linkProjectToGithub('1'));
+  const link = store.dispatch(actions.linkProjectToProvider('1', 'github'));
   let state = store.getState().projects;
   expect(state.isUpdating).toBe(true);
   await resolvePromise();

@@ -11,12 +11,14 @@ router.get('*', async (req, res) => {
     return res.send(404);
   }
   const key = req.params[0];
-  const stream = s3.getObject({
-    Bucket: settings.s3.assetsBucket,
-    Key: key,
-  }).createReadStream();
+  const stream = s3
+    .getObject({
+      Bucket: settings.s3.assetsBucket,
+      Key: key,
+    })
+    .createReadStream();
 
-  stream.on('error', err => res.status(400).json({error: err.message}));
+  stream.on('error', err => res.status(400).json({ error: err.message }));
 
   return stream.pipe(res);
 });

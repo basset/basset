@@ -1,16 +1,10 @@
 const { Model } = require('objection');
 
 const BaseModel = require('./BaseModel');
-const {
-  snapshotsPending,
-  snapshotsNeedApproving,
-  snapshotsNoDiffs,
-  snapshotsApproved,
-} = require('../integrations/github/status');
 const Snapshot = require('./Snapshot');
 const SnapshotDiff = require('./SnapshotDiff');
 const BuildAsset = require('./BuildAsset');
-const { getPRs, getPR } = require('../integrations/github/pr');
+const { getPRs, getPR } = require('../integrations/github/pullRequest');
 const { notifySnapshotsNeedApproving } = require('../integrations/slack/slack');
 const { queueCompareSnapshots } = require('../tasks/queueCompareSnapshots');
 const { queueTask, tasks } = require('../tasks/queueTask');
@@ -62,7 +56,7 @@ class Build extends BaseModel {
       project = await this.$relatedQuery('project');
     }
     if (project.hasSCM) {
-      snapshotsPending(project, this);
+      project.scm.snapshotsPending(project, this);
     }
   }
 
@@ -71,7 +65,7 @@ class Build extends BaseModel {
       project = await this.$relatedQuery('project');
     }
     if (project.hasSCM) {
-      snapshotsApproved(project, this);
+      project.scm.snapshotsApproved(project, this);
     }
     await this.$query(trx).update({
       buildVerified: true,
@@ -83,7 +77,7 @@ class Build extends BaseModel {
       project = await this.$relatedQuery('project');
     }
     if (project.hasSCM) {
-      snapshotsNeedApproving(project, this);
+      project.scm.snapshotsNeedApproving(project, this);
     }
     if (project.hasSlack) {
       notifySnapshotsNeedApproving(modifiedSnapshotCount, project, this);
@@ -98,7 +92,7 @@ class Build extends BaseModel {
       buildVerified: true,
     });
     if (project.hasSCM) {
-      snapshotsNoDiffs(project, this);
+      project.scm.snapshotsNoDiffs(project, this);
     }
   }
 
@@ -112,23 +106,9 @@ class Build extends BaseModel {
 
     if (project.hasSCM && this.commitSha && (compareBranch || this.branch)) {
       this.notifyPending(project);
-
-      const pullRequests = await getPRs({
-        owner: project.repoOwner,
-        repo: project.repoName,
-        token: project.repoToken,
-        sha: this.commitSha,
-      });
-      if (pullRequests && pullRequests.length > 0) {
+      baseSHA = await project.scm.getBaseSHA(project, this.commitSha);
+      if (baseSHA) {
         isPR = true;
-
-        const pullRequestEntry = pullRequests[0];
-        const pullRequestUrl = pullRequestEntry.pull_request.url;
-        const pullRequestData = await getPR({
-          url: pullRequestUrl,
-          token: project.repoToken,
-        });
-        baseSHA = pullRequestData.base.sha;
       }
     }
     const baseQuery = Build.query()

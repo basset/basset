@@ -95,7 +95,10 @@ const loginUserWithProvider = async ({ req, userInfo, providerInfo }) => {
         await trx.rollback();
         return { error: 'Account is inactive.' };
       }
-      const foundProvider = user.providers.find(p => p.providerId === providerInfo.providerId && p.provider === p.provider);
+      const foundProvider = user.providers.find(
+        p =>
+          p.providerId === providerInfo.providerId && p.provider === p.provider,
+      );
       if (foundProvider) {
         await Project.updateSCMToken(
           trx,

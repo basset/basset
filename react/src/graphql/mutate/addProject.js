@@ -1,23 +1,11 @@
 import gql from 'graphql-tag';
+import projectFragment from '../fragments/project.js';
 
 export default gql`
+  ${projectFragment}
   mutation createProject($name: String!, $organizationId: ID!) {
     createProject(name: $name, organizationId: $organizationId) {
-      id
-      name
-      key
-      hasToken
-      provider
-      repoOwner
-      repoName
-      repoActive
-      defaultBranch
-      defaultWidth
-      browsers
-      slackWebhook
-      slackActive
-      slackVariable
-      hideSelectors
+      ...projectFragment
     }
   }
 `;

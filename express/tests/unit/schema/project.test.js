@@ -137,10 +137,12 @@ describe('project schema', () => {
           name
           key
           hasToken
-          provider
-          repoOwner
-          repoName
-          repoActive
+          scmProvider
+          scmConfig {
+            repoOwner
+            repoName
+          }
+          scmActive
           defaultBranch
           defaultWidth
           browsers
@@ -156,9 +158,11 @@ describe('project schema', () => {
           id: otherProject.id,
           projectInput: {
             name: 'test',
-            repoOwner: 'tester',
-            repoName: 'testerName',
-            repoActive: true,
+            scmActive: true,
+            scmConfig: {
+              repoOwner: 'tester',
+              repoName: 'testerName',
+            },
             defaultBranch: 'branch',
             slackWebhook: 'hook',
             slackActive: true,

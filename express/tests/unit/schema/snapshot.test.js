@@ -446,9 +446,7 @@ describe('snapshot schema', () => {
           id: newSnapshot.id,
         };
         const result = await runQuery(query, user, variables);
-        expect(result.data.addSnapshotFlake.url).toBe(
-          'imageLocation',
-        );
+        expect(result.data.addSnapshotFlake.url).toBe('imageLocation');
         expect(result.data.addSnapshotFlake.createdBy.user.id).toBe(user.id);
         expect(upload.copySnapshotDiffToFlake).toHaveBeenCalled();
       });

@@ -82,29 +82,23 @@ describe('Project', () => {
 
   test('hasSCM', async () => {
     expect(project.hasSCM).toBe(false);
-    project.repoName = 'repoName';
+    project.scmProvider = 'provider';
     expect(project.hasSCM).toBe(false);
-    project.repoOwner = 'repoOwner';
+    project.scmActive = true;
     expect(project.hasSCM).toBe(false);
-    project.provider = 'provider';
-    expect(project.hasSCM).toBe(false);
-    project.repoActive = true;
+    project.scmConfig = JSON.stringify({ repoName: 'yes', repoToken: 'ok' });
     expect(project.hasSCM).toBe(true);
-    project.repoName = ' ';
-    expect(project.hasSCM).toBe(false);
-    project.repoOwner = ' ';
-    expect(project.hasSCM).toBe(false);
-    project.provider = ' ';
+    project.scmProvider = ' ';
     expect(project.hasSCM).toBe(false);
   });
 
   test('hasToken', async () => {
     expect(project.hasToken).toBe(false);
-    project.repoToken = 'test';
+    project.scmToken = 'test';
     expect(project.hasToken).toBe(true);
-    project.repoToken = '';
+    project.scmToken = '';
     expect(project.hasToken).toBe(false);
-    project.repoToken = '  ';
+    project.scmToken = '  ';
     expect(project.hasToken).toBe(false);
   });
 
