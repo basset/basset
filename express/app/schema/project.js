@@ -207,13 +207,14 @@ const resolvers = {
       }
       let scmConfig;
       if (projectInput.scmConfig) {
-        scmConfig = {
-          repoOwner: projectInput.scmConfig.repoOwner || project.scmConfig.repoOwner,
-          repoName: projectInput.scmConfig.repoName || project.scmConfig.repoName,
-          repoSlug: projectInput.scmConfig.repoSlug || project.scmConfig.repoSlug,
-          username: projectInput.scmConfig.username || project.scmConfig.username,
-          projectId: projectInput.scmConfig.projectId || project.scmConfig.projectId,
-        };
+        const entries = Object.entries(projectInput.scmConfig).filter(([key]) => Project.scmProviderKeys.includes(key));
+        scmConfig = entries.reduce(
+          (obj, [key, value]) => ({
+            ...obj,
+            [key]: value
+          }),
+          { }
+        );
       } else {
         scmConfig = project.scmConfig;
       }
