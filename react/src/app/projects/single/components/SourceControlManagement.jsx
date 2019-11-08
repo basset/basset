@@ -39,11 +39,11 @@ export class GithubIntegration extends React.PureComponent {
     provider: this.props.project.scmProvider,
     isEditing: false,
     scmConfig: {
-      repoName: this.props.project.scmConfig.repoName || '',
-      repoOwner: this.props.project.scmConfig.repoOwner || '',
-      repoSlug: this.props.project.scmConfig.repoSlug || '',
-      projectId: this.props.project.scmConfig.projectId || '',
-      username: this.props.project.scmConfig.username || '',
+      repoName: this.props.project.scmConfig && this.props.project.scmConfig.repoName || '',
+      repoOwner: this.props.project.scmConfig && this.props.project.scmConfig.repoOwner || '',
+      repoSlug: this.props.project.scmConfig && this.props.project.scmConfig.repoSlug || '',
+      projectId: this.props.project.scmConfig && this.props.project.scmConfig.projectId || '',
+      username: this.props.project.scmConfig && this.props.project.scmConfig.username || '',
     },
   };
 
@@ -73,11 +73,11 @@ export class GithubIntegration extends React.PureComponent {
       isEditing: false,
       provider: this.props.project.scmProvider,
       scmConfig: {
-        repoName: this.props.project.scmConfig.repoName || '',
-        repoOwner: this.props.project.scmConfig.repoOwner || '',
-        repoSlug: this.props.project.scmConfig.repoSlug || '',
-        projectId: this.props.project.scmConfig.projectId || '',
-        username: this.props.project.scmConfig.username || '',
+        repoName: this.props.project.scmConfig && this.props.project.scmConfig.repoName || '',
+        repoOwner: this.props.project.scmConfig && this.props.project.scmConfig.repoOwner || '',
+        repoSlug: this.props.project.scmConfig && this.props.project.scmConfig.repoSlug || '',
+        projectId: this.props.project.scmConfig && this.props.project.scmConfig.projectId || '',
+        username: this.props.project.scmConfig && this.props.project.scmConfig.username || '',
       },
     }));
   };
@@ -123,11 +123,11 @@ export class GithubIntegration extends React.PureComponent {
     this.setState(state => ({
       isEditing: false,
       scmConfig: {
-        repoName: this.props.project.scmConfig.repoName || '',
-        repoOwner: this.props.project.scmConfig.repoOwner || '',
-        repoSlug: this.props.project.scmConfig.repoSlug || '',
-        projectId: this.props.project.scmConfig.projectId || '',
-        username: this.props.project.scmConfig.username || '',
+        repoName: this.props.project.scmConfig && this.props.project.scmConfig.repoName || '',
+        repoOwner: this.props.project.scmConfig && this.props.project.scmConfig.repoOwner || '',
+        repoSlug: this.props.project.scmConfig && this.props.project.scmConfig.repoSlug || '',
+        projectId: this.props.project.scmConfig && this.props.project.scmConfig.projectId || '',
+        username: this.props.project.scmConfig && this.props.project.scmConfig.username || '',
       },
     }));
   };
