@@ -1,6 +1,12 @@
 variable "key_name" {
   type = "string"
 }
+variable "private_assets" {
+  type = "string"
+}
+variable "private_screenshots" {
+  type = "string"
+}
 data "aws_ami" "basset_app" {
   most_recent = true
 
@@ -70,16 +76,18 @@ resource "aws_iam_instance_profile" "basset_profile" {
 data "template_file" "script" {
   template = "${file("${path.module}/userdata.tpl")}"
   vars = {
-    token              = "${var.token}"
-    screenshots_bucket = "${var.screenshots_bucket}"
-    assets_bucket      = "${var.assets_bucket}"
-    definition_name    = "${var.definition_name}"
-    batch_queue_name   = "${var.batch_queue_name}"
-    sqs_build_queue    = "${aws_sqs_queue.basset_build_queue.id}"
-    sqs_task_queue     = "${aws_sqs_queue.basset_task_queue.id}"
-    basset_url         = "${aws_route53_record.basset.fqdn}"
-    s3_endpoint        = "https://s3.${aws_s3_bucket.screenshots_bucket.region}.amazonaws.com"
-    aws_region         = "${aws_s3_bucket.screenshots_bucket.region}"
+    token               = "${var.token}"
+    screenshots_bucket  = "${var.screenshots_bucket}"
+    assets_bucket       = "${var.assets_bucket}"
+    definition_name     = "${var.definition_name}"
+    batch_queue_name    = "${var.batch_queue_name}"
+    sqs_build_queue     = "${aws_sqs_queue.basset_build_queue.id}"
+    sqs_task_queue      = "${aws_sqs_queue.basset_task_queue.id}"
+    basset_url          = "${aws_route53_record.basset.fqdn}"
+    s3_endpoint         = "https://s3.${aws_s3_bucket.screenshots_bucket.region}.amazonaws.com"
+    aws_region          = "${aws_s3_bucket.screenshots_bucket.region}"
+    private_assets      = "${var.private_assets}"
+    private_screenshots = "${var.private_screenshots}"
   }
 }
 
