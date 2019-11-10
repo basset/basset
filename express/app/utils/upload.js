@@ -4,7 +4,7 @@ const mime = require('mime-types');
 const crypto = require('crypto');
 const uuidv4 = require('uuid/v4');
 
-const { getAssetsPath } = require('./build');
+const {getAssetsPath} = require('./build');
 const transformer = require('./stream-transformer');
 const settings = require('../settings');
 const s3 = require('../utils/s3config');
@@ -15,7 +15,7 @@ const assetsUrl = settings.s3.privateAssets
 
 const createBucket = async bucket => {
   try {
-    await s3.createBucket({ Bucket: bucket }).promise();
+    await s3.createBucket({Bucket: bucket}).promise();
   } catch (error) {
     console.log('there was an error creating the bucket!');
     console.error(error);
@@ -26,7 +26,7 @@ const createBucket = async bucket => {
 const checkBucket = async bucket => {
   console.log('checking bucket exists');
   try {
-    await s3.headBucket({ Bucket: bucket }).promise();
+    await s3.headBucket({Bucket: bucket}).promise();
     return true;
   } catch (error) {
     if (error.statusCode === 404) {
@@ -52,10 +52,9 @@ const getSnapshotContentType = (req, file, cb) => {
 const getSnapshotKey = (req, file, cb) => {
   const build = req.locals.build;
   const randomValue = crypto.randomBytes(16).toString('hex');
-  const relativePath = req.headers['x-relative-path'] || 'base';
   let key = `${build.organizationId}/${build.projectId}/${
     build.id
-  }/${relativePath}/${randomValue}.html`;
+  }/${randomValue}.html`;
   console.log(`uploading: ${key}`);
 
   cb(null, key);
