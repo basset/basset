@@ -38,6 +38,9 @@ echo export DB_HOST=localhost >> /var/basset/.env
 echo export DB_NAME=basset >> /var/basset/.env
 echo export DB_USERNAME=basset >> /var/basset/.env
 echo export DB_PASSWORD=password >> /var/basset/.env
+# Set SSL encryption to 1, to secure the connection to the database.
+# For better performance, you may set this to 0, if the you control all the infrastructure.
+echo export DB_USE_SSL=0 >> /var/basset/.env
 echo export USE_DB_SESSION=1 >> /var/basset/.env
 
 echo export BASSET_SECRET=BASSET_SECRET >> /var/basset/.env
