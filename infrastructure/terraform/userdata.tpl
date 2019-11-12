@@ -25,9 +25,13 @@ echo export SAML_ISSUER="" >> /var/basset/.env
 
 echo export NODE_ENV=production >> /var/basset/.env
 
+### Configure the SMTP credentials basset will use to send emails ###
 echo export MAIL_HOST=localhost >> /var/basset/.env
 echo export MAIL_PORT=1025 >> /var/basset/.env
 echo export MAIL_EMAIL=hello@basset.io >> /var/basset/.env
+# Leave this empty when using localhost without a password
+echo export MAIL_PASSWORD= >> /var/basset/.env
+echo export MAIL_TLS=0 >> /var/basset/.env
 echo export MAIL_USE_SES=1 >> /var/basset/.env
 
 echo export DB_HOST=localhost >> /var/basset/.env
