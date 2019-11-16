@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: basset-diff
-          image: getbasset/basset-diff:1.0.0-beta
+          image: getbasset/basset-diff:latest
           imagePullPolicy: IfNotPresent
           args: ["workers.rabbitmq"]
           envFrom:
