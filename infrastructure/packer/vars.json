@@ -1,5 +1,7 @@
 {
   "db_password": "",
+  "db_username": "basset",
+  "db_name": "basset",
   "user_email": "",
   "user_password": "",
   "org_name": ""
