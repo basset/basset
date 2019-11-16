@@ -115,7 +115,7 @@ jobs:
           DB_HOST: localhost
           DB_NAME: bassettest
           DB_USERNAME: basset
-          NODE_ENV: test
+          NODE_ENV: production
           BASSET_URL: http://localhost:3000
           BASSET_PRIVATE: 0
       - image: circleci/postgres:10
@@ -144,8 +144,9 @@ jobs:
           paths:
             - react/node_modules
       - run:
-          command: npm run start &
+          command: npm run build:test
           working_directory: react
+      - run: cp react/dist/* express/static/dist/
       - restore_cache:
           key: basset-be-cache-{{ checksum "express/package.json" }}
       - run:
