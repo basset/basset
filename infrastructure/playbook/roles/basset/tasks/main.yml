@@ -111,15 +111,15 @@
   become: yes
   become_user: postgres
   postgresql_db:
-    name: basset
+    name: "{{db_name}}"
     encoding: UTF-8
 
 - name: Create postgresql user basset
   become: yes
   become_user: postgres
   postgresql_user:
-    db: basset
-    name: basset
+    db: "{{db_name}}"
+    name: "{{db_username}}"
     password: "{{db_password}}"
     priv: ALL
 
@@ -163,8 +163,9 @@
 - name: Migrate database
   shell: >
     DB_HOST=localhost
-    DB_USERNAME=basset
+    DB_USERNAME={{db_username}}
     DB_PASSWORD={{db_password}}
+    DB_NAME={{db_name}}
     /home/ubuntu/.nvm/versions/node/v10.14.1/bin/node commands/migrate.js
   register: migrated_db
   changed_when: migrated_db.rc
@@ -193,8 +194,9 @@
 - name: Create default user
   shell: >
     DB_HOST=localhost
-    DB_USERNAME=basset
     DB_PASSWORD={{db_password}}
+    DB_USERNAME={{db_username}}
+    DB_NAME={{db_name}}
     /home/ubuntu/.nvm/versions/node/v10.14.1/bin/node commands/create-user.js {{user_email}} {{user_password}} {{org_name}}
   register: user_created
   changed_when: user_created.rc
