@@ -367,13 +367,13 @@ const resolvers = {
   SnapshotDiff: {
     url: (snapshotDiff, args, context, info) =>
       settings.s3.privateScreenshots
-        ? `/screenshots/${snapshotDiff.id}`
+        ? `/screenshots/diff/${snapshotDiff.id}`
         : snapshotDiff.imageLocation,
   },
   SnapshotFlake: {
     url: (snapshotFlake, args, context, info) =>
       settings.s3.privateScreenshots
-        ? `/screenshots/${snapshotFlake.id}`
+        ? `/screenshots/${snapshotFlake.snapshotId}`
         : snapshotFlake.imageLocation,
     createdBy: (snapshotFlake, args, context, info) =>
       snapshotFlake.createdById
