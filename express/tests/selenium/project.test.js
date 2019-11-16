@@ -89,7 +89,7 @@ describe('projects', () => {
     const saveVariable = await findByTestId('slack-variable-save');
     await saveVariable.click();
     await driver.wait(until.stalenessOf(saveVariable));
-    
+
     const toggleChrome = await findByTestId('toggle-chrome');
     await toggleChrome.click();
     await driver.wait(until.elementIsEnabled(toggleChrome));

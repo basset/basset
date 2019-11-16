@@ -94,7 +94,7 @@ class WebdriverEnvironment extends NodeEnvironment {
   async teardown() {
     if (this.global.driver) {
       try {
-        await this.global.driver.quit();
+        await this.global.driver.close();
       } catch (error) {
         console.error(error);
       }
