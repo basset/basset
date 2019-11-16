@@ -67,6 +67,7 @@ describe('projects', () => {
     const saveBranch = await findByTestId('project-branch-save');
     await saveBranch.click();
 
+    await driver.wait(() => findByTestId('edit-slack-webhook'));
     const editSlackWebhook = await findByTestId('edit-slack-webhook');
     await driver.wait(until.elementIsEnabled(editSlackWebhook));
     await editSlackWebhook.click();
@@ -74,8 +75,8 @@ describe('projects', () => {
     await slackWebhook.sendKeys('webhook');
     const saveWebhook = await findByTestId('slack-webhook-save');
     await saveWebhook.click();
-    await driver.wait(until.stalenessOf(saveWebhook));
-    await waitForLoader();
+
+    await driver.wait(() => findByTestId('edit-slack-variable'));
     const editSlackVariable = await findByTestId('edit-slack-variable');
     await driver.wait(until.elementIsEnabled(editSlackVariable));
     await editSlackVariable.click();
@@ -83,8 +84,8 @@ describe('projects', () => {
     await slackVariable.sendKeys('variable');
     const saveVariable = await findByTestId('slack-variable-save');
     await saveVariable.click();
-    await driver.wait(until.stalenessOf(saveVariable));
 
+    await driver.wait(() => findByTestId('toggle-chrome'));
     const toggleChrome = await findByTestId('toggle-chrome');
     await toggleChrome.click();
     await driver.wait(until.elementIsEnabled(toggleChrome));
