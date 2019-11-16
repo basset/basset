@@ -28,8 +28,15 @@ const getTransport = () => {
     };
   } else {
     return {
-      host: settings.mail.host,
-      port: settings.mail.port,
+      transport: {
+        host: settings.mail.host,
+        port: settings.mail.port,
+        auth: {
+          user: settings.mail.username,
+          password: settings.mail.password,
+          secure: settings.mail.useTLS,
+        }
+      }
     };
   }
 };

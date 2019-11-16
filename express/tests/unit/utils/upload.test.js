@@ -110,7 +110,7 @@ describe('upload utils', () => {
     upload.getSnapshotKey(req, {}, cb);
     expect(cb).toHaveBeenCalledWith(
       null,
-      expect.stringContaining('3/2/1/base'),
+      expect.stringContaining('3/2/1/'),
     );
   });
 

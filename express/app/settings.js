@@ -2,7 +2,9 @@ const mail = {
   host: process.env.MAIL_HOST || 'localhost',
   port: parseInt(process.env.MAIL_PORT) || 1025,
   username: process.env.MAIL_USERNAME || '',
+  password: process.env.MAIL_PASSWORD || '',
   email: process.env.MAIL_EMAIL || 'hello@basset.io',
+  useTLS: parseInt(process.env.MAIL_TLS) === 1,
   ses: parseInt(process.env.MAIL_USE_SES) === 1,
   sesConfig: {
     accessKeyId: process.env.SES_ACCESS_KEY_ID,
@@ -14,9 +16,11 @@ const database = {
   client: process.env.DB_CLIENT || 'postgresql',
   connection: {
     host: process.env.RDS_HOSTNAME || process.env.DB_HOST,
+    port: process.env.RDS_PORT || process.env.DB_PORT || 5432,
     database: process.env.RDS_DB_NAME || process.env.DB_NAME || 'basset',
     user: process.env.RDS_USERNAME || process.env.DB_USERNAME,
     password: process.env.RDS_PASSWORD || process.env.DB_PASSWORD,
+    ssl: parseInt(process.env.DB_USE_SSL) === 1 || false,
   },
 };
 
