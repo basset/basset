@@ -13,12 +13,11 @@ class WebdriverEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);
     this.chromeOptions = new chrome.Options().headless();
-    this.chromeOptions.addArguments('auto-open-devtools-for-tabs');
 
     this.firefoxOptions = new firefox.Options().headless();
 
     this.configuration = {
-      forBrowser: 'chrome',
+      forBrowser: 'firefox',
       chromeOptions: this.chromeOptions,
       firefoxOptions: this.firefoxOptions,
       ...config.testEnvironmentOptions,
@@ -104,7 +103,7 @@ class WebdriverEnvironment extends NodeEnvironment {
 }
 
 async function buildDriver(configuration, server) {
-  return await new webdriver.Builder()
+  return new webdriver.Builder()
     .forBrowser(configuration.forBrowser)
     .setChromeOptions(configuration.chromeOptions)
     .setFirefoxOptions(configuration.firefoxOptions)
