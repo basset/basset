@@ -66,7 +66,8 @@ describe('projects', () => {
     await projectBranch.sendKeys('blaster');
     const saveBranch = await findByTestId('project-branch-save');
     await saveBranch.click();
-
+  });
+  test('edit project - integrations', async () => {
     await waitForTestId('edit-slack-webhook');
     const editSlackWebhook = await findByTestId('edit-slack-webhook');
     await driver.wait(until.elementIsEnabled(editSlackWebhook));
