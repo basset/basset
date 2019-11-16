@@ -115,7 +115,7 @@ jobs:
           DB_HOST: localhost
           DB_NAME: bassettest
           DB_USERNAME: basset
-          NODE_ENV: production
+          NODE_ENV: test
           BASSET_PRIVATE: 0
           USE_DB_SESSION: 1
       - image: circleci/postgres:10
@@ -153,7 +153,7 @@ jobs:
           working_directory: express
       - run:
           name: Run selenium tests
-          command: npm run test:selenium -- --reporters=default --reporters=jest-junit
+          command: NODE_ENV=production npm run test:selenium -- --reporters=default --reporters=jest-junit
           working_directory: express
       - store_test_results:
           path: /tmp/test-results/
