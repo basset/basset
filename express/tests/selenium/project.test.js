@@ -75,17 +75,20 @@ describe('projects', () => {
     await slackWebhook.sendKeys('webhook');
     const saveWebhook = await findByTestId('slack-webhook-save');
     await saveWebhook.click();
+    await driver.wait(until.stalenessOf(saveWebhook));
 
     await driver.wait(() => findByTestId('edit-slack-variable'));
     const editSlackVariable = await findByTestId('edit-slack-variable');
     await driver.wait(until.elementIsEnabled(editSlackVariable));
     await editSlackVariable.click();
+    await driver.wait(until.stalenessOf(editSlackVariable));
 
     await driver.wait(() => findByTestId('slack-variable-input'));
     const slackVariable = await findByTestId('slack-variable-input');
     await slackVariable.sendKeys('variable');
     const saveVariable = await findByTestId('slack-variable-save');
     await saveVariable.click();
+    await driver.wait(until.stalenessOf(saveVariable));
 
     await driver.wait(() => findByTestId('toggle-chrome'));
     const toggleChrome = await findByTestId('toggle-chrome');
