@@ -33,7 +33,7 @@ router.get('/diff/:diffId', async (req, res) => {
   }
 
   const snapshotDiff = await SnapshotDiff.query().findById(diffId);
-  if (!(await snapshotDiff.canRead(req.user))) {
+  if (!snapshotDiff || !(await snapshotDiff.canRead(req.user))) {
     return res.send(404);
   }
   streamObject(snapshotDiff.imageLocation, req, res);
@@ -46,7 +46,7 @@ router.get('/:snapshotId', async (req, res) => {
   }
 
   const snapshot = await Snapshot.query().findById(snapshotId);
-  if (!(await snapshot.canRead(req.user))) {
+  if (!snapshot || !(await snapshot.canRead(req.user))) {
     return res.send(404);
   }
   streamObject(snapshot.imageLocation, req, res);
