@@ -15,7 +15,7 @@ describe('organizations', () => {
   });
   test('organization', async () => {
     await login(driver, 'organization@basset.io', 'basset');
-
+    await waitForLoader();
     const createOrganizationLink = await findByTestId('create-organization');
 
     await createOrganizationLink.click();

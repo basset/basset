@@ -75,7 +75,7 @@ describe('projects', () => {
     const saveWebhook = await findByTestId('slack-webhook-save');
     await saveWebhook.click();
     await driver.wait(until.stalenessOf(saveWebhook));
-
+    await waitForLoader();
     const editSlackVariable = await findByTestId('edit-slack-variable');
     await driver.wait(until.elementIsEnabled(editSlackVariable));
     await editSlackVariable.click();
