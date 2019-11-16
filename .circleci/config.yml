@@ -132,31 +132,34 @@ jobs:
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
-      - run: cd react && pwd
       - restore_cache:
-          key: basset-fe-cache-{{ checksum "package.json" }}
+          key: basset-fe-cache-{{ checksum "react/package.json" }}
       - run:
           name: install-npm
           command: npm install
+          working_directory: react
       - save_cache:
-          key: basset-fe-cache-{{ checksum "/package.json" }}
+          key: basset-fe-cache-{{ checksum "react/package.json" }}
           paths:
-            - /node_modules
-      - run: npm run build
-      - run: cp dist/* ../express/static/dist/
-      - run: cd ../express && pwd
+            - react/node_modules
+      - run:
+          command: npm run build
+          working_directory: react
+      - run: cp react/dist/* express/static/dist/
       - restore_cache:
-          key: basset-be-cache-{{ checksum "package.json" }}
+          key: basset-be-cache-{{ checksum "express/package.json" }}
       - run:
           name: install-npm
           command: npm install
+          working_directory: rexpress
       - save_cache:
-          key: basset-be-cache-{{ checksum "package.json" }}
+          key: basset-be-cache-{{ checksum "express/package.json" }}
           paths:
-            - .node_modules
+            - express/node_modules
       - run:
           name: Run selenium tests
           command: npm run test:selenium -- -i --reporters=default --reporters=jest-junit
+          working_directory: express
       - store_test_results:
           path: /tmp/test-results/
       - store_artifacts:
