@@ -108,6 +108,20 @@ jobs:
           path: /tmp/test-results/
 
   test_selenium:
+    working_directory: ~/basset/express
+    docker:
+      - image: circleci/node:10.14.1
+        environment:
+          DB_HOST: localhost
+          DB_NAME: bassettest
+          DB_USERNAME: basset
+          NODE_ENV: test
+          BASSET_URL: http://localhost:3000
+          BASSET_PRIVATE: 0
+      - image: circleci/postgres:10
+        environment:
+          POSTGRES_USER: basset
+          POSTGRES_DB: bassettest
     environment:
       JEST_JUNIT_OUTPUT_DIR: /tmp/test-results/
     steps:
