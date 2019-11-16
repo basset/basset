@@ -159,7 +159,7 @@ jobs:
             - express/node_modules
       - run:
           name: Run selenium tests
-          command: npm run test:selenium -- -i --reporters=default --reporters=jest-junit
+          command: npm run test:selenium -- --reporters=default --reporters=jest-junit
           working_directory: express
       - store_test_results:
           path: /tmp/test-results/
