@@ -80,6 +80,8 @@ describe('projects', () => {
     const editSlackVariable = await findByTestId('edit-slack-variable');
     await driver.wait(until.elementIsEnabled(editSlackVariable));
     await editSlackVariable.click();
+
+    await driver.wait(() => findByTestId('slack-variable-input'));
     const slackVariable = await findByTestId('slack-variable-input');
     await slackVariable.sendKeys('variable');
     const saveVariable = await findByTestId('slack-variable-save');
