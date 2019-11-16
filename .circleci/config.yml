@@ -152,7 +152,7 @@ jobs:
       - run:
           name: install-npm
           command: npm install
-          working_directory: rexpress
+          working_directory: express
       - save_cache:
           key: basset-be-cache-{{ checksum "express/package.json" }}
           paths:
