@@ -139,7 +139,7 @@ jobs:
           name: install-npm
           command: npm install
       - save_cache:
-          key: basset-fe-cache-{{ checksum "package.json" }}
+          key: basset-fe-cache-{{ checksum "./react/package.json" }}
           paths:
             - ./react/node_modules
       - run: npm run build
@@ -151,7 +151,7 @@ jobs:
           name: install-npm
           command: npm install
       - save_cache:
-          key: basset-be-cache-{{ checksum "express/package.json" }}
+          key: basset-be-cache-{{ checksum "./express/package.json" }}
           paths:
             - ./express/node_modules
       - run:
