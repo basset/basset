@@ -108,14 +108,14 @@ jobs:
           path: /tmp/test-results/
 
   test_selenium:
-    working_directory: ~/basset/express
+    working_directory: ~/basset
     docker:
       - image: circleci/node:10.14.1-browsers
         environment:
           DB_HOST: localhost
           DB_NAME: bassettest
           DB_USERNAME: basset
-          NODE_ENV: test
+          NODE_ENV: production
           BASSET_URL: http://localhost:3000
           BASSET_PRIVATE: 0
       - image: circleci/postgres:10
@@ -132,6 +132,18 @@ jobs:
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
+      - run: cd react
+      - restore_cache:
+          key: basset-fe-cache-{{ checksum "package.json" }}
+      - run:
+          name: install-npm
+          command: npm install
+      - save_cache:
+          key: basset-fe-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run: npm run build
+      - run: cp dist/* ../express/static/dist/
       - restore_cache:
           key: basset-be-cache-{{ checksum "package.json" }}
       - run:
