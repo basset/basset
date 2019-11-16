@@ -9,7 +9,8 @@
     "start": "node ./bin/www",
     "migrate": "knex migrate:latest",
     "test:unit": "jest -c tests/unit/config/config.js -i",
-    "test:selenium": "jest -c tests/selenium/config/config.js -i --testTimeout=10000"
+    "test:selenium": "jest -c tests/selenium/config/config.js -i",
+    "test:selenium:prod": "NODE_ENV=production jest -c tests/selenium/config/config.js -i"
   },
   "author": "",
   "license": "AGPLv3",

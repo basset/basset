@@ -4,6 +4,8 @@ if (!process.env.CI) {
 
 const { configure } = require('../../../app/db');
 
+jest.setTimeout(10000);
+
 let knex;
 beforeAll(async () => {
   knex = configure();

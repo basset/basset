@@ -147,14 +147,20 @@ jobs:
           command: npm run build:test
           working_directory: react
       - run: cp react/dist/* express/static/dist/
+      - restore_cache:
+          key: basset-be-cache-{{ checksum "express/package.json" }}
       - run:
           name: install-npm
           command: npm install
           working_directory: express
+      - save_cache:
+          key: basset-be-cache-{{ checksum "express/package.json" }}
+          paths:
+            - express/node_modules
       - run:
           name: Run selenium tests
-          command: NODE_ENV=production npm run test:selenium -- --reporters=default --reporters=jest-junit
-          working_directory: express
+          command: NODE_ENV=production npm run test:selenium:prod -- --reporters=default --reporters=jest-junit
+          working_directory: ~/basset/express
       - store_test_results:
           path: /tmp/test-results/
       - store_artifacts:
