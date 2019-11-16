@@ -129,6 +129,7 @@ jobs:
           path: ~/basset
       - run: mkdir -p /tmp/test-results/
       - run: mkdir -p /tmp/jest_basset_global_setup/
+      - run: mkdir -p express/static/dist/
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
