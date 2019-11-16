@@ -64,7 +64,9 @@ class WebdriverEnvironment extends NodeEnvironment {
       }
     };
     this.global.cleanup = async () => {
-      this.global.driver.quit();
+      await this.global.driver.quit();
+    };
+    this.global.startup = async () => {
       this.global.driver = await buildDriver(this.configuration);
     };
     this.global.snapshot = async (
@@ -92,14 +94,9 @@ class WebdriverEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
-    if (this.global.driver) {
-      try {
-        await this.global.driver.quit();
-      } catch (error) {
-        console.error(error);
-      }
-    }
     await super.teardown();
+    await this.global.driver.close();
+
   }
 }
 

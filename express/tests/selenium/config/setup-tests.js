@@ -18,5 +18,4 @@ afterAll(async () => {
   tables = tables.filter(t => !ignore.includes(t));
   await knex.raw(`TRUNCATE TABLE "${tables.join('","')}"`);
   knex.destroy();
-  await global.cleanup();
 });
