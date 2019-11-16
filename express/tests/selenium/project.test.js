@@ -78,20 +78,20 @@ describe('projects', () => {
     await saveWebhook.click();
     await driver.wait(until.stalenessOf(saveWebhook));
   });
-  test('edit project - slack variable', async () => {
-    await waitForTestId('edit-slack-variable');
-    const editSlackVariable = await findByTestId('edit-slack-variable');
-    await driver.wait(until.elementIsEnabled(editSlackVariable));
-    await editSlackVariable.click();
-    await driver.wait(until.stalenessOf(editSlackVariable));
-
-    await waitForTestId('slack-variable-input');
-    const slackVariable = await findByTestId('slack-variable-input');
-    await slackVariable.sendKeys('variable');
-    const saveVariable = await findByTestId('slack-variable-save');
-    await saveVariable.click();
-    await driver.wait(until.stalenessOf(saveVariable));
-  });
+  // test('edit project - slack variable', async () => {
+  //   await waitForTestId('edit-slack-variable');
+  //   const editSlackVariable = await findByTestId('edit-slack-variable');
+  //   await driver.wait(until.elementIsEnabled(editSlackVariable));
+  //   await editSlackVariable.click();
+  //   await driver.wait(until.stalenessOf(editSlackVariable));
+  //
+  //   await waitForTestId('slack-variable-input');
+  //   const slackVariable = await findByTestId('slack-variable-input');
+  //   await slackVariable.sendKeys('variable');
+  //   const saveVariable = await findByTestId('slack-variable-save');
+  //   await saveVariable.click();
+  //   await driver.wait(until.stalenessOf(saveVariable));
+  // });
   test('edit project - browser settings', async () => {
     const toggleChrome = await findByTestId('toggle-chrome');
     await toggleChrome.click();
