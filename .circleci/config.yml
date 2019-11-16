@@ -116,8 +116,8 @@ jobs:
           DB_NAME: bassettest
           DB_USERNAME: basset
           NODE_ENV: production
-          BASSET_URL: http://localhost:3000
           BASSET_PRIVATE: 0
+          USE_DB_SESSION: 1
       - image: circleci/postgres:10
         environment:
           POSTGRES_USER: basset
