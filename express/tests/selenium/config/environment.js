@@ -75,10 +75,10 @@ class WebdriverEnvironment extends NodeEnvironment {
         'return document.documentElement.outerHTML;',
       ); //getPageSource escapes some style values
 
-      source = source.replace(
-        /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-        '',
-      );
+      // source = source.replace(
+      //   /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+      //   '',
+      // );
       await Snapshots.snapshot({
         source,
         title,
