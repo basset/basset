@@ -13,7 +13,7 @@ class WebdriverEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);
     this.chromeOptions = new chrome.Options().headless();
-    //this.chromeOptions.addArguments('auto-open-devtools-for-tabs');
+    this.chromeOptions.addArguments('auto-open-devtools-for-tabs');
 
     this.firefoxOptions = new firefox.Options().headless();
 
@@ -32,7 +32,7 @@ class WebdriverEnvironment extends NodeEnvironment {
       fs.readFileSync(path.join(DIR, 'config.json'), 'utf8'),
     );
     this.global.address = config.address;
-    this.global.driver = await buildDriver(this.configuration);
+    this.global.driver = await buildDriver(this.global.configuration);
     this.global.By = webdriver.By;
     this.global.until = webdriver.until;
     this.byTestId = testId => webdriver.By.css(`[data-test-id="${testId}"]`);

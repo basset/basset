@@ -96,7 +96,7 @@ describe('projects', () => {
 
   test('edit github settings', async () => {
     const project = await createProject('Github test', organization.id, {
-      repoToken: 'randomgargon',
+      scmToken: 'randomgargon',
       name: 'New project',
       slackWebhook: 'webhook',
       slackVariable: 'variable',
@@ -112,26 +112,26 @@ describe('projects', () => {
     await waitForLoader();
 
     await snapshot('Project configuration', { widths: '1280' });
-    const editRepoOwner = await findByTestId('edit-repo-owner');
-    await editRepoOwner.click();
-    const repoOwner = await findByTestId('repo-owner-input');
-    await repoOwner.sendKeys('repoman');
-    const saveOwner = await findByTestId('repo-owner-save');
-    await saveOwner.click();
-    await driver.wait(until.stalenessOf(saveOwner));
+    // const editRepoOwner = await findByTestId('edit-repo-owner');
+    // await editRepoOwner.click();
+    // const repoOwner = await findByTestId('repo-owner-input');
+    // await repoOwner.sendKeys('repoman');
+    // const saveOwner = await findByTestId('repo-owner-save');
+    // await saveOwner.click();
+    // await driver.wait(until.stalenessOf(saveOwner));
+    //
+    // const editRepoName = await findByTestId('edit-repo-name');
+    // await driver.wait(until.elementIsEnabled(editRepoName));
+    // await editRepoName.click();
+    // const repoName = await findByTestId('repo-name-input');
+    // await repoName.sendKeys('repoman');
+    // const saveName = await findByTestId('repo-name-save');
+    // await saveName.click();
+    // await driver.wait(until.stalenessOf(saveName));
 
-    const editRepoName = await findByTestId('edit-repo-name');
-    await driver.wait(until.elementIsEnabled(editRepoName));
-    await editRepoName.click();
-    const repoName = await findByTestId('repo-name-input');
-    await repoName.sendKeys('repoman');
-    const saveName = await findByTestId('repo-name-save');
-    await saveName.click();
-    await driver.wait(until.stalenessOf(saveName));
-
-    const toggleRepoActive = await findByTestId('toggle-repo-active');
-    await toggleRepoActive.click();
-    await driver.wait(until.elementIsEnabled(toggleRepoActive));
+    const toggleSCMActive = await findByTestId('toggle-scm-active');
+    await toggleSCMActive.click();
+    await driver.wait(until.elementIsEnabled(toggleSCMActive));
 
     await snapshot('Project configuration - filled', { widths: '1280' });
   });
