@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basset-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: basset-app
+  template:
+    metadata:
+      labels:
+        app: basset-app
+    spec:
+      containers:
+        - name: basset-app
+          image: getbasset/basset-app:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: basset-app-config

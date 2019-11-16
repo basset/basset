@@ -8,7 +8,7 @@ const rimraf = util.promisify(require('rimraf'));
 
 const Basset = require('@getbasset/node-client');
 
-const BASSET_URL = 'http://localhost:3000';
+const BASSET_URL = process.env.BASSET_APP_URL;
 
 const DIR = path.join(os.tmpdir(), 'jest_basset_global_setup');
 
@@ -70,6 +70,11 @@ class Snapshots {
       ignoreExtensions: '.js,.map',
     });
     const snapshots = await this.getSnapshots();
+    if (snapshots.length === 0) {
+      console.log('No snapshots to send');
+      return;
+    }
+
     console.log('Submitting build');
     await basset.buildStart();
     for await (const snapshot of snapshots) {

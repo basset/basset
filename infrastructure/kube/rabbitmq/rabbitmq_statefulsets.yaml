@@ -38,7 +38,7 @@ data:
       ## Set to "hostname" to use pod hostnames.
       ## When this value is changed, so should the variable used to set the RABBITMQ_NODENAME
       ## environment variable.
-      cluster_formation.k8s.address_type = ip
+      cluster_formation.k8s.address_type = hostname
       ## How often should node cleanup checks run?
       cluster_formation.node_cleanup.interval = 30
       ## Set to false if automatic removal of unknown/absent nodes
@@ -50,7 +50,7 @@ data:
       ## See http://www.rabbitmq.com/ha.html#master-migration-data-locality
       queue_master_locator=min-masters
       ## See http://www.rabbitmq.com/access-control.html#loopback-users
-      loopback_users.guest = false
+      loopback_users.basset = false
       ## ---------------
       ##
       ## USER and PASSWORD
@@ -60,11 +60,14 @@ data:
       default_pass = basset
 
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: rabbitmq
 spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
   serviceName: rabbitmq
   replicas: 2
   template:

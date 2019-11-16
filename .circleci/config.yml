@@ -26,12 +26,12 @@ jobs:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
       - restore_cache:
-          key: basset-fe-cache-{{ checksum "package.json" }}
+          key: basset-be-cache-{{ checksum "package.json" }}
       - run:
           name: install-npm
           command: npm install
       - save_cache:
-          key: basset-fe-cache-{{ checksum "package.json" }}
+          key: basset-be-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run:
@@ -56,12 +56,12 @@ jobs:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
       - restore_cache:
-          key: basset-be-cache-{{ checksum "package.json" }}
+          key: basset-fe-cache-{{ checksum "package.json" }}
       - run:
           name: install-npm
           command: npm install
       - save_cache:
-          key: basset-be-cache-{{ checksum "package.json" }}
+          key: basset-fe-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run: npm run test -- -i --reporters=default --reporters=jest-junit
@@ -107,6 +107,65 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results/
 
+  test_selenium:
+    working_directory: ~/basset
+    docker:
+      - image: circleci/node:10.14.1-browsers
+        environment:
+          DB_HOST: localhost
+          DB_NAME: bassettest
+          DB_USERNAME: basset
+          NODE_ENV: test
+          BASSET_PRIVATE: 0
+          USE_DB_SESSION: 1
+      - image: circleci/postgres:10
+        environment:
+          POSTGRES_USER: basset
+          POSTGRES_DB: bassettest
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: /tmp/test-results/
+    steps:
+      - checkout:
+          path: ~/basset
+      - run: mkdir -p /tmp/test-results/
+      - run: mkdir -p /tmp/jest_basset_global_setup/
+      - run: mkdir -p express/static/dist/
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache:
+          key: basset-fe-cache-{{ checksum "react/package.json" }}
+      - run:
+          name: install-npm
+          command: npm install
+          working_directory: react
+      - save_cache:
+          key: basset-fe-cache-{{ checksum "react/package.json" }}
+          paths:
+            - react/node_modules
+      - run:
+          command: npm run build:test
+          working_directory: react
+      - run: cp react/dist/* express/static/dist/
+      - restore_cache:
+          key: basset-be-cache-{{ checksum "express/package.json" }}
+      - run:
+          name: install-npm
+          command: npm install
+          working_directory: express
+      - save_cache:
+          key: basset-be-cache-{{ checksum "express/package.json" }}
+          paths:
+            - express/node_modules
+      - run:
+          name: Run selenium tests
+          command: NODE_ENV=production npm run test:selenium:prod -- --reporters=default --reporters=jest-junit
+          working_directory: ~/basset/express
+      - store_test_results:
+          path: /tmp/test-results/
+      - store_artifacts:
+          path: /tmp/test-results/
+
 workflows:
   version: 2
   build_and_test:
@@ -114,4 +173,5 @@ workflows:
       - test_backend
       - test_frontend
       - test_diff
+      - test_selenium
 

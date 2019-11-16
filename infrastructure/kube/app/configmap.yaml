@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: basset-app-config
+  namespace: default
+data:
+  OAUTH_GITHUB: "1"
+  OAUTH_GITHUB_CLIENT_ID: ""
+  OAUTH_GITHUB_CLIENT_SECRET: ""
+
+  OAUTH_BITBUCKET: "1"
+  OAUTH_BITBUCKET_CLIENT_ID: ""
+  OAUTH_BITBUCKET_CLIENT_SECRET: ""
+
+  OAUTH_GITLAB: "1"
+  OAUTH_GITLAB_CLIENT_ID: ""
+  OAUTH_GITLAB_CLIENT_SECRET: ""
+
+  MAIL_HOST: "localhost"
+  MAIL_PORT: "1080"
+  MAIL_EMAIL: "hello@basset.io"
+  MAIL_PASSWORD: ""
+  MAIL_TLS: "0"
+  MAIL_SES: "0"
+  MAIL_SMTP: "1"
+
+  DB_HOST: ""
+  DB_PORT: ""
+  DB_NAME: "basset"
+  DB_USERNAME: "basset"
+  DB_PASSWORD: ""
+  DB_USE_SSL: "1"
+
+  BASSET_SECRET: "" # can be created using commands/generate-secret.js
+  BASSET_ORIGIN: "https://api.basset.io"
+  BASSET_URL: "https://api.basset.io"
+  BASSET_PRIVATE: "1"
+
+  S3_ENDPOINT: ""
+  SCREENSHOT_BUCKET: ""
+  PRIVATE_SCREENSHOTS: "1"
+  PRIVATE_ASSETS: "1"
+  ASSETS_BUCKET: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+
+  AMPQ_HOST: "amqp://basset:basset@rabbitmq"
+  AMPQ_BUILD_QUEUE: "compare_snapshot"
+  AMPQ_TASK_QUEUE: "basset_tasks"
+  USE_SQS: "0"
+
+  TOKEN: "" # can be created using commands/generate-secret.js must should be different than BASSET_SECRET
+  NODE_ENV: "production"
+  USE_DB_SESSION: "1"
+  SAML_ENABLED: "0"
+  SAML_ENTRY_POINT: ""
+  SAML_ATTR_DISPLAY_NAME: "displaynam"
+  SAML_ATTR_PROFILE_IMAGE: "profileimage"
+  SAML_ATTR_EMAIL: "email"
+  SAML_ATTTR_ID: "nameID"
+  SAML_CERT: "nameID"
+  SAML_AUTHN_CONTEXT: ""
+  SAML_ISSUER: ""

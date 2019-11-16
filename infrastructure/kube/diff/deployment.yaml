@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basset-diff-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: basset-diff
+  template:
+    metadata:
+      labels:
+        app: basset-diff
+    spec:
+      containers:
+        - name: basset-diff
+          image: getbasset/basset-diff:latest
+          imagePullPolicy: IfNotPresent
+          args: ["workers.rabbitmq"]
+          envFrom:
+            - configMapRef:
+                name: basset-diff-config

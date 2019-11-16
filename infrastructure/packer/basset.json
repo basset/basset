@@ -25,7 +25,7 @@
       "type": "ansible",
       "playbook_file": "../playbook/basset_ami.yml",
       "extra_arguments": [
-        "-vv", "--extra-vars", "db_password={{user `db_password`}} user_email={{user `user_email`}} user_password={{user `user_password`}} org_name={{user `org_name`}}"
+        "-vv", "--extra-vars", "db_password={{user `db_password`}} db_username={{user `db_username`}} db_name={{user `db_name`}} user_email={{user `user_email`}} user_password={{user `user_password`}} org_name={{user `org_name`}}"
       ]
     }
   ]

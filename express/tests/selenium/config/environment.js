@@ -13,12 +13,11 @@ class WebdriverEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);
     this.chromeOptions = new chrome.Options().headless();
-    //this.chromeOptions.addArguments('auto-open-devtools-for-tabs');
 
     this.firefoxOptions = new firefox.Options().headless();
 
     this.configuration = {
-      forBrowser: 'chrome',
+      forBrowser: 'firefox',
       chromeOptions: this.chromeOptions,
       firefoxOptions: this.firefoxOptions,
       ...config.testEnvironmentOptions,
@@ -32,7 +31,7 @@ class WebdriverEnvironment extends NodeEnvironment {
       fs.readFileSync(path.join(DIR, 'config.json'), 'utf8'),
     );
     this.global.address = config.address;
-    this.global.driver = await buildDriver(this.configuration);
+    this.global.driver = await buildDriver(this.global.configuration);
     this.global.By = webdriver.By;
     this.global.until = webdriver.until;
     this.byTestId = testId => webdriver.By.css(`[data-test-id="${testId}"]`);
@@ -65,7 +64,9 @@ class WebdriverEnvironment extends NodeEnvironment {
       }
     };
     this.global.cleanup = async () => {
-      this.global.driver.quit();
+      await this.global.driver.quit();
+    };
+    this.global.startup = async () => {
       this.global.driver = await buildDriver(this.configuration);
     };
     this.global.snapshot = async (
@@ -80,6 +81,7 @@ class WebdriverEnvironment extends NodeEnvironment {
         /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
         '',
       );
+
       await Snapshots.snapshot({
         source,
         title,
@@ -92,19 +94,14 @@ class WebdriverEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
-    if (this.global.driver) {
-      try {
-        await this.global.driver.quit();
-      } catch (error) {
-        console.error(error);
-      }
-    }
     await super.teardown();
+    await this.global.driver.close();
+
   }
 }
 
 async function buildDriver(configuration, server) {
-  return await new webdriver.Builder()
+  return new webdriver.Builder()
     .forBrowser(configuration.forBrowser)
     .setChromeOptions(configuration.chromeOptions)
     .setFirefoxOptions(configuration.firefoxOptions)

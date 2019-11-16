@@ -1,2 +1,16 @@
-node_modules
+/*/node_modules
+/*/yarn-error.log
+/*/npm-error.log
+.idea
+.docker
+.venv
+.envrc
+.autoenv
+/*/test-settings.js
 tests
+doc
+*.base
+.vscode
+*.zip
+Dockerfile
+.git

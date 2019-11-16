@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: basset-diff-config
+  namespace: default
+data:
+  BASSET_URL: "http://basset-app-service" # this should not change
+
+  # these values must be the same as app/configmap.yal
+  S3_ENDPOINT: ""
+  SCREENSHOT_BUCKET: ""
+  PRIVATE_SCREENSHOTS: "1"
+  PRIVATE_ASSETS: "1"
+  ASSETS_BUCKET: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+
+  AMPQ_HOST: "amqp://basset:basset@rabbitmq"
+  AMPQ_BUILD_QUEUE: "compare_snapshot"
+
+  TOKEN: ""

@@ -23,3 +23,5 @@ geckodriver*
 *.base
 .vscode
 *.zip
+/**/.terraform
+*.default.yaml

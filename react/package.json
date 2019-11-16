@@ -26,6 +26,7 @@
   "scripts": {
     "start": "webpack-dev-server --config ./webpack.config.js --mode development --output-public-path http://localhost:8080/",
     "build": "webpack --config ./webpack.config.js --mode production",
+    "build:test": "webpack --config ./webpack.config.js --mode development",
     "test": "jest"
   },
   "eslintConfig": {

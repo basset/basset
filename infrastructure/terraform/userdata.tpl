@@ -25,8 +25,11 @@ echo export SAML_ISSUER="" >> /var/basset/.env
 
 echo export NODE_ENV=production >> /var/basset/.env
 
-echo export MAIL_HOST=localhost >> /var/basset/.env
-echo export MAIL_PORT=1025 >> /var/basset/.env
+# uncomment these to and set MAIL_USES_SES=0 to use SMTP
+#echo export MAIL_HOST=localhost >> /var/basset/.env
+#echo export MAIL_PORT=1025 >> /var/basset/.env
+#echo export MAIL_PASSWORD=basset >> /var/basset/.env
+#echo export MAIL_TLS=0 >> /var/basset/.env
 echo export MAIL_EMAIL=hello@basset.io >> /var/basset/.env
 echo export MAIL_USE_SES=1 >> /var/basset/.env
 
@@ -34,6 +37,7 @@ echo export DB_HOST=localhost >> /var/basset/.env
 echo export DB_NAME=basset >> /var/basset/.env
 echo export DB_USERNAME=basset >> /var/basset/.env
 echo export DB_PASSWORD=password >> /var/basset/.env
+echo epxort DB_USE_SSL=0 >> /var/basset/.env
 echo export USE_DB_SESSION=1 >> /var/basset/.env
 
 echo export BASSET_SECRET=BASSET_SECRET >> /var/basset/.env

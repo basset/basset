@@ -4,6 +4,8 @@ if (!process.env.CI) {
 
 const { configure } = require('../../../app/db');
 
+jest.setTimeout(10000);
+
 let knex;
 beforeAll(async () => {
   knex = configure();
@@ -18,5 +20,4 @@ afterAll(async () => {
   tables = tables.filter(t => !ignore.includes(t));
   await knex.raw(`TRUNCATE TABLE "${tables.join('","')}"`);
   knex.destroy();
-  await global.cleanup();
 });

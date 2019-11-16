@@ -16,6 +16,9 @@ The following infrastructure is required to run basset on AWS:
   * Batch is setup to use Spot Fleet with m3.large, m4.large, m4a.large, c4.large and c5.large with 90% discount
 
 ## Configure and deploy
+> Terraform will create all the required infrastructure
+
+> These steps assume you have some knoweldge of terraform and ansible
 
 1. Ensure your aws credentials and region are set up [see packer docs](https://www.packer.io/docs/builders/amazon.html#authentication)
     > The recommended method is to use environmental variables or [aws-vault](https://github.com/99designs/aws-vault)
@@ -38,6 +41,8 @@ The following infrastructure is required to run basset on AWS:
 6. Update the file at `infrastructure/terraform/userdata.tpl` which will be used to set the environment [variables](environmental-variables.md) for the ec2 instance.
 7. Update the file at  `infrastructure/terraform/terraform.tfvars`
    > Be sure to update `zone` and `domain_name` as the default values will not work
+   
+   > This guide assumes you have a hosted domain on route53
 8. Navigate to the `infrastructure/terraform` folder and run:
 
     ```shell-session
