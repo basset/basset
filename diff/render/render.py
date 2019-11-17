@@ -110,7 +110,6 @@ class Render(object):
         return ready_state
 
     def render(self, location, width, selector, hide_selectors):
-        print('navigating to: {}'.format(location))
         self.driver.get(location)
         self.driver.set_window_size(width, self.height)
 
