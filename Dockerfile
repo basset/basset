@@ -1,10 +1,23 @@
-FROM node:8.11.4
+FROM node:10.14.1
+EXPOSE 3000
 
-WORKDIR /app/website
+# copy and install express app
+WORKDIR /basset/
+COPY express /basset
+# remove any previous build files
+RUN rm -rf static/dist
+RUN npm install --production
 
-EXPOSE 3000 35729
-COPY ./docs /app/docs
-COPY ./website /app/website
-RUN yarn install
+# copy and install react app
+WORKDIR /basset-react/
+COPY react /basset-react
+RUN npm install
+RUN npm run build
+RUN mv -f dist ../basset/static
+# cleanup files not needed
+RUN rm -rf /basse-react
 
-CMD ["yarn", "start"]
+# run server
+WORKDIR /basset/
+USER node
+CMD ["node", "./bin/www"]
