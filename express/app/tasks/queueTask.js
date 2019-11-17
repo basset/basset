@@ -1,10 +1,22 @@
+const aws = require('aws-sdk');
+
+const connection = require('../utils/amqpConnection');
 const settings = require('../settings');
 const actionTypes = require('./actionTypes');
 
+let channelWrapper;
+let sqs;
+
+if (settings.sqs.use) {
+  sqs = new aws.SQS({ apiVersion: '2012-11-05' });
+} else {
+  channelWrapper = connection.createChannel({
+    setup: (channel) => channel.assertQueue(settings.amqp.taskQueue, { durable: true }),
+  })
+}
+
 const queueTask = async message => {
   if (settings.sqs.use) {
-    const aws = require('aws-sdk');
-    const sqs = new aws.SQS({ apiVersion: '2012-11-05' });
     await sqs
       .sendMessage({
         QueueUrl: settings.sqs.taskUrl,
@@ -12,28 +24,14 @@ const queueTask = async message => {
       })
       .promise();
   } else {
-    const amqp = require('amqplib');
-    const connection = await amqp.connect(settings.ampq.host);
-    const channel = await connection.createChannel();
-
-    try {
-      await channel.assertQueue(settings.ampq.taskQueue, { durable: true });
-
-      const messageData = JSON.stringify(message);
-      await channel.sendToQueue(
-        settings.ampq.taskQueue,
-        Buffer.from(messageData),
-        {
-          deliveryMode: true,
-        },
-      );
-      await channel.close();
-      await connection.close();
-    } catch (error) {
-      console.error(error);
-      await connection.close();
-      throw error;
-    }
+    const messageData = JSON.stringify(message);
+    await channelWrapper.sendToQueue(
+      settings.amqp.taskQueue,
+      Buffer.from(messageData),
+      {
+        deliveryMode: true,
+      },
+    );
   }
 };
 

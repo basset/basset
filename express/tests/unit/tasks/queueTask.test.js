@@ -1,14 +1,10 @@
 let mockSendToQueue = jest.fn(async () => {});
-const mockConnectionClose = jest.fn(async () => {});
-const mockChannelClose = jest.fn(async () => {});
-jest.mock('amqplib', () => ({
+
+jest.mock('amqp-connection-manager', () => ({
   connect: jest.fn(async () => ({
     createChannel: jest.fn(async () => ({
-      assertQueue: jest.fn(async () => {}),
       sendToQueue: mockSendToQueue,
-      close: mockChannelClose,
     })),
-    close: mockConnectionClose,
   })),
 }));
 
@@ -23,12 +19,11 @@ jest.mock('aws-sdk', () => {
   };
 });
 
-const settings = require('.../../../app/settings');
-const queueTask = require('../../../app/tasks/queueTask');
-
 test('queueTask', async () => {
+  const settings = require('.../../../app/settings');
   settings.sqs.use = true;
   settings.sqs.taskUrl = 'taskurl';
+  const queueTask = require('../../../app/tasks/queueTask');
   const message = { type: 'test', data: 'testing' };
   queueTask.queueTask(message);
   expect(mockSendMessage).toHaveBeenCalledWith(

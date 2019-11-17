@@ -15,7 +15,7 @@ data:
   AWS_ACCESS_KEY_ID: ""
   AWS_SECRET_ACCESS_KEY: ""
 
-  AMPQ_HOST: "amqp://basset:basset@rabbitmq"
-  AMPQ_BUILD_QUEUE: "compare_snapshot"
+  AMQP_HOST: "amqp://basset:basset@rabbitmq"
+  AMQP_BUILD_QUEUE: "compare_snapshot"
 
   TOKEN: ""

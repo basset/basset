@@ -77,10 +77,10 @@ const awsBatch = {
   JobDefinition: process.env.AWS_BATCH_JOB_DEFINITION,
   jobQueue: process.env.AWS_BATCH_JOB_QUEUE,
 };
-const ampq = {
-  host: process.env.AMPQ_HOST,
-  buildQueue: process.env.AMPQ_BUILD_QUEUE,
-  taskQueue: process.env.AMPQ_TASK_QUEUE,
+const amqp = {
+  host: process.env.AMQP_HOST,
+  buildQueue: process.env.AMQP_BUILD_QUEUE,
+  taskQueue: process.env.AMQP_TASK_QUEUE,
 };
 
 const token = process.env.TOKEN;
@@ -115,7 +115,7 @@ module.exports = {
   oauth,
   site,
   s3,
-  ampq,
+  amqp,
   token,
   env,
   sqs,
