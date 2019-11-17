@@ -39,6 +39,7 @@ def setup_queue(task):
         try:
             channel.start_consuming()
         except pika.exceptions.ConnectionClosed:
+            print('Connection closed')
             pass
 
     consume()

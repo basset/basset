@@ -29,7 +29,9 @@ def render_snapshot(source_location, organization_id, project_id, build_id,
     except:
         render.close_browser()
         raise
-
+    print("Rendered snapshot: {}".format(title))
+    print("[org ID: {}] [project ID: {}] [build ID: {}]".format(organization_id, project_id, build_id))
+    print("[browser: {}] [width: {}]".format(browser, width))
     image_blob = io.BytesIO(image)
 
 

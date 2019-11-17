@@ -41,4 +41,4 @@ def send_message(message):
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
             print("Error: {}".format(e))
-        print(response.text)
+        print("Submitted snapshot [success]")

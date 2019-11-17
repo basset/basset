@@ -25,7 +25,6 @@ def diff_snapshot(snapshot, organization_id, project_id, build_id, browser, titl
     snapshot_location = compare_snapshot
     key_path = '{}/{}/{}'.format(organization_id, project_id, build_id)
 
-    diff_matched = None
     flake_matched = None
     diff_hash = ''
     diff_location = None
@@ -64,26 +63,5 @@ def diff_snapshot(snapshot, organization_id, project_id, build_id, browser, titl
     else:
         snapshot.close()
 
+    print("Diffed snapshot: [diff: {}] [flake: {}]".format(difference > 0.1, flake_matched))
     return diff_location, difference, snapshot_location, diff_hash, flake_matched
-
-
-
-# def match_snapshot_flake(snapshot_diff, key_path):
-#     files = list_files(key_path)
-#     sorted_files = sorted(
-#         files,
-#         key=lambda obj: int(obj.last_modified.strftime('%s')),
-#         reverse=True)  # check most recent flakes
-
-#     snapshot_keys = [obj.key for obj in sorted_files]
-#     matched_key = None
-#     for snapshot_key in snapshot_keys:
-#         other_diff = get_file(snapshot_key)
-#         snapshot_stream = io.BytesIO(snapshot_diff)
-#         _, difference, pixel_diff = compare(other_diff, snapshot_stream)
-#         snapshot_stream.close()
-#         if pixel_diff == 0:  # exact match (could compare against any flake but could be really slow)
-#             matched_key = snapshot_key
-#             break
-#     print('matched flake {}'.format(matched_key))
-#     return matched_key
