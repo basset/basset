@@ -4,7 +4,7 @@ export default gql`
   mutation addSnapshotFlake($id: ID!) {
     addSnapshotFlake(id: $id) {
       id
-      imageLocation
+      url
       createdBy {
         user {
           id
