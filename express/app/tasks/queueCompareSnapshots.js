@@ -1,3 +1,5 @@
+const aws = require('aws-sdk');
+const amqp = require('amqplib');
 const settings = require('../settings');
 const messagesPerWorker = 300;
 
@@ -7,10 +9,9 @@ const getWorkers = count => {
 
 const queueCompareSnapshots = async messages => {
   if (settings.sqs.use) {
-    const aws = require('aws-sdk');
     const sqs = new aws.SQS({ apiVersion: '2012-11-05' });
     const batchedData = [];
-    const sortedMessages = messages.sort((a, b) => a.browser > b.browser); // sort by browser
+    const sortedMessages = messages.sort((a, b) => a.browser - b.browser); // sort by browser
     for (let i = 0; i < sortedMessages.length; i += 10) {
       const messageId = getWorkers(i);
       const mapFn = m => ({
@@ -43,18 +44,16 @@ const queueCompareSnapshots = async messages => {
         .promise();
     }
   } else {
-    const amqp = require('amqplib');
-    const connection = await amqp.connect(settings.ampq.host);
+    const connection = await amqp.connect(settings.amqp.host);
     const channel = await connection.createChannel();
 
     try {
-      await channel.assertQueue(settings.ampq.buildQueue, { durable: true });
-
-      for await (const messageData of messages) {
+      await channel.assertQueue(settings.amqp.buildQueue, { durable: true });
+      const sortedMessages = messages.sort((a, b) => a.browser - b.browser);
+      for await (const messageData of sortedMessages) {
         const message = JSON.stringify(messageData);
-        console.log('sending', message);
         await channel.sendToQueue(
-          settings.ampq.buildQueue,
+          settings.amqp.buildQueue,
           Buffer.from(message),
           {
             deliveryMode: true,

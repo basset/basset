@@ -44,9 +44,9 @@ data:
   AWS_ACCESS_KEY_ID: ""
   AWS_SECRET_ACCESS_KEY: ""
 
-  AMPQ_HOST: "amqp://basset:basset@rabbitmq"
-  AMPQ_BUILD_QUEUE: "compare_snapshot"
-  AMPQ_TASK_QUEUE: "basset_tasks"
+  AMQP_HOST: "amqp://basset:basset@rabbitmq"
+  AMQP_BUILD_QUEUE: "compare_snapshot"
+  AMQP_TASK_QUEUE: "basset_tasks"
   USE_SQS: "0"
 
   TOKEN: "" # can be created using commands/generate-secret.js must should be different than BASSET_SECRET

@@ -13,15 +13,15 @@ const queueTask = async message => {
       .promise();
   } else {
     const amqp = require('amqplib');
-    const connection = await amqp.connect(settings.ampq.host);
+    const connection = await amqp.connect(settings.amqp.host);
     const channel = await connection.createChannel();
 
     try {
-      await channel.assertQueue(settings.ampq.taskQueue, { durable: true });
+      await channel.assertQueue(settings.amqp.taskQueue, { durable: true });
 
       const messageData = JSON.stringify(message);
       await channel.sendToQueue(
-        settings.ampq.taskQueue,
+        settings.amqp.taskQueue,
         Buffer.from(messageData),
         {
           deliveryMode: true,

@@ -2,9 +2,9 @@ import os
 
 BASSET_URL = os.environ.get('BASSET_URL', '')
 TOKEN = os.environ.get('TOKEN', '')
-AMPQ_HOST = os.environ.get('AMPQ_HOST', '')
+AMQP_HOST = os.environ.get('AMQP_HOST', '')
 S3_ENDPOINT = os.environ.get('S3_ENDPOINT', '')
-AMPQ_BUILD_QUEUE = os.environ.get('AMPQ_BUILD_QUEUE', '')
+AMQP_BUILD_QUEUE = os.environ.get('AMQP_BUILD_QUEUE', '')
 SCREENSHOT_BUCKET = os.environ.get('SCREENSHOT_BUCKET', '')
 ASSETS_BUCKET = os.environ.get('ASSETS_BUCKET', '')
 PRIVATE_ASSETS = int(os.environ.get('PRIVATE_ASSETS', 0)) == 1

@@ -46,7 +46,7 @@ Here is a list of environmental variables Basset uses:
 | `AWS_BATCH_JOB_QUEUE` | AWS Batch job queue name |
 | `USE_SQS` | set to 1 to use SQS for queuing snapshots (otherwise RabbitMQ is used) |
 | `SQS_TASK_QUEUE_URL` | SQS URL for running tasks |
-| `AMPQ_TASK_QUEUE` | queue name to send tasks to (if you're not using SQS) |
+| `AMQP_TASK_QUEUE` | queue name to send tasks to (if you're not using SQS) |
 | `NODE_ENV` | set to PRODUCTION unless you're testing or developing |
 | `PRIVATE_SCREENSHOTS` | set to 0 to use the s3 url for snapshots (requires the screenshot bucket policy to allow public access for `GetObject`), setting to 1 will use the basset web service to retrieve the snapshot image
 
@@ -61,7 +61,7 @@ Here is a list of environmental variables Basset uses:
 | `SCREENSHOT_BUCKET` | bucket for storing screenshots |
 | `ASSETS_BUCKET` | bucket for storing files that are rendered |
 | `SQS_BUILD_QUEUE_URL` | SQS URL for build snapshots |
-| `AMPQ_HOST` | RabbitMQ host (if you're not using SQS) |
-| `AMPQ_BUILD_QUEUE` | queue name to send tasks to (if you're not using SQS) |
+| `AMQP_HOST` | RabbitMQ host (if you're not using SQS) |
+| `AMQP_BUILD_QUEUE` | queue name to send tasks to (if you're not using SQS) |
 | `TOKEN` | should be a random generated key, used for communicating between web service and diff service (can be generated running `node commands/generate-secret.js` in the `express` folder) |
 | `PRIVATE_ASSETS` | set to 0 to use the s3 url for assets (requires the assets bucket policy to allow public access for `GetObject`, setting to 1 will use the basset web service to retrieve assets

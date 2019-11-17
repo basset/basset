@@ -24,17 +24,17 @@ def setup_queue(task):
     def consume():
         print('Attempting to connect to the server...')
         parameters = pika.URLParameters(
-            "{}?blocked_connection_timeout=300".format(AMPQ_HOST))
+            "{}?blocked_connection_timeout=300".format(AMQP_HOST))
         connection = pika.BlockingConnection(parameters=parameters)
         connection.add_on_connection_blocked_callback(on_blocked)
         connection.add_on_connection_unblocked_callback(on_unblocked)
         channel = connection.channel()
 
-        channel.queue_declare(queue=AMPQ_BUILD_QUEUE, durable=True)
+        channel.queue_declare(queue=AMQP_BUILD_QUEUE, durable=True)
         print('Waiting for messages.')
 
         channel.basic_qos(prefetch_count=5)
-        channel.basic_consume(AMPQ_BUILD_QUEUE, callback)
+        channel.basic_consume(AMQP_BUILD_QUEUE, callback)
 
         try:
             channel.start_consuming()
