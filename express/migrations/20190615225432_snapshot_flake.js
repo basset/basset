@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return Promise.all([
     knex.schema.createTable('snapshot_flake', table => {
       table
@@ -51,7 +51,7 @@ exports.up = function(knex, Promise) {
   ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.schema
     .table('snapshot', table => {
       table.dropColumn('snapshot_flake_matched_id');

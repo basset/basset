@@ -1,4 +1,4 @@
-exports.up = async function(knex, Promise) {
+exports.up = async function(knex) {
   await knex.schema.table('project', table => {
     table.renameColumn('provider', 'scm_provider');
     table.json('scm_config');
