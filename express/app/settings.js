@@ -78,6 +78,7 @@ const awsBatch = {
   jobQueue: process.env.AWS_BATCH_JOB_QUEUE,
 };
 const amqp = {
+  use: parseInt(process.env.USE_SQS) !== 1,
   host: process.env.AMQP_HOST,
   buildQueue: process.env.AMQP_BUILD_QUEUE,
   taskQueue: process.env.AMQP_TASK_QUEUE,

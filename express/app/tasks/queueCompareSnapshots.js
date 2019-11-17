@@ -11,7 +11,8 @@ let sqs;
 
 if (settings.sqs.use) {
   sqs = new aws.SQS({ apiVersion: '2012-11-05' });
-} else {
+}
+else if (settings.amqp.use && !process.env.TEST) {
   channelWrapper = connection.createChannel({
     setup: (channel) => channel.assertQueue(settings.amqp.buildQueue, { durable: true }),
   })
@@ -52,7 +53,7 @@ const queueCompareSnapshots = async messages => {
         })
         .promise();
     }
-  } else {
+  } else if (settings.amqp.use) {
     const sortedMessages = messages.sort((a, b) => a.browser - b.browser);
     for await (const messageData of sortedMessages) {
       const message = JSON.stringify(messageData);
