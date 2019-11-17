@@ -1,15 +1,24 @@
 const aws = require('aws-sdk');
-const amqp = require('amqplib');
+const connection = require('../utils/amqpConnection');
 const settings = require('../settings');
 const messagesPerWorker = 300;
 
 const getWorkers = count => {
   return Math.floor(count / messagesPerWorker) + 1;
 };
+let channelWrapper;
+let sqs;
+
+if (settings.sqs.use) {
+  sqs = new aws.SQS({ apiVersion: '2012-11-05' });
+} else {
+  channelWrapper = connection.createChannel({
+    setup: (channel) => channel.assertQueue(settings.amqp.buildQueue, { durable: true }),
+  })
+}
 
 const queueCompareSnapshots = async messages => {
   if (settings.sqs.use) {
-    const sqs = new aws.SQS({ apiVersion: '2012-11-05' });
     const batchedData = [];
     const sortedMessages = messages.sort((a, b) => a.browser - b.browser); // sort by browser
     for (let i = 0; i < sortedMessages.length; i += 10) {
@@ -44,29 +53,16 @@ const queueCompareSnapshots = async messages => {
         .promise();
     }
   } else {
-    const connection = await amqp.connect(settings.amqp.host);
-    const channel = await connection.createChannel();
-
-    try {
-      await channel.assertQueue(settings.amqp.buildQueue, { durable: true });
-      const sortedMessages = messages.sort((a, b) => a.browser - b.browser);
-      for await (const messageData of sortedMessages) {
-        const message = JSON.stringify(messageData);
-        await channel.sendToQueue(
-          settings.amqp.buildQueue,
-          Buffer.from(message),
-          {
-            deliveryMode: true,
-          },
-        );
-      }
-
-      await channel.close();
-      await connection.close();
-    } catch (error) {
-      console.error(error);
-      await connection.close();
-      throw error;
+    const sortedMessages = messages.sort((a, b) => a.browser - b.browser);
+    for await (const messageData of sortedMessages) {
+      const message = JSON.stringify(messageData);
+      await channelWrapper.sendToQueue(
+        settings.amqp.buildQueue,
+        Buffer.from(message),
+        {
+          deliveryMode: true,
+        },
+      );
     }
   }
 };
