@@ -20,10 +20,10 @@ const configureQueue = () => {
 };
 
 const queueCompareSnapshots = async messages => {
+  messages.sort((a, b) => a.browser > b.browser);
   if (settings.sqs.use) {
     const batchedData = [];
-    const sortedMessages = messages.sort((a, b) => a.browser - b.browser); // sort by browser
-    for (let i = 0; i < sortedMessages.length; i += 10) {
+    for (let i = 0; i < messages.length; i += 10) {
       const messageId = getWorkers(i);
       const mapFn = m => ({
         Id: m.id,
@@ -31,7 +31,7 @@ const queueCompareSnapshots = async messages => {
         MessageGroupId: `${m.organizationId}-${m.buildId}-${messageId}`,
         MessageDeduplicationId: `${m.organizationId}-${m.id}`,
       });
-      batchedData.push(sortedMessages.slice(i, i + 10).map(mapFn));
+      batchedData.push(messages.slice(i, i + 10).map(mapFn));
     }
     for await (const data of batchedData) {
       await sqs
@@ -55,8 +55,7 @@ const queueCompareSnapshots = async messages => {
         .promise();
     }
   } else if (settings.amqp.use) {
-    const sortedMessages = messages.sort((a, b) => a.browser - b.browser);
-    for await (const messageData of sortedMessages) {
+    for await (const messageData of messages) {
       const message = JSON.stringify(messageData);
       await channelWrapper.sendToQueue(
         settings.amqp.buildQueue,
