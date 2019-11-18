@@ -16,7 +16,7 @@ const checkBuild = async (build) => {
   const timeDelta = lastUpdated - build.updatedAt;
   if (timeDelta > buildTimeout) {
     console.error(
-      `Build (id: ${build.id}) has timed out. There were${
+      `[checkBuilds] Build (id: ${build.id}) has timed out. There were${
         lastSnapshot ? '' : ' no'
       } snapshots created.`,
     );

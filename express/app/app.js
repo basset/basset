@@ -168,4 +168,12 @@ app.get('*', csrfProtection, (req, res) => {
 
 const render = ['index', {settings}];
 
+if (!process.env.TEST) {
+  const configureConnection = require('./utils/amqpConnection');
+  const configureQueue = require('./tasks/queueCompareSnapshots');
+
+  configureConnection();
+  configureQueue();
+}
+
 module.exports = app;

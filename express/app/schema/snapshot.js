@@ -609,11 +609,9 @@ const checkModifiedAndNotify = async build => {
   const { modifiedSnapshotCount } = await Snapshot.query()
     .where('buildId', build.id)
     .where('diff', true)
-    .where(builder => {
-      builder.where('approved', false).orWhere(builder => {
-        builder.where('flake', true).whereNull('snapshotFlakeMatchedId');
-      });
-    })
+    .whereNot('approved', true)
+    .whereNot('flake', true)
+    .whereNull('snapshotFlakeMatchedId')
     .count('snapshot.id as modifiedSnapshotCount')
     .first();
 
