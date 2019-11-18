@@ -1,6 +1,6 @@
 const settings = require('../settings');
 const messagesPerWorker = 300;
-
+const { getConnection } = require('../utils/amqpConnection');
 const getWorkers = count => {
   return Math.floor(count / messagesPerWorker) + 1;
 };
@@ -12,7 +12,7 @@ const configureQueue = () => {
     const aws = require('aws-sdk');
     sqs = new aws.SQS({apiVersion: '2012-11-05'});
   } else if (settings.amqp.use && !process.env.TEST) {
-    const { connection } = require('../utils/amqpConnection');
+    const connection = getConnection();
     channelWrapper = connection.createChannel({
       setup: (channel) => channel.assertQueue(settings.amqp.buildQueue, {durable: true}),
     })

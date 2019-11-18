@@ -1,11 +1,11 @@
 let mockSendToQueue = jest.fn(async () => {});
 
 jest.mock('../../../app/utils/amqpConnection', () => ({
-  connection: {
+  getConnection: () => ({
     createChannel: jest.fn(() => ({
       sendToQueue: mockSendToQueue,
     })),
-  }
+  }),
 }))
 const tasks = require('../../../app/tasks/queueCompareSnapshots');
 

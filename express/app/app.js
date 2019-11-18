@@ -6,9 +6,15 @@ const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 
 const csrfProtection = csrf({ cookie: true });
+if (!process.env.TEST) {
+  const { configureQueue } = require('./tasks/queueCompareSnapshots');
+  configureQueue();
+}
+
 const settings = require('./settings');
 const { passport } = require('./utils/auth/strategy');
 const ApolloServer = require('./utils/graphql/protected-apollo-server');
+
 
 const app = express();
 
@@ -167,13 +173,5 @@ app.get('*', csrfProtection, (req, res) => {
 });
 
 const render = ['index', {settings}];
-
-if (!process.env.TEST) {
-  const configureConnection = require('./utils/amqpConnection');
-  const configureQueue = require('./tasks/queueCompareSnapshots');
-
-  configureConnection();
-  configureQueue();
-}
 
 module.exports = app;
