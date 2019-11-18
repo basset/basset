@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: basset-diff
-          image: getbasset/basset-diff:release-1.0.0-beta-3
+          image: getbasset/basset-diff:release-1.0.0-beta-4
           args: ["workers.rabbitmq"]
           envFrom:
             - configMapRef:
