@@ -20,7 +20,6 @@ const cronTasks = async () => {
 
 const destroy = async () => {
   await knex.destroy();
-  process.exitCode = 1;
 };
 
 cronTasks();

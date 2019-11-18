@@ -53,6 +53,6 @@ const main = async () => {
 
 const destroyAndExit = async () => {
   await knex.destroy();
-  process.exitCode = 1;
+  process.exitCode = 0;
 };
 main();
