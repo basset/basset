@@ -10,7 +10,7 @@ spec:
         spec:
           containers:
             - name: basset-worker
-              image: getbasset/basset-app:release-1.0.0-beta-6
+              image: getbasset/basset-app:release-1.0.0-beta-7
               command: ["node"]
               args: ["app/tasks/cronTasks.js"]
               envFrom:
