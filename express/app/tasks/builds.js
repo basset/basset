@@ -2,11 +2,7 @@ const Build = require('../models/Build');
 
 const buildTimeout = 20 * 60 * 1000; // 20 minutes
 
-const monitorBuildStatus = async ({ buildId }) => {
-  const build = await Build.query().findById(buildId);
-  if (build.error || build.completedAt) {
-    return;
-  }
+const checkBuild = async (build) => {
   let lastUpdated = new Date();
   const lastSnapshot = await build
     .$relatedQuery('snapshots')
@@ -27,6 +23,17 @@ const monitorBuildStatus = async ({ buildId }) => {
     await build.$query().update({
       error: true,
     });
+  }
+
+  return true;
+};
+
+const monitorBuildStatus = async ({ buildId }) => {
+  const build = await Build.query().findById(buildId);
+  if (build.error || build.completedAt) {
+    return;
+  }
+  if (await checkBuild(build)) {
     return;
   }
   setTimeout(async () => {
@@ -36,4 +43,5 @@ const monitorBuildStatus = async ({ buildId }) => {
 
 module.exports = {
   monitorBuildStatus,
+  checkBuild,
 };

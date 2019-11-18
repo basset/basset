@@ -39,7 +39,7 @@ const getBaseSHA = async (project, sha) => {
   if (pullRequests.values && pullRequests.values.length > 0) {
     const pullRequestData = await getPullRequest({
       url: pullRequests.values[0].links.self.href,
-      token,
+      token: project.scmToken,
     });
 
     return pullRequestData.destination.commit.hash;

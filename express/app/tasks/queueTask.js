@@ -1,18 +1,12 @@
 const aws = require('aws-sdk');
 
-const connection = require('../utils/amqpConnection');
 const settings = require('../settings');
 const actionTypes = require('./actionTypes');
 
-let channelWrapper;
 let sqs;
 
 if (settings.sqs.use) {
   sqs = new aws.SQS({ apiVersion: '2012-11-05' });
-} else if (settings.amqp.use && !process.env.TEST) {
-  channelWrapper = connection.createChannel({
-    setup: (channel) => channel.assertQueue(settings.amqp.taskQueue, { durable: true }),
-  })
 }
 
 const queueTask = async message => {
@@ -23,15 +17,6 @@ const queueTask = async message => {
         MessageBody: JSON.stringify(message),
       })
       .promise();
-  } else if (settings.amqp.use) {
-    const messageData = JSON.stringify(message);
-    await channelWrapper.sendToQueue(
-      settings.amqp.taskQueue,
-      Buffer.from(messageData),
-      {
-        deliveryMode: true,
-      },
-    );
   }
 };
 

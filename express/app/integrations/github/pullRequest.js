@@ -39,7 +39,7 @@ const getBaseSHA = async (project, sha) => {
   if (pullRequests && pullRequests.length > 0) {
     const pullRequestData = await getPullRequest({
       url: pullRequests[0].pull_request.url,
-      token,
+      token: project.scmToken,
     });
 
     return pullRequestData.base.sha;

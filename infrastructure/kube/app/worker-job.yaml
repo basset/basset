@@ -1,0 +1,19 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: basset-worker
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: basset-worker
+              image: getbasset/basset-app:release-1.0.0-beta-3
+              command: ["node"]
+              args: ["app/tasks/cronTasks.js"]
+              envFrom:
+                - configMapRef:
+                    name: basset-app-config
+          restartPolicy: OnFailure
