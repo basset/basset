@@ -50,7 +50,7 @@ class SnapshotList extends React.PureComponent {
     }
     if (type === 'unmodified') {
       return (
-        build.totalSnapshots - build.modifiedSnapshots - build.newSnapshots
+        build.totalSnapshots - build.modifiedSnapshots - build.newSnapshots - build.flakedSnapshots
       );
     }
     if (type === 'new') {
