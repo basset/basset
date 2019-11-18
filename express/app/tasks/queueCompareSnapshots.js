@@ -1,5 +1,3 @@
-const aws = require('aws-sdk');
-const connection = require('../utils/amqpConnection');
 const settings = require('../settings');
 const messagesPerWorker = 300;
 
@@ -9,14 +7,17 @@ const getWorkers = count => {
 let channelWrapper;
 let sqs;
 
-if (settings.sqs.use) {
-  sqs = new aws.SQS({ apiVersion: '2012-11-05' });
-}
-else if (settings.amqp.use && !process.env.TEST) {
-  channelWrapper = connection.createChannel({
-    setup: (channel) => channel.assertQueue(settings.amqp.buildQueue, { durable: true }),
-  })
-}
+const configureQueue = () => {
+  if (settings.sqs.use) {
+    const aws = require('aws-sdk');
+    sqs = new aws.SQS({apiVersion: '2012-11-05'});
+  } else if (settings.amqp.use && !process.env.TEST) {
+    const { connection } = require('../utils/amqpConnection');
+    channelWrapper = connection.createChannel({
+      setup: (channel) => channel.assertQueue(settings.amqp.buildQueue, {durable: true}),
+    })
+  }
+};
 
 const queueCompareSnapshots = async messages => {
   if (settings.sqs.use) {
@@ -70,4 +71,5 @@ const queueCompareSnapshots = async messages => {
 
 module.exports = {
   queueCompareSnapshots,
+  configureQueue,
 };
