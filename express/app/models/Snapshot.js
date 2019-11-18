@@ -94,6 +94,7 @@ class Snapshot extends BaseModel {
             snapshotFromId: this.previousApprovedId,
             snapshotToId: this.id,
             buildId: this.buildId,
+            organizationId: this.organizationId,
           });
         }
       }
