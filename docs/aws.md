@@ -59,8 +59,7 @@ The following infrastructure is required to run basset on AWS:
     ```
 
 11. Navigate to the `diff` folder:
-12. Edit the `Docker` file to setup your environment [variables](environmental-variables.md)
-13. While still in the `diff` folder run:
+12. While still in the `diff` folder run:
 
     ```shell-session
     DOCKER_ECR_NAME=ecr_name DOCKER_REPO_URL=ecr_repo_url \
