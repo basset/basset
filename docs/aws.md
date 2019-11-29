@@ -64,5 +64,5 @@ The following infrastructure is required to run basset on AWS:
 
     ```shell-session
     DOCKER_ECR_NAME=ecr_name DOCKER_REPO_URL=ecr_repo_url \
-    make build && make tag && make push
+    sh -c 'make build && make tag && make push'
     ```
