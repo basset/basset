@@ -98,7 +98,7 @@
 <tr><td><code>AWS_BATCH_JOB_QUEUE</code></td><td>AWS Batch job queue name</td></tr>
 <tr><td><code>USE_SQS</code></td><td>set to 1 to use SQS for queuing snapshots (otherwise RabbitMQ is used)</td></tr>
 <tr><td><code>SQS_TASK_QUEUE_URL</code></td><td>SQS URL for running tasks</td></tr>
-<tr><td><code>AMPQ_TASK_QUEUE</code></td><td>queue name to send tasks to (if you're not using SQS)</td></tr>
+<tr><td><code>AMQP_TASK_QUEUE</code></td><td>queue name to send tasks to (if you're not using SQS)</td></tr>
 <tr><td><code>NODE_ENV</code></td><td>set to PRODUCTION unless you're testing or developing</td></tr>
 <tr><td><code>PRIVATE_SCREENSHOTS</code></td><td>set to 0 to use the s3 url for snapshots (requires the screenshot bucket policy to allow public access for <code>GetObject</code>), setting to 1 will use the basset web service to retrieve the snapshot image</td></tr>
 </tbody>
@@ -116,8 +116,8 @@
 <tr><td><code>SCREENSHOT_BUCKET</code></td><td>bucket for storing screenshots</td></tr>
 <tr><td><code>ASSETS_BUCKET</code></td><td>bucket for storing files that are rendered</td></tr>
 <tr><td><code>SQS_BUILD_QUEUE_URL</code></td><td>SQS URL for build snapshots</td></tr>
-<tr><td><code>AMPQ_HOST</code></td><td>RabbitMQ host (if you're not using SQS)</td></tr>
-<tr><td><code>AMPQ_BUILD_QUEUE</code></td><td>queue name to send tasks to (if you're not using SQS)</td></tr>
+<tr><td><code>AMQP_HOST</code></td><td>RabbitMQ host (if you're not using SQS)</td></tr>
+<tr><td><code>AMQP_BUILD_QUEUE</code></td><td>queue name to send tasks to (if you're not using SQS)</td></tr>
 <tr><td><code>TOKEN</code></td><td>should be a random generated key, used for communicating between web service and diff service (can be generated running <code>node commands/generate-secret.js</code> in the <code>express</code> folder)</td></tr>
 <tr><td><code>PRIVATE_ASSETS</code></td><td>set to 0 to use the s3 url for assets (requires the assets bucket policy to allow public access for <code>GetObject</code>, setting to 1 will use the basset web service to retrieve assets</td></tr>
 </tbody>
