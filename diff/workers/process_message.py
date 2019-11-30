@@ -7,6 +7,7 @@ from render.snapshot import render_snapshot
 
 def process_message(body):
     data = json.loads(body, encoding='utf-8')
+    id = data['id']
     source_location = data['sourceLocation']
     organization_id = data['organizationId']
     project_id = data['projectId']
@@ -35,9 +36,9 @@ def process_message(body):
             save_snapshot
         )
         message = {
-            'id': data['id'],
+            'id': id,
         }
-        if data.get('compareSnapshot'):
+        if compare_snapshot:
             diff_location, difference, image_location, diff_sha, flake_matched = diff_snapshot(
                 snapshot_image,
                 organization_id,
