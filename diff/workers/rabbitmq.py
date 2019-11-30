@@ -39,7 +39,7 @@ def block_signals():
 
 
 def consume_message(ch, method, _, body):
-    with block_signals:
+    with block_signals():
         message = process_message(body)
         if message is not None:
             send_message(message)
