@@ -10,4 +10,4 @@ ASSETS_BUCKET = os.environ.get('ASSETS_BUCKET', '')
 PRIVATE_ASSETS = int(os.environ.get('PRIVATE_ASSETS', 0)) == 1
 COMPARE_TOPIC_ARN = os.environ.get('COMPARE_TOPIC_ARN', '')
 COMPARED_TOPIC_ARN = os.environ.get('COMPARED_TOPIC_ARN', '')
-SQS_BUILD_QUEUE_URL = os.environ.get('SQS_BUILD_QUEUE_URL',  '')
+SQS_BUILD_QUEUE_URL = os.environ.get('SQS_BUILD_QUEUE_URL', '')

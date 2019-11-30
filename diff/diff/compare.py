@@ -1,5 +1,5 @@
-import numpy as np
 import cv2
+import numpy as np
 
 DIFF_COLOR = [30, 30, 255, 255]
 ALPHA_COLOR = [0, 0, 0, 0]
@@ -32,7 +32,7 @@ def compare(old_snapshot, new_snapshot):
 
     diff_data = cv2.absdiff(img1, img2)
     color_diff = np.mean(diff_data, axis=2)
-    mse = np.float64(np.sqrt((diff_data**2).mean())).item()
+    mse = np.float64(np.sqrt((diff_data ** 2).mean())).item()
     thresh = 10
     diff_data[:, :, :4][color_diff <= thresh] = ALPHA_COLOR
     diff_data[:, :, :4][color_diff > thresh] = DIFF_COLOR

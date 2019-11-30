@@ -1,20 +1,12 @@
-import io
-import os
-import json
-import sys
-import uuid
 import unittest
-from collections import namedtuple
-
-from unittest.mock import patch, Mock, MagicMock
+from unittest.mock import MagicMock
 
 from render import snapshot
-from utils import settings
 
 
 class RenderSnapshotTest(unittest.TestCase):
 
-    def setUp(self,):
+    def setUp(self, ):
         snapshot.upload_file = MagicMock(return_value='')
         snapshot.render = MagicMock(
             render=MagicMock(return_value=None),

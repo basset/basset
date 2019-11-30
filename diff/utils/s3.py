@@ -13,12 +13,14 @@ def setup_s3():
         config=botocore.client.Config(signature_version='s3v4')
     )
 
+
 def setup_client():
     return boto3.client(
         's3',
         endpoint_url=S3_ENDPOINT,
         config=botocore.client.Config(signature_version='s3v4')
     )
+
 
 def get_file(key, bucket=SCREENSHOT_BUCKET):
     s3 = setup_s3()
@@ -41,6 +43,7 @@ def list_files(path):
     s3 = setup_s3()
     return [file for file in s3.Bucket(SCREENSHOT_BUCKET).objects.filter(Prefix=path)]
 
+
 def create_presigned_url(key):
     s3_client = setup_client()
     params = {
@@ -49,5 +52,5 @@ def create_presigned_url(key):
     }
     expiration = 60
     return s3_client.generate_presigned_url('get_object',
-                                             Params=params,
-                                             ExpiresIn=expiration)
+                                            Params=params,
+                                            ExpiresIn=expiration)

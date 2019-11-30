@@ -1,13 +1,10 @@
 import io
 import uuid
-
 from urllib.parse import urlparse
-
 from utils.s3 import upload_file
 from utils.settings import *
 
 from .render import Render
-
 
 render = Render()
 
@@ -34,11 +31,10 @@ def render_snapshot(source_location, organization_id, project_id, build_id,
     print("[browser: {}] [width: {}]".format(browser, width))
     image_blob = io.BytesIO(image)
 
-
     if save_snapshot:
         file_name = '{}.html'.format(uuid.uuid4().hex)
         image_key = '{}/screenshots/{}/{}/{}.png'.format(
-        key_path, browser, width, file_name)
+            key_path, browser, width, file_name)
         upload_file(image_blob, image_key)
         image_location = '{}/{}/{}'.format(S3_ENDPOINT,
                                            SCREENSHOT_BUCKET, image_key)

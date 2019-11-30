@@ -1,12 +1,8 @@
-import io
 import os
 import unittest
-import numpy as np
-import cv2
+from unittest.mock import patch, MagicMock
 
 from render.render import Render, webdriver
-
-from unittest.mock import patch, MagicMock
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
