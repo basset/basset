@@ -55,7 +55,7 @@ def on_unblocked():
 
 
 @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
-def consume(self):
+def consume():
     print('Attempting to connect to the server...')
     parameters = pika.URLParameters(
         "{}?blocked_connection_timeout=300".format(AMQP_HOST))
@@ -68,7 +68,7 @@ def consume(self):
     print('Waiting for messages.')
 
     channel.basic_qos(prefetch_count=5)
-    channel.basic_consume(AMQP_BUILD_QUEUE, self.consume_message)
+    channel.basic_consume(AMQP_BUILD_QUEUE, consume_message)
 
     try:
         channel.start_consuming()
