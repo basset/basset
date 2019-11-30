@@ -1,0 +1,73 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rabbitmq-pod-autoscaler
+rules:
+  - apiGroups: ["*"]
+    resources: ["deployments", "deployments/scale"]
+    verbs: ["get", "list", "update"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rabbitmq-pod-autoscaler
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rabbitmq-pod-autoscaler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rabbitmq-pod-autoscaler
+subjects:
+  - kind: ServiceAccount
+    name: rabbitmq-pod-autoscaler
+    namespace: kube-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-pod-autoscaler
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq-pod-autoscaler
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-pod-autoscaler
+    spec:
+      serviceAccountName: rabbitmq-pod-autoscaler
+      containers:
+        - name: rabbitmq-pod-autoscaler
+          image: getbasset/rabbitmq-pod-autoscaler:release-1.0.0-beta-2
+          resources:
+            requests:
+              cpu: 100m
+              memory: 50Mi
+          env:
+            - name: AMQP_HOST
+              value: "amqp://basset:basset@rabbitmq.default.svc.cluster.local"
+            - name: AMQP_BUILD_QUEUE
+              value: "compare_snapshot"
+            - name: SCAN_INTERVAL
+              value: "10"
+            - name: DEPLOYMENT
+              value: "basset-diff-deployment"
+            - name: NAMESPACE
+              value: "default"
+            - name: MAX_PODS
+              value: "5"
+            - name: MIN_PODS
+              value: "0"
+            - name: MSG_PER_POD
+              value: "300"
+            - name: DEBUG
+              value: "false"
+            - name: SCALE_FACTOR
+              value: "0.9"
