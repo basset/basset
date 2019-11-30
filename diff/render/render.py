@@ -1,9 +1,9 @@
 import time
-
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException, JavascriptException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import NoSuchElementException, JavascriptException
+
 
 class Render(object):
     def __init__(self):
@@ -25,6 +25,7 @@ class Render(object):
         self.chrome_options.add_argument('--no-sandbox')
         self.is_open = False
         self.browser = None
+        self.driver = None
 
     def open_browser(self, browser):
         print('opening {}'.format(browser))
@@ -100,6 +101,7 @@ class Render(object):
             pass
 
     def get_ready_state(self):
+        ready_state = False
         try:
             ready_state = self.driver.execute_script(
                 "return document.readyState;"

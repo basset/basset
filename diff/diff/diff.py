@@ -1,13 +1,11 @@
-import json
-import io
-import uuid
 import copy
 import hashlib
-
+import io
+import json
+import uuid
 from urllib.parse import urlparse
-
-from utils.settings import *
 from utils.s3 import get_file, upload_file, list_files
+from utils.settings import *
 
 from .compare import compare
 
@@ -18,10 +16,11 @@ def get_sha1(bytes):
     return hash.hexdigest()
 
 
-def diff_snapshot(snapshot, organization_id, project_id, build_id, browser, title, width, compare_snapshot, flake_sha_list, save_snapshot=False):
+def diff_snapshot(snapshot, organization_id, project_id, build_id, browser, title, width, compare_snapshot,
+                  flake_sha_list, save_snapshot=False):
     snapshot_key = urlparse(compare_snapshot).path.split('/', 2)[2]
     old_snapshot = get_file(snapshot_key)
-    diff_snapshot, difference, diff_pixels = compare(old_snapshot, snapshot)
+    diffed_snapshot, difference, diff_pixels = compare(old_snapshot, snapshot)
     snapshot_location = compare_snapshot
     key_path = '{}/{}/{}'.format(organization_id, project_id, build_id)
 
@@ -37,18 +36,14 @@ def diff_snapshot(snapshot, organization_id, project_id, build_id, browser, titl
             diff_key_path,
             uuid.uuid4().hex,
         )
-        snapshot_stream = io.BytesIO(diff_snapshot)
+        snapshot_stream = io.BytesIO(diffed_snapshot)
 
-        diff_hash = get_sha1(diff_snapshot)
+        diff_hash = get_sha1(diffed_snapshot)
         flake_sha_set = set(flake_sha_list)
         flake_matched = diff_hash in flake_sha_set
 
-        # flake_key_matched = match_snapshot_flake(diff_snapshot, flake_key_path)
-        # if flake_key_matched:
-        #     flake_matched = '{}/{}/{}'.format(S3_ENDPOINT,
-        #                                       SCREENSHOT_BUCKET, flake_key_matched)
         if not flake_matched:
-            s3image = upload_file(snapshot_stream, key)
+            _ = upload_file(snapshot_stream, key)
             diff_location = '{}/{}/{}'.format(S3_ENDPOINT,
                                               SCREENSHOT_BUCKET, key)
 

@@ -4,7 +4,6 @@ import unittest
 
 from diff import compare
 
-
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -42,7 +41,7 @@ class CompareTest(unittest.TestCase):
     def test_compare_switch_images(self):
         diff_image, difference, pixel_diff = compare.compare(
             self.new_snapshot, self.old_snapshot)
-        #diff_image_data = io.BytesIO(diff_image).read()
+        # diff_image_data = io.BytesIO(diff_image).read()
         # with open(os.path.join(dir_path, 'images', 'diff-reverse.png'), 'wb') as write_file:
         #     write_file.write(diff_image_data)
         # self.assertEqual(self.diff_snapshot_data, diff_image_data)

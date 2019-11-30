@@ -1,10 +1,8 @@
-import json
-import io
-import requests
-import hmac
 import hashlib
-
-
+import hmac
+import io
+import json
+import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
