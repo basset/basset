@@ -1,13 +1,8 @@
 import io
-import json
-import os
-import sys
 import unittest
-import uuid
-from collections import namedtuple
+from unittest.mock import patch, Mock
+
 from diff import diff
-from unittest.mock import patch, Mock, MagicMock
-from utils import settings
 
 
 @patch('diff.diff.compare')

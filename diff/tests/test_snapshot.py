@@ -1,13 +1,7 @@
-import io
-import json
-import os
-import sys
 import unittest
-import uuid
-from collections import namedtuple
+from unittest.mock import MagicMock
+
 from render import snapshot
-from unittest.mock import patch, Mock, MagicMock
-from utils import settings
 
 
 class RenderSnapshotTest(unittest.TestCase):

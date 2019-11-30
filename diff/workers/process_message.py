@@ -1,4 +1,5 @@
 import json
+import traceback
 
 from diff.diff import diff_snapshot
 from render.snapshot import render_snapshot
@@ -20,42 +21,47 @@ def process_message(body):
 
     save_snapshot = compare_snapshot is None
 
-    snapshot_image, image_location = render_snapshot(
-        source_location,
-        organization_id,
-        project_id,
-        build_id,
-        title,
-        width,
-        browser,
-        selector,
-        hide_selectors,
-        save_snapshot
-    )
-    message = {
-        'id': data['id'],
-    }
-    if data.get('compareSnapshot'):
-        diff_location, difference, image_location, diff_sha, flake_matched = diff_snapshot(
-            snapshot_image,
+    try:
+        snapshot_image, image_location = render_snapshot(
+            source_location,
             organization_id,
             project_id,
             build_id,
-            browser,
             title,
             width,
-            compare_snapshot,
-            flake_sha_list,
-            True
+            browser,
+            selector,
+            hide_selectors,
+            save_snapshot
         )
-        if not flake_matched:
-            message['diffLocation'] = diff_location
-            message['differenceAmount'] = str(difference)
+        message = {
+            'id': data['id'],
+        }
+        if data.get('compareSnapshot'):
+            diff_location, difference, image_location, diff_sha, flake_matched = diff_snapshot(
+                snapshot_image,
+                organization_id,
+                project_id,
+                build_id,
+                browser,
+                title,
+                width,
+                compare_snapshot,
+                flake_sha_list,
+                True
+            )
+            if not flake_matched:
+                message['diffLocation'] = diff_location
+                message['differenceAmount'] = str(difference)
 
-        message['diffSha'] = diff_sha
-        message['difference'] = not flake_matched and difference > 0.1
-        message['flakeMatched'] = flake_matched
+            message['diffSha'] = diff_sha
+            message['difference'] = not flake_matched and difference > 0.1
+            message['flakeMatched'] = flake_matched
 
-    message['imageLocation'] = image_location
+        message['imageLocation'] = image_location
 
-    return message
+        return message
+    except Exception as ex:
+        print(''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__)))
+        print('There was an error trying to render the snapshot {}'.format(title))
+        return None
