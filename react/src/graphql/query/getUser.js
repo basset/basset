@@ -19,8 +19,8 @@ export default gql`
             monthlySnapshotLimit
             enforceSnapshotLimit
             currentSnapshotCount
-            snapshotRetentionPeriod
-            enforceSnapshotRetention
+            buildRetentionPeriod
+            enforceBuildRetention
           }
         }
       }

@@ -28,7 +28,7 @@ const secret = process.env.BASSET_SECRET;
 const env = process.env.NODE_ENV;
 
 const enforceSnapshotLimit = process.env.ENFORCE_SNAPSHOT_LIMIT || false;
-const enforceSnapshotRetention = process.env.ENFORCE_SNAPSHOT_RENTETION || false;
+const enforceBuildRetention = process.env.ENFORCE_BUILD_RENTETION || false;
 
 const cors = {
   origin: process.env.BASSET_ORIGIN,
@@ -127,5 +127,5 @@ module.exports = {
   session,
   saml,
   enforceSnapshotLimit,
-  enforceSnapshotRetention
+  enforceBuildRetention
 };

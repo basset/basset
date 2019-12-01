@@ -105,10 +105,10 @@ class Organization extends React.PureComponent {
             />
           </React.Fragment>
         )}
-        {this.props.organization.enforceSnapshotRetention && (
+        {this.props.organization.enforceBuildRetention && (
           <InlineField
-            title="Snapshot data retention"
-            value={`${this.props.organization.snapshotRetentionPeriod} days`}
+            title="Builds and snapshot retention"
+            value={`${this.props.organization.buildRetentionPeriod} days`}
             canChange={false}
           />
         )}

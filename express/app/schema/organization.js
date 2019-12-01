@@ -16,8 +16,8 @@ type Organization implements Node {
   monthlySnapshotLimit: Int
   currentSnapshotCount: Int
   enforceSnapshotLimit: Boolean
-  snapshotRetentionPeriod: Int
-  enforceSnapshotRetention: Boolean
+  buildRetentionPeriod: Int
+  enforceBuildRetention: Boolean
   projects(first: Int, last: Int, after: String, before: String): ProjectConnection @cost(multipliers: ["first", "last"], complexity: 1)
   organizationMembers(first: Int, last: Int, after: String, before: String): OrganizationMemberConnection @cost(multipliers: ["first", "last"], complexity: 1)
 }
@@ -95,7 +95,7 @@ const resolvers = {
         organizationId: organization.id,
         userId: user.id,
         enforceSnapshotLimit: settings.enforceSnapshotLimit,
-        enforceSnapshotRetention: settings.enforceSnapshotRetention,
+        enforceBuildRetention: settings.enforceBuildRetention,
         admin: true,
       });
       return organization;
