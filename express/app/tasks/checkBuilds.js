@@ -1,10 +1,7 @@
-const db = require('../db');
 const Build = require('../models/Build');
 const { checkBuild } = require('./builds');
 
-const knex = db.configure();
-
-const cronTasks = async () => {
+const run = async () => {
   console.log('[checkBuilds] checking for timed out builds');
   const builds = await Build
     .query()
@@ -18,8 +15,4 @@ const cronTasks = async () => {
   await destroy();
 };
 
-const destroy = async () => {
-  await knex.destroy();
-};
-
-cronTasks();
+module.exports = run;

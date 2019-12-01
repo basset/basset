@@ -257,6 +257,7 @@ class Build extends BaseModel {
     const Organization = require('./Organization');
     const OrganizationMember = require('./OrganizationMember');
     const Project = require('./Project');
+    const Asset = require('./Asset');
     return {
       previousBuild: {
         relation: Model.HasOneRelation,
@@ -314,6 +315,18 @@ class Build extends BaseModel {
           to: 'buildAsset.buildId',
         },
       },
+      assets: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Asset,
+        join: {
+          from: 'build.id',
+          through: {
+            from: 'buildAsset.buildId',
+            to: 'buildAsset.assetId',
+          },
+          to: 'asset.id',
+        },
+      }
     };
   }
 

@@ -24,6 +24,7 @@ class Asset extends BaseModel {
   static get relationMappings() {
     const Organization = require('./Organization');
     const Project = require('./Project');
+    const BuildAsset = require('./BuildAsset');
     return {
       organization: {
         relation: Model.BelongsToOneRelation,
@@ -41,6 +42,14 @@ class Asset extends BaseModel {
           to: 'project.id',
         },
       },
+      buildAssets: {
+        relation: Model.HasManyRelation,
+        modelClass: BuildAsset,
+        join: {
+          from: 'asset.id',
+          to: 'buildAsset.assetId',
+        }
+      }
     };
   }
 
