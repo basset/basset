@@ -29,7 +29,7 @@ export class Builds extends React.PureComponent {
       }).isRequired,
     ),
     currentBuild: PropTypes.shape({
-      id: PropTypes.string.siRequired,
+      id: PropTypes.string.isRequired,
     }),
     onChangeBuild: PropTypes.func.isRequired,
     onReload: PropTypes.func.isRequired,
