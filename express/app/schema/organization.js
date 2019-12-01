@@ -14,6 +14,11 @@ type Organization implements Node {
   name: String
   admin: Boolean
   canCreate: Boolean
+  monthlySnapshotLimit: Int
+  currentSnapshotCount: Int
+  enforceSnapshotLimit: Boolean
+  snapshotRetentionPeriod: Int
+  enforceSnapshotRetention: Boolean
   projects(first: Int, last: Int, after: String, before: String): ProjectConnection @cost(multipliers: ["first", "last"], complexity: 1)
   organizationMembers(first: Int, last: Int, after: String, before: String): OrganizationMemberConnection @cost(multipliers: ["first", "last"], complexity: 1)
 }
@@ -73,6 +78,19 @@ const resolvers = {
         ...args,
         orderByPrefix: 'organizationMember',
       });
+    },
+    currentSnapshotCount: async (organization, args, context, info) => {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const firstOfMonth = new Date(year, month, 1);
+      const lastOfMonth = new Date(year, month + 1, 0);
+      const { count } = await organization
+        .$query()
+        .joinRelation('snapshots')
+        .whereBetween('snapshots.createdAt', [firstOfMonth, lastOfMonth])
+        .count();
+      return count;
     },
   },
   Mutation: {

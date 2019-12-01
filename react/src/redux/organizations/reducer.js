@@ -5,7 +5,10 @@ import * as actionTypes from './action-types';
 const initialState = {
   isLoading: false,
   isUpdating: false,
-  error: '',
+  error: {
+    loading: '',
+    updating: '',
+  },
   organizations: [],
   total: null,
   currentOrganizationId: null,
@@ -28,9 +31,12 @@ const handler = {
     ...state,
     isUpdating: false,
   }),
-  [actionTypes.setError]: (state, { error }) => ({
+  [actionTypes.setError]: (state, { type, error }) => ({
     ...state,
-    error,
+    error: {
+      ...state.error,
+      [type]: error,
+    }
   }),
   [actionTypes.receiveOrganizations]: (state, { organizations }) => ({
     ...state,

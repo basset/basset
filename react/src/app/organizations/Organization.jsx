@@ -12,7 +12,10 @@ class Organization extends React.PureComponent {
   static propTypes = {
     organization: PropTypes.object,
     user: PropTypes.object.isRequired,
-    error: PropTypes.string.isRequired,
+    error: PropTypes.shape({
+      loading: PropTypes.string.isRequired,
+      updating: PropTypes.string.isRequired,
+    }).isRequired,
     isUpdating: PropTypes.bool.isRequired,
     onSaveName: PropTypes.func.isRequired,
   };
@@ -21,11 +24,11 @@ class Organization extends React.PureComponent {
     organization: null,
   };
 
-  renderError = error => (
+  renderError = (type, error) => (
     <Notification
       type="error"
       error={error}
-      message={`There was an error trying to update this project`}
+      message={`There was an error trying to ${type} this organization`}
     />
   );
 
@@ -42,7 +45,8 @@ class Organization extends React.PureComponent {
         pad={{ bottom: 'medium' }}
         border={{ side: 'bottom' }}
       >
-        {this.props.error && this.renderError(this.props.error)}
+        {this.props.error.loading && this.renderError('retrieve', this.props.error.loading)}
+        {this.props.error.updating && this.renderError('update', this.props.error.updating)}
         <Box direction="row" justify="between" align="center">
           <Heading level={4}>Details</Heading>
           {canCreate && (
@@ -82,6 +86,32 @@ class Organization extends React.PureComponent {
           onSubmit={this.props.onSaveName}
           isUpdating={this.props.isUpdating}
         />
+        {this.props.organization.enforceSnapshotLimit && (
+          <React.Fragment>
+            <InlineField
+              title="Monthly snapshot limit"
+              value={this.props.organization.monthlySnapshotLimit}
+              canChange={false}
+            />
+            <InlineField
+              title="Current snapshot count"
+              value={this.props.organization.currentSnapshotCount}
+              canChange={false}
+            />
+            <InlineField
+              title="Snapshots remaining"
+              value={this.props.organization.monthlySnapshotLimit - this.props.organization.currentSnapshotCount}
+              canChange={false}
+            />
+          </React.Fragment>
+        )}
+        {this.props.organization.enforceSnapshotRetention && (
+          <InlineField
+            title="Snapshot data retention"
+            value={`${this.props.organization.snapshotRetentionPeriod} days`}
+            canChange={false}
+          />
+        )}
       </Box>
     );
   }

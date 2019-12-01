@@ -1,5 +1,6 @@
 import ApolloClient from '../../graphql/client.js';
 import editOrganizationMutation from '../../graphql/mutate/editOrganization.js';
+import getOrganizationQuery from '../../graphql/query/getOrganization.js';
 
 import { getProjects } from '../projects/actions.js';
 import { getCurrentOrganization } from './selectors.js';
@@ -44,6 +45,24 @@ export const changeOrganization = ({ id }) => async (dispatch, getState) => {
     await dispatch(getProjects());
     goHome();
     dispatch(doneLoading());
+  }
+};
+
+export const getOrganization = () => async (dispatch, getState) => {
+  const { currentOrganizationId } = getState().organizations;
+  dispatch(isLoading());
+  try {
+    const { data } = await ApolloClient.query({
+      query: getOrganizationQuery,
+      variables: {
+        id: currentOrganizationId,
+      }
+    });
+    dispatch(updateOrganization(data.organization));
+    dispatch(doneLoading());
+  } catch (error) {
+    dispatch(doneLoading());
+    dispatch(setError(error));
   }
 };
 

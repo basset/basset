@@ -24,7 +24,7 @@ const InlineField = React.memo(
       children = (
         <Form onSubmit={handleSubmit}>
           <Box gap="small" direction="row">
-            <Box width="medium">
+            <Box width="medium" align="center">
               <TextInput
                 data-test-id={`${testId}-input`}
                 value={newValue}
@@ -71,7 +71,7 @@ const InlineField = React.memo(
       );
     }
     return (
-      <Box direction="row" justify="between">
+      <Box direction="row" justify="between" align="center">
         <Text margin={{ vertical: 'small' }}>{title}</Text>
         {children}
       </Box>
@@ -83,7 +83,7 @@ InlineField.propTypes = {
   canChange: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool,
   title: PropTypes.string.isRequired,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onSubmit: PropTypes.func,
 };
 

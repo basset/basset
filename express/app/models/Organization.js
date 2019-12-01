@@ -37,6 +37,7 @@ class Organization extends BaseModel {
     const User = require('./User');
     const OrganizationMember = require('./OrganizationMember');
     const Project = require('./Project');
+    const Snapshot = require('./Snapshot');
     return {
       organizationMembers: {
         relation: Model.HasManyRelation,
@@ -69,6 +70,14 @@ class Organization extends BaseModel {
           to: 'project.organizationId',
         },
       },
+      snapshots: {
+        relation: Model.HasManyRelation,
+        modelClass: Snapshot,
+        join: {
+          from: 'organization.id',
+          to: 'snapshot.organizationId',
+        }
+      }
     };
   }
 
