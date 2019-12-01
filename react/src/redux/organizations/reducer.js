@@ -31,11 +31,11 @@ const handler = {
     ...state,
     isUpdating: false,
   }),
-  [actionTypes.setError]: (state, { type, error }) => ({
+  [actionTypes.setError]: (state, { errorType, error }) => ({
     ...state,
     error: {
       ...state.error,
-      [type]: error,
+      [errorType]: error,
     }
   }),
   [actionTypes.receiveOrganizations]: (state, { organizations }) => ({

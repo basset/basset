@@ -84,6 +84,8 @@ const resolvers = {
       const { user } = context.req;
       let organization = Organization.fromJson({
         name,
+        enforceSnapshotLimit: settings.enforceSnapshotLimit,
+        enforceBuildRetention: settings.enforceBuildRetention,
       });
 
       if (!(await organization.canCreate(user))) {
@@ -94,8 +96,6 @@ const resolvers = {
       await OrganizationMember.query().insertAndFetch({
         organizationId: organization.id,
         userId: user.id,
-        enforceSnapshotLimit: settings.enforceSnapshotLimit,
-        enforceBuildRetention: settings.enforceBuildRetention,
         admin: true,
       });
       return organization;

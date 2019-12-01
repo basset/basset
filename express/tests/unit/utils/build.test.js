@@ -131,7 +131,7 @@ describe('build utils', () => {
         authorization: `Token ${project.key}`,
       },
     };
-    expect(await utils.getProject(req)).toEqual(project);
+    expect(await utils.getProject(req)).toEqual(expect.objectContaining(project));
     req.headers.authorization = '';
     expect(await utils.getProject(req)).toBe(false);
     req.headers.authorization = `Token 1234`;

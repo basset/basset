@@ -21,8 +21,9 @@ export const updateOrganization = organization => ({
   organization,
 });
 
-export const setError = error => ({
+export const setError = (errorType, error) => ({
   type: actionTypes.setError,
+  errorType,
   error,
 });
 
@@ -62,7 +63,7 @@ export const getOrganization = () => async (dispatch, getState) => {
     dispatch(doneLoading());
   } catch (error) {
     dispatch(doneLoading());
-    dispatch(setError(error));
+    dispatch(setError('loading', error));
   }
 };
 
@@ -94,7 +95,7 @@ export const saveOrganization = ({ name }) => async (dispatch, getState) => {
     }
     dispatch(doneUpdating());
   } catch (error) {
-    dispatch(setError(error));
+    dispatch(setError('updating', error));
     dispatch(doneUpdating());
   }
 };
