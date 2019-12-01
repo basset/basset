@@ -23,14 +23,33 @@ class Organization extends BaseModel {
   }
 
   async canCreate(user) {
-    if (settings.site.private) {
-      return user.admin;
-    }
-    return true;
+    return user.canCreateOrganizations();
   }
 
   static authorizationFilter(user) {
     return this.query().whereIn('id', user.organizations.map(o => o.id));
+  }
+
+  async snapshotLimitExceeded() {
+    if (!this.enforceSnapshotLimit) {
+      return false;
+    }
+    const count = await this.currentSnapshotCount;
+    return count >= this.monthlySnapshotLimit;
+  }
+
+  get currentSnapshotCount() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstOfMonth = new Date(year, month, 1);
+    const lastOfMonth = new Date(year, month + 1, 0);
+    return this
+      .$query()
+      .joinRelation('snapshots')
+      .whereBetween('snapshots.createdAt', [ firstOfMonth, lastOfMonth ])
+      .count()
+      .then(({ count }) => count);
   }
 
   static get relationMappings() {

@@ -1,10 +1,9 @@
 const Organization = require('../models/Organization');
 const OrganizationMember = require('../models/OrganizationMember');
-const Project = require('../models/Project');
+const settings = require('../settings');
 
 const { paginateQuery } = require('../utils/graphql/paginate');
 const {
-  getRelatedModelLoader,
   getModelLoader,
 } = require('../utils/graphql/dataloader');
 
@@ -79,19 +78,6 @@ const resolvers = {
         orderByPrefix: 'organizationMember',
       });
     },
-    currentSnapshotCount: async (organization, args, context, info) => {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth();
-      const firstOfMonth = new Date(year, month, 1);
-      const lastOfMonth = new Date(year, month + 1, 0);
-      const { count } = await organization
-        .$query()
-        .joinRelation('snapshots')
-        .whereBetween('snapshots.createdAt', [firstOfMonth, lastOfMonth])
-        .count();
-      return count;
-    },
   },
   Mutation: {
     createOrganization: async (object, { name }, context, info) => {
@@ -108,6 +94,8 @@ const resolvers = {
       await OrganizationMember.query().insertAndFetch({
         organizationId: organization.id,
         userId: user.id,
+        enforceSnapshotLimit: settings.enforceSnapshotLimit,
+        enforceSnapshotRetention: settings.enforceSnapshotRetention,
         admin: true,
       });
       return organization;

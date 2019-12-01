@@ -16,7 +16,9 @@ router.post('/start', async (req, res) => {
   if (!project) {
     return res.status(403).json({ error: 'Invalid token' });
   }
-
+  if (await project.organization.snapshotLimitExceeded()) {
+    return res.status(403).json({ error: 'Monthly snapshot limit exceeded'})
+  }
   const data = {
     branch: req.body.branch,
     commitSha: req.body.commitSha,

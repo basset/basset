@@ -25,6 +25,8 @@ const getProject = async req => {
     return false;
   }
   const project = await Project.query()
+    .joinRelation('organization')
+    .eager('organization')
     .where('key', token)
     .first();
 
@@ -36,6 +38,7 @@ const getProject = async req => {
 
 const checkBuild = async (req, res, next) => {
   let error = false;
+  let build;
   const token = getToken(req);
   const buildId = getBuildId(req);
   if (!buildId) {
@@ -46,6 +49,8 @@ const checkBuild = async (req, res, next) => {
   if (!error) {
     build = await Build.query()
       .joinRelation('project')
+      .joinRelation('organization')
+      .eager('organization')
       .eager('project')
       .where('project.key', token)
       .where('build.id', buildId)
@@ -53,6 +58,9 @@ const checkBuild = async (req, res, next) => {
 
     if (!build) {
       error = 'Invalid build';
+    }
+    if (await build.organization.snapshotLimitExceeded()) {
+      error = 'Monthly snapshot limit exceeded';
     }
   }
 
