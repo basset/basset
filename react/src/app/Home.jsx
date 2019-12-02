@@ -11,7 +11,7 @@ export default class HomePage extends React.PureComponent {
       this.props.user.canCreateOrganizations;
     return (
       <React.Fragment>
-        {showNoOrganizations && (
+        {true && (
           <Box gap="large">
             <Text>You currently do not have any organizations setup</Text>
             <Text>

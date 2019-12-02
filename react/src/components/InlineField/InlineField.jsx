@@ -24,7 +24,7 @@ const InlineField = React.memo(
       children = (
         <Form onSubmit={handleSubmit}>
           <Box gap="small" direction="row">
-            <Box width="medium" align="center">
+            <Box width="medium">
               <TextInput
                 data-test-id={`${testId}-input`}
                 value={newValue}
@@ -71,7 +71,7 @@ const InlineField = React.memo(
       );
     }
     return (
-      <Box direction="row" justify="between" align="center">
+      <Box direction="row" justify="between">
         <Text margin={{ vertical: 'small' }}>{title}</Text>
         {children}
       </Box>
