@@ -1,4 +1,4 @@
-const db = require('../../db');
+const db = require('../db');
 const deleteAssets = require('./deleteAssets');
 const checkBuilds = require('./checkBuilds');
 
