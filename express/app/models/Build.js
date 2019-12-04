@@ -84,6 +84,18 @@ class Build extends BaseModel {
     }
   }
 
+  async notifySnapshotsExceeded(trx = null, project = null) {
+    if (!project) {
+      project = await this.$relatedQuery('project');
+    }
+    await this.$query(trx).update({
+      error: true,
+    });
+    if (project.hasSCM) {
+      project.scm.snapshotsExceeded(project, this);
+    }
+  }
+
   async notifyNoChanges(trx = null, project = null) {
     if (!project) {
       project = await this.$relatedQuery('project');

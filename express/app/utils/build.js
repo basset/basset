@@ -49,13 +49,14 @@ const checkBuild = async (req, res, next) => {
   if (!error) {
     build = await Build.query()
       .joinRelation('project')
-      .joinEager('organization')
+      .eager('[project, organization]')
       .where('project.key', token)
       .where('build.id', buildId)
       .first();
     if (!build) {
       error = 'Invalid build';
     } else if (await build.organization.snapshotLimitExceeded()) {
+      await build.notifySnapshotsExceeded();
       error = 'Monthly snapshot limit exceeded';
     }
   }

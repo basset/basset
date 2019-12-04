@@ -4,6 +4,7 @@ const {
   snapshotsNeedApproving,
   snapshotsNoDiffs,
   snapshotsApproved,
+  snapshotsExceeded,
 } = require('./status');
 
 module.exports = {
@@ -12,4 +13,5 @@ module.exports = {
   snapshotsNeedApproving,
   snapshotsNoDiffs,
   snapshotsApproved,
+  snapshotsExceeded,
 };

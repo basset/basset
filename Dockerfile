@@ -13,7 +13,7 @@ WORKDIR /basset-react/
 COPY react /basset-react
 RUN npm install
 RUN npm run build
-RUN mv -f dist ../basset/statisc
+RUN mv -f dist ../basset/static
 # cleanup files not needed
 RUN rm -rf /basset-react
 
