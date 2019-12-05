@@ -3,7 +3,8 @@ const Build = require('../models/Build');
 const buildTimeout = 20 * 60 * 1000; // 20 minutes
 
 const checkBuild = async (build) => {
-  let lastUpdated = new Date();
+  let lastUpdated = build.updatedAt;
+  const now = new Date();
   const lastSnapshot = await build
     .$relatedQuery('snapshots')
     .orderBy('updatedAt', 'desc')
@@ -13,7 +14,7 @@ const checkBuild = async (build) => {
     lastUpdated = lastSnapshot.updatedAt;
   }
 
-  const timeDelta = lastUpdated - build.updatedAt;
+  const timeDelta = now - lastUpdated;
   if (timeDelta > buildTimeout) {
     console.error(
       `[checkBuilds] Build (id: ${build.id}) has timed out. There were${
