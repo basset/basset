@@ -13,6 +13,7 @@ const Profile = React.memo(
   ({
     user,
     requestError,
+    error,
     isUpdating,
     isRequesting,
     onShowPassword,
@@ -39,6 +40,12 @@ const Profile = React.memo(
           />
         )}
         {requestError && (
+          <Notification
+            type="error"
+            message={`There was an error trying to change your password`}
+          />
+        )}
+        {error && (
           <Notification
             type="error"
             message={`There was an error trying to update your profile`}
@@ -147,6 +154,7 @@ Profile.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
   }).isRequired,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   requestError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   isUpdating: PropTypes.bool.isRequired,
   onSaveName: PropTypes.func.isRequired,
