@@ -59,7 +59,13 @@ class User extends BaseModel {
   }
 
   async changePassword(newPassword) {
+    if (newPassword.length < 8) {
+      throw new Error('Password must be a minimum of 8 characters.')
+    }
     const password = await bcrypt.hash(newPassword, 10);
+    if (await bcrypt.compare(newPassword, this.password)) {
+      throw new Error('Password must be different than previous password.')
+    }
     return this.$query().update({
       password,
     });

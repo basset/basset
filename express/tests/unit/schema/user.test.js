@@ -97,9 +97,20 @@ describe('user schema', () => {
       afterAll(async () => {
         await user.$query().delete();
       });
+      test('password must be 8 characters', async () => {
+        const variables = {
+          password: 'short',
+        };
+        const result = await runQuery(query, user, variables);
+        expect(result.errors[0].message).toBe(
+          'Password must be a minimum of 8 characters.',
+        );
+        updated = await user.$query();
+        expect(updated.password).toBe(user.password);
+      });
       test('users can change their password', async () => {
         const variables = {
-          password: 'yoyoyo',
+          password: 'password',
         };
         const result = await runQuery(query, user, variables);
         expect(result.data.changePassword).toEqual(true);

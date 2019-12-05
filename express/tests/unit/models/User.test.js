@@ -87,9 +87,9 @@ describe('User', () => {
 
   test('changePassword', async () => {
     const oldHash = user.password;
-    await user.changePassword('changed');
+    await user.changePassword('longenough');
     user = user.$query();
-    expect(user.password).not.toBe('changed');
+    expect(user.password).not.toBe('longenough');
     expect(user.password).not.toBe(oldHash);
   });
 });

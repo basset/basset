@@ -72,8 +72,10 @@ export class ProfileController extends React.PureComponent {
         password: '',
       }));
     } catch (error) {
+      const passwordError = error.graphQLErrors && error.graphQLErrors.length > 0 ? error.graphQLErrors[0].message : error.message
       this.setState(state => ({
         ...state,
+        passwordError,
         requestError: 'There was an error trying to change your password.',
         changePasswordSuccess: false,
         isRequesting: false,
