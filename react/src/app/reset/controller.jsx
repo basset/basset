@@ -82,8 +82,10 @@ export default class ResetController extends React.PureComponent {
         requestError: '',
       }));
     } catch (error) {
+      const passwordError = error.graphQLErrors && error.graphQLErrors.length > 0 ? error.graphQLErrors[0].message : error.message;
       this.setState(state => ({
         ...state,
+        passwordError,
         requestError: 'There was an error trying to reset your password.',
         resetSuccess: false,
         isRequesting: false,

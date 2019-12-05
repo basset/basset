@@ -12,7 +12,7 @@ import GitLabLogin from '../../components/LoginButtons/GitLabLogin.jsx';
 const Profile = React.memo(
   ({
     user,
-    error,
+    requestError,
     isUpdating,
     isRequesting,
     onShowPassword,
@@ -38,10 +38,9 @@ const Profile = React.memo(
             message="Your password has been updated"
           />
         )}
-        {error && (
+        {requestError && (
           <Notification
             type="error"
-            error={error}
             message={`There was an error trying to update your profile`}
           />
         )}
@@ -68,36 +67,38 @@ const Profile = React.memo(
             <Box direction="row" justify="between">
               <Text margin={{ vertical: 'small' }}>New password</Text>
               <Form onSubmit={onSavePassword}>
-                <Box width="medium" alignSelf="end">
-                  <TextInput
-                    data-test-id="change-password-input"
-                    type="password"
-                    value={password}
-                    onChange={event => onChangePassword(event.target.value)}
-                  />
-                </Box>
-                <Box margin="small">
-                  <Text color="status-error">{passwordError}</Text>
-                </Box>
-                <Box
-                  margin={{ top: 'small' }}
-                  direction="row"
-                  gap="medium"
-                  justify="end"
-                >
-                  <Button
-                    data-test-id="change-password-save"
-                    type="submit"
-                    label="Save"
-                    disabled={isRequesting}
-                    onClick={onSavePassword}
-                  />
-                  <Button
-                    data-test-id="change-password-cancel"
-                    label="Cancel"
-                    onClick={onShowPassword}
-                    disabled={isRequesting}
-                  />
+                <Box direction="column">
+                  <Box width="medium" alignSelf="end">
+                    <TextInput
+                      data-test-id="change-password-input"
+                      type="password"
+                      value={password}
+                      onChange={event => onChangePassword(event.target.value)}
+                    />
+                  </Box>
+                  <Box margin={{vertical: 'small'}}>
+                    <Text color="status-error">{passwordError}</Text>
+                  </Box>
+                  <Box
+                    margin={{ top: 'small' }}
+                    direction="row"
+                    gap="medium"
+                    justify="end"
+                  >
+                    <Button
+                      data-test-id="change-password-save"
+                      type="submit"
+                      label="Save"
+                      disabled={isRequesting}
+                      onClick={onSavePassword}
+                    />
+                    <Button
+                      data-test-id="change-password-cancel"
+                      label="Cancel"
+                      onClick={onShowPassword}
+                      disabled={isRequesting}
+                    />
+                  </Box>
                 </Box>
               </Form>
             </Box>
@@ -146,7 +147,7 @@ Profile.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
   }).isRequired,
-  error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  requestError: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   isUpdating: PropTypes.bool.isRequired,
   onSaveName: PropTypes.func.isRequired,
   onSavePassword: PropTypes.func.isRequired,
