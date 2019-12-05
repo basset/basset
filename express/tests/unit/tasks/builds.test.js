@@ -24,14 +24,15 @@ describe('build tasks', () => {
     expect(build.error).toBe(true);
   });
 
-  test('monitorBuildStats error when last snapshot is greater than 20 minutes from build updatedAt', async () => {
+  test('monitorBuildStats error when last snapshot is greater than 20 minutes from now', async () => {
     jest.useFakeTimers();
     let build = await createBuild('master', project);
-    await createSnapshot('test', build);
+    const snapshot = await createSnapshot('test', build);
     const date = new Date();
     date.setMinutes(date.getMinutes() - 21);
-    build.__proto__.$beforeUpdate = () => {};
-    await build.$query().update({
+    snapshot.__proto__.$beforeUpdate = () => {};
+
+    await snapshot.$query().update({
       updatedAt: date.toISOString(),
     });
 
