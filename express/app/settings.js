@@ -27,6 +27,9 @@ const database = {
 const secret = process.env.BASSET_SECRET;
 const env = process.env.NODE_ENV;
 
+const enforceSnapshotLimit = parseInt(process.env.ENFORCE_SNAPSHOT_LIMIT) === 1;
+const enforceBuildRetention = parseInt(process.env.ENFORCE_BUILD_RENTETION) === 1;
+
 const cors = {
   origin: process.env.BASSET_ORIGIN,
   credentials: true,
@@ -123,4 +126,6 @@ module.exports = {
   awsBatch,
   session,
   saml,
+  enforceSnapshotLimit,
+  enforceBuildRetention
 };

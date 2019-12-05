@@ -16,6 +16,11 @@ export default gql`
             id
             name
             admin
+            monthlySnapshotLimit
+            enforceSnapshotLimit
+            currentSnapshotCount
+            buildRetentionPeriod
+            enforceBuildRetention
           }
         }
       }

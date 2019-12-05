@@ -19,7 +19,7 @@ const InlineField = React.memo(
     };
     let children;
     if (!canChange) {
-      children = <Text>{value}</Text>;
+      children = <Text alignSelf="center">{value}</Text>;
     } else if (isEditing) {
       children = (
         <Form onSubmit={handleSubmit}>
@@ -83,7 +83,7 @@ InlineField.propTypes = {
   canChange: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool,
   title: PropTypes.string.isRequired,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onSubmit: PropTypes.func,
 };
 

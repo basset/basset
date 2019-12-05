@@ -9,6 +9,10 @@ describe('build utils', () => {
   let project, build, organization;
   beforeAll(async () => {
     organization = await createOrganization('builder');
+    await organization.$query().update({
+      enforceSnapshotLimit: true,
+      monthlySnapshotLimit: 10000,
+    });
     project = await createProject('testr', organization.id);
     build = await createBuild('master', project);
   });
@@ -36,7 +40,22 @@ describe('build utils', () => {
       expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith({ error: 'Invalid build' });
     });
+    it('should error if the monthly snapshot limit has been exceeded', async () => {
+      const newOrg = await createOrganization('b');
+      await newOrg.$query().update({
+        enforceSnapshotLimit: true,
+        monthlySnapshotLimit: 0,
+      });
+      const newProject = await createProject('testr', newOrg.id);
+      const newBuild = await createBuild('master', newProject);
+      req.headers['x-build-id'] = null;
+      req.headers['x-build-id'] = newBuild.id;
+      req.headers['authorization'] =`Token ${newProject.key}`;
 
+      await utils.checkBuild(req, res, next);
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Monthly snapshot limit exceeded' });
+    });
     it('should error if token is not included', async () => {
       req.headers.authorization = null;
       await utils.checkBuild(req, res, next);
@@ -131,7 +150,7 @@ describe('build utils', () => {
         authorization: `Token ${project.key}`,
       },
     };
-    expect(await utils.getProject(req)).toEqual(project);
+    expect(await utils.getProject(req)).toEqual(expect.objectContaining(project));
     req.headers.authorization = '';
     expect(await utils.getProject(req)).toBe(false);
     req.headers.authorization = `Token 1234`;

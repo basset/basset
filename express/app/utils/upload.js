@@ -112,16 +112,12 @@ const uploadAsset = multer({
 });
 
 const deleteFile = async (bucket, key) => {
-  try {
-    await s3
-      .deleteObject({
-        Bucket: bucket,
-        Key: key,
-      })
-      .promise();
-  } catch (error) {
-    throw error;
-  }
+  await s3
+    .deleteObject({
+      Bucket: bucket,
+      Key: key,
+    })
+    .promise();
 };
 
 const copySnapshotDiffToFlake = async (snapshotDiff, snapshot) => {
@@ -131,8 +127,8 @@ const copySnapshotDiffToFlake = async (snapshotDiff, snapshot) => {
   );
   const uuid = uuidv4();
   const key = `${snapshot.organizationId}/${snapshot.projectId}/flakes/${
-    snapshot.title
-  }/${snapshot.width}/${uuid}.png`;
+    snapshot.id
+  }/${uuid}.png`;
   await s3
     .copyObject({
       Bucket: settings.s3.screenshotBucket,

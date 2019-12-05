@@ -25,9 +25,9 @@ beforeEach(() => {
 });
 
 test('setError', () => {
-  store.dispatch(actions.setError('oops'));
+  store.dispatch(actions.setError('updating', 'oops'));
   const { organizations } = store.getState();
-  expect(organizations.error).toBe('oops');
+  expect(organizations.error.updating).toBe('oops');
 });
 
 test('isLoading', () => {
@@ -142,6 +142,6 @@ test('saveOrganization', async () => {
   await save;
   state = store.getState().organizations;
   expect(state.isUpdating).toBe(false);
-  expect(state.error).toBe('');
+  expect(state.error.updating).toBe('');
   expect(state.organizations[0].name).toBe('Basset updated');
 });

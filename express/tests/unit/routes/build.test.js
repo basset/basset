@@ -69,6 +69,10 @@ describe('build routes', () => {
   let project, build, organization, res;
   beforeAll(async () => {
     organization = await createOrganization('builder');
+    await organization.$query().update({
+      enforceSnapshotLimit: true,
+      monthlySnapshotLimit: 10000,
+    });
     project = await createProject('testr', organization.id);
     build = await createBuild('master', project);
     build.project = project;
@@ -119,6 +123,34 @@ describe('build routes', () => {
       await express.routes['/start'][0](req, res);
       expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith({ error: 'Invalid token' });
+    });
+    it('should return a 403 when the monthly snapshot has been reached', async () => {
+      const newOrg = await createOrganization('b');
+      await newOrg.$query().update({
+        enforceSnapshotLimit: true,
+        monthlySnapshotLimit: 0,
+      });
+      const newProject = await createProject('testr', newOrg.id);
+      const req = {
+        headers: {
+          authorization: `Token ${newProject.key}`,
+        },
+        body: {
+          branch: 'master',
+          commitMessage: 'test',
+          commitSha: '12345abcdef',
+          committerName: 'Tester lester',
+          committerEmail: 'commit@basset.io',
+          commitDate: new Date().toISOString(),
+          authorName: 'Tester lester',
+          authorEmail: 'commit@basset.io',
+          authorDate: new Date().toISOString(),
+          assets: [],
+        },
+      };
+      await express.routes['/start'][0](req, res);
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Monthly snapshot limit exceeded' });
     });
     it('should return missing assets', async () => {
       const req = {

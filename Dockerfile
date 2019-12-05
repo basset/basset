@@ -15,7 +15,7 @@ RUN npm install
 RUN npm run build
 RUN mv -f dist ../basset/static
 # cleanup files not needed
-RUN rm -rf /basse-react
+RUN rm -rf /basset-react
 
 # run server
 WORKDIR /basset/

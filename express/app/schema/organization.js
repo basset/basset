@@ -1,10 +1,9 @@
 const Organization = require('../models/Organization');
 const OrganizationMember = require('../models/OrganizationMember');
-const Project = require('../models/Project');
+const settings = require('../settings');
 
 const { paginateQuery } = require('../utils/graphql/paginate');
 const {
-  getRelatedModelLoader,
   getModelLoader,
 } = require('../utils/graphql/dataloader');
 
@@ -14,6 +13,11 @@ type Organization implements Node {
   name: String
   admin: Boolean
   canCreate: Boolean
+  monthlySnapshotLimit: Int
+  currentSnapshotCount: Int
+  enforceSnapshotLimit: Boolean
+  buildRetentionPeriod: Int
+  enforceBuildRetention: Boolean
   projects(first: Int, last: Int, after: String, before: String): ProjectConnection @cost(multipliers: ["first", "last"], complexity: 1)
   organizationMembers(first: Int, last: Int, after: String, before: String): OrganizationMemberConnection @cost(multipliers: ["first", "last"], complexity: 1)
 }
@@ -80,6 +84,8 @@ const resolvers = {
       const { user } = context.req;
       let organization = Organization.fromJson({
         name,
+        enforceSnapshotLimit: settings.enforceSnapshotLimit,
+        enforceBuildRetention: settings.enforceBuildRetention,
       });
 
       if (!(await organization.canCreate(user))) {

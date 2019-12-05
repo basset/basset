@@ -81,6 +81,20 @@ const snapshotsNoDiffs = (project, build) => {
   });
 };
 
+
+const snapshotsExceeded = (project, build) => {
+  return updateStatus({
+    token: project.scmToken,
+    username: project.scmConfig.username,
+    repoSlug: project.scmConfig.repoSlug,
+    sha: build.commitSha,
+    url: `${settings.site.url}`,
+    state: 'FAILED',
+    description: 'Monthly snapshot limit has been exceeded',
+    context: 'Basset',
+  });
+};
+
 const snapshotsNeedApproving = (project, build) => {
   return updateStatus({
     token: project.scmToken,
@@ -99,4 +113,5 @@ module.exports = {
   snapshotsApproved,
   snapshotsNeedApproving,
   snapshotsNoDiffs,
+  snapshotsExceeded,
 };
