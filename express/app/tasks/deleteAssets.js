@@ -72,7 +72,6 @@ const run = async () => {
     await deleteFiles(settings.s3.assetsBucket, keys);
   }
   console.log('[removeSnapshotData] complete');
-  await destroy();
 };
 
 module.exports = run;

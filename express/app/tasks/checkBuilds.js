@@ -12,7 +12,6 @@ const run = async () => {
     await checkBuild(build);
   }
   console.log('[checkBuilds] complete');
-  await destroy();
 };
 
 module.exports = run;
