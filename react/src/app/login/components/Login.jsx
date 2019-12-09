@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Box, Button, Form, FormField, Heading, Text } from 'grommet';
+import { Box, Button, Form, FormField, Text } from 'grommet';
 import { Alert } from 'grommet-icons';
 
 import Link from '../../../components/Link/Link.jsx';
@@ -58,7 +58,7 @@ export default class LoginPage extends React.PureComponent {
 
   render() {
     return (
-      <Box fill basis="80%" direction="column" align="center" justify="center">
+      <Box basis="80%" direction="column" align="center" justify="center" style={{minHeight: '100%'}}>
         {this.props.requestError && this.renderRequestError()}
         <LogoContainer margin="medium">
           <Logo size="64px" />
@@ -69,6 +69,7 @@ export default class LoginPage extends React.PureComponent {
           pad="medium"
           gap="medium"
           justify="center"
+          margin={{bottom: 'medium'}}
         >
           <Form onSubmit={this.props.onSubmit}>
             <FormField
@@ -125,6 +126,11 @@ export default class LoginPage extends React.PureComponent {
               label="Login with SAML"
               redirect={this.props.redirect}
             />
+          </Box>
+          <Box pad={{top: 'small'}}>
+            <Text>
+              By logging in you are agreeing to our <a rel="noopener noreferrer" target="_blank" href="https://basset.io/terms">Terms of Service</a> and <a rel="noopener noreferrer" target="_blank" href="https://basset.io/privacy-policy">Privacy Policy</a>
+            </Text>
           </Box>
         </BoxContainer>
       </Box>

@@ -111,12 +111,12 @@ export default class SignUpPage extends React.PureComponent {
       ? this.renderSuccessfulSignUp()
       : this.renderForm();
     return (
-      <Box fill align="center" justify="center">
+      <Box basis="80%" direction="column" align="center" justify="center" style={{minHeight: '100%'}}>
         {this.props.requestError && this.renderRequestError()}
         <Box margin="medium">
           <Logo size="64px" />
         </Box>
-        <Box width="medium" gap="medium" elevation="medium" pad="medium">
+        <Box width="medium" gap="medium" elevation="medium" pad="medium" margin={{bottom: 'medium'}}>
           {render}
           {!this.props.signupSuccess && (
             <Box gap="small">
@@ -132,6 +132,11 @@ export default class SignUpPage extends React.PureComponent {
                 label="Signup with GitLab"
                 redirect={this.props.redirect}
               />
+              <Box pad={{top: 'small'}}>
+                <Text>
+                  By signing up you are agreeing to our <a rel="noopener noreferrer" target="_blank" href="https://basset.io/terms">Terms of Service</a> and <a rel="noopener noreferrer" target="_blank" href="https://basset.io/privacy-policy">Privacy Policy</a>
+                </Text>
+              </Box>
             </Box>
           )}
         </Box>

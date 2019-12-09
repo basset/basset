@@ -52,6 +52,8 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>More</h5>
+            <a href="/terms">Terms</a>
+            <a href="/privacy-policy">Privacy Policy</a>
             <a href={this.docUrl('api')}>
               API
             </a>
