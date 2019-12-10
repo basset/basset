@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Box, Button, Heading } from 'grommet';
+import { Down, Previous } from 'grommet-icons';
 
 import { getCurrentBuild } from '../../../redux/builds/selectors.js';
 import {
@@ -41,6 +42,16 @@ class SnapshotList extends React.PureComponent {
     onApproveSnapshot: PropTypes.func.isRequired,
     onViewSnapshots: PropTypes.func.isRequired,
     onLoadMore: PropTypes.func.isRequired,
+  };
+
+  state = {
+    show: true,
+  };
+
+  handleToggleAccordion= () => {
+    this.setState(state => ({
+      show: !this.state.show,
+    }));
   };
 
   getCount(type) {
@@ -87,7 +98,7 @@ class SnapshotList extends React.PureComponent {
     const isLoadingMore = this.props.isLoadingMore;
     const noSnapshots = snapshots.length === 0 && count === 0;
     const countText = noSnapshots ? '(None)' : `(${count})`;
-
+    const icon = this.state.show ? <Down /> : <Previous />;
     if (snapshots.length === 0 && count === 0) {
       children = null;
     } else if (snapshots.length === 0 && count > 0) {
@@ -134,8 +145,13 @@ class SnapshotList extends React.PureComponent {
           type={this.props.type}
           typeName={this.props.typeName}
           countText={countText}
+          renderToggleShow={snapshots.length > 0 && (
+            <Box>
+              <Button icon={icon} onClick={this.handleToggleAccordion} />
+            </Box>
+          )}
         />
-        {children}
+        {this.state.show && children}
       </Box>
     );
   }
