@@ -59,6 +59,7 @@ class SnapshotType extends React.PureComponent {
           <Box flex>
             {this.props.type === 'modified' && this.renderApproveAll()}
           </Box>
+          {this.props.renderToggleShow}
         </Box>
       </StickyBox>
     );
