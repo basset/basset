@@ -1,5 +1,6 @@
 const path = require('path');
 const aws = require('aws-sdk');
+const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 
 const settings = require('../settings');
@@ -27,17 +28,16 @@ const getTransport = () => {
       SES: new aws.SES(config),
     };
   } else {
-    return {
-      transport: {
-        host: settings.mail.host,
-        port: settings.mail.port,
-        auth: {
-          user: settings.mail.username,
-          password: settings.mail.password,
-          secure: settings.mail.useTLS,
-        }
+    return nodemailer.createTransport({
+      pool: true,
+      host: settings.mail.host,
+      port: settings.mail.port,
+      secure: settings.mail.useTLS,
+      auth: {
+        user: settings.mail.username,
+        password: settings.mail.password,
       }
-    };
+    });
   }
 };
 const email = new Email({
