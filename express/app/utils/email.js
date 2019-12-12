@@ -35,7 +35,7 @@ const getTransport = () => {
       secure: settings.mail.useTLS,
       auth: {
         user: settings.mail.username,
-        password: settings.mail.password,
+        pass: settings.mail.password,
       }
     });
   }
