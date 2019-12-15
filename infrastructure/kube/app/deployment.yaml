@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: basset-app
-          image: getbasset/basset-app:release-1.0.0-beta-10
+          image: getbasset/basset-app:release-1.0.0-beta-13
           ports:
             - containerPort: 3000
           envFrom:
