@@ -28,12 +28,15 @@ const streamObject = (imageLocation, req, res) => {
 
 router.get('/diff/:diffId', async (req, res) => {
   const { diffId } = req.params;
+  let query = SnapshotDiff.query().findById(diffId);
   if (!req.isAuthenticated || !req.isAuthenticated() || !req.user) {
-    return res.send(404);
+    query = query.joinRelation('project').andWhere('project.public', true);
+  } else {
+    query = SnapshotDiff.authorizationFilter(req.user).mergeContext(query);
   }
 
-  const snapshotDiff = await SnapshotDiff.query().findById(diffId);
-  if (!snapshotDiff || !(await snapshotDiff.canRead(req.user))) {
+  const snapshotDiff = await query;
+  if (!snapshotDiff) {
     return res.send(404);
   }
   streamObject(snapshotDiff.imageLocation, req, res);
@@ -41,12 +44,15 @@ router.get('/diff/:diffId', async (req, res) => {
 
 router.get('/:snapshotId', async (req, res) => {
   const { snapshotId } = req.params;
+  let query = Snapshot.query().findById(snapshotId);
   if (!req.isAuthenticated || !req.isAuthenticated() || !req.user) {
-    return res.send(404);
+    query = query.joinRelation('project').andWhere('project.public', true);
+  } else {
+    query = Snapshot.authorizationFilter(req.user).mergeContext(query);
   }
 
-  const snapshot = await Snapshot.query().findById(snapshotId);
-  if (!snapshot || !(await snapshot.canRead(req.user))) {
+  const snapshot = await query;
+  if (!snapshot) {
     return res.send(404);
   }
   streamObject(snapshot.imageLocation, req, res);

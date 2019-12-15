@@ -83,13 +83,13 @@ type SnapshotGroupEdge {
   node: SnapshotGroup
 }
 extend type Query {
-  snapshots(first: Int, last: Int, after: String, before: String, buildId: ID!, title: String, type: SnapshotType): SnapshotConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
-  snapshot(id: ID!): Snapshot @authField
-  snapshotsByTitle(first: Int, last: Int, after: String, before: String, projectId: ID!, title: String!, browser: String, width: String, diff: Boolean):  SnapshotConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
-  removedSnapshots(first: Int, last: Int, after: String, before: String, buildId: ID!): SnapshotConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
-  modifiedSnapshots(first: Int, last: Int, after: String, before: String, buildId: ID!, group: Int): SnapshotConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
-  modifiedSnapshotGroups(limit: Int!, offset: Int!, buildId: ID!): SnapshotGroupConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
-  unmodifiedSnapshots(first: Int, last: Int, after: String, before: String, buildId: ID!): SnapshotConnection @authField @cost(multipliers: ["first", "last"], complexity: 2)
+  snapshots(first: Int, last: Int, after: String, before: String, buildId: ID!, title: String, type: SnapshotType): SnapshotConnection @cost(multipliers: ["first", "last"], complexity: 2)
+  snapshot(id: ID!): Snapshot
+  snapshotsByTitle(first: Int, last: Int, after: String, before: String, projectId: ID!, title: String!, browser: String, width: String, diff: Boolean):  SnapshotConnection @cost(multipliers: ["first", "last"], complexity: 2)
+  removedSnapshots(first: Int, last: Int, after: String, before: String, buildId: ID!): SnapshotConnection @cost(multipliers: ["first", "last"], complexity: 2)
+  modifiedSnapshots(first: Int, last: Int, after: String, before: String, buildId: ID!, group: Int): SnapshotConnection @cost(multipliers: ["first", "last"], complexity: 2)
+  modifiedSnapshotGroups(limit: Int!, offset: Int!, buildId: ID!): SnapshotGroupConnection @cost(multipliers: ["first", "last"], complexity: 2)
+  unmodifiedSnapshots(first: Int, last: Int, after: String, before: String, buildId: ID!): SnapshotConnection @cost(multipliers: ["first", "last"], complexity: 2)
 }
 extend type Mutation {
   approveSnapshot(id: ID!): Snapshot

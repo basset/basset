@@ -20,6 +20,7 @@ class SnapshotDiff extends BaseModel {
   static get relationMappings() {
     const Organization = require('./Organization');
     const Snapshot = require('./Snapshot');
+    const Project = require('./Project');
     return {
       organization: {
         relation: Model.BelongsToOneRelation,
@@ -45,6 +46,18 @@ class SnapshotDiff extends BaseModel {
           to: 'snapshot.id',
         },
       },
+      project: {
+        relation: Model.HasOneThroughRelation,
+        modelClass: Project,
+        join: {
+          from: 'snapshotDiff.snapshotFromId',
+          through: {
+            from: 'snapshot.id',
+            to: 'snapshot.projectId',
+          },
+          to: 'project.id'
+        }
+      }
     };
   }
 

@@ -9,6 +9,9 @@ class Snapshot extends BaseModel {
   }
 
   async canRead(user) {
+    if (!user) {
+
+    }
     return user.organizations.map(o => o.id).includes(this.organizationId);
   }
 
@@ -138,6 +141,11 @@ class Snapshot extends BaseModel {
   }
 
   static authorizationFilter(user) {
+    if (!user) {
+      return this.query()
+        .joinRelation('project')
+        .where('project.public', true)
+    }
     return this.query().whereIn(
       'snapshot.organizationId',
       user.organizations.map(o => o.id),
@@ -148,6 +156,7 @@ class Snapshot extends BaseModel {
     const Organization = require('./Organization');
     const OrganizationMember = require('./OrganizationMember');
     const Build = require('./Build');
+    const Project = require('./Project');
     return {
       snapshotFlake: {
         relation: Model.HasOneRelation,
@@ -213,6 +222,14 @@ class Snapshot extends BaseModel {
           to: 'build.id',
         },
       },
+      project: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Project,
+        join: {
+          from: 'snapshot.projectId',
+          to: 'project.id'
+        }
+      }
     };
   }
 

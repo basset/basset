@@ -27,6 +27,7 @@ type Project implements Node {
   slackWebhook: String
   slackVariable: String
   hideSelectors: String
+  public: Boolean
   organization: Organization
   organizationId: ID
 }
@@ -41,7 +42,7 @@ type ProjectEdge {
 }
 extend type Query {
   projects(first: Int, last: Int, after: String, before: String, organizationId: ID!): ProjectConnection @authField @cost(multipliers: ["first", "last"], complexity: 1)
-  project(id: ID!): Project @authField
+  project(id: ID!): Project
 }
 
 input SCMConfigInput {
@@ -63,6 +64,7 @@ input ProjectInput {
   slackWebhook: String
   slackVariable: String
   hideSelectors: String
+  public: Boolean
 }
 extend type Mutation {
   unlinkProviderToProject(id: ID!, provider: String): Project @authField
@@ -78,7 +80,14 @@ const resolvers = {
     project: async (object, { id }, context, info) => {
       const { user } = context.req;
       const project = await getModelLoader(context, Project).load(id);
-      if (await project.canRead(user)) {
+      if (!user && project.public) {
+        return {
+          id: project.id,
+          name: project.name,
+          public: project.public,
+          organizationId: project.organizationId,
+        }
+      }if (await project.canRead(user)) {
         return project;
       }
       return null;
@@ -236,6 +245,9 @@ const resolvers = {
           : project.slackActive,
         slackVariable: projectInput.slackVariable || project.slackVariable,
         hideSelectors: projectInput.hideSelectors || project.hideSelectors,
+        public: projectInput.hasOwnProperty('public')
+          ? projectInput.public
+          : project.public,
       });
     },
   },
