@@ -24,12 +24,14 @@ export default async (
   if (!isAuthenticated) {
     await dispatch(verify());
     isAuthenticated = getIsAuthenticated(getState());
-    if (!isAuthenticated && !!route.public) {
+
+    if (isAuthenticated || route.public) {
+      return true;
+    } else {
       return redirect;
     }
-    return next();
   }
-  return next();
+  return true;
 };
 
 export const verify = () => async dispatch => {
