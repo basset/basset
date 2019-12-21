@@ -1,6 +1,8 @@
 import gql from 'graphql-tag';
+import organizationFragment from '../fragments/organization.js';
 
 export default gql`
+  ${organizationFragment}
   mutation editUser($name: String!) {
     editUser(name: $name) {
       id
@@ -12,9 +14,7 @@ export default gql`
       organizations(first: 100) {
         edges {
           node {
-            id
-            name
-            admin
+            ...organizationFragment
           }
         }
       }
