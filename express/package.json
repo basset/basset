@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./bin/www",
+    "repl": "node ./commands/repl.js",
     "dev:debug": "DEBUG=knex* nodemon ./bin/www",
     "start": "node ./bin/www",
     "migrate": "knex migrate:latest",
