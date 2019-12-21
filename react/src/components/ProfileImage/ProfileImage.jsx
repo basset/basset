@@ -1,10 +1,21 @@
 import React from 'react';
 
 import { Box, Text } from 'grommet';
+import { User } from 'grommet-icons';
 
 const ProfileImage = React.memo(({ user }) => {
   if (!user || (!user.profileImage && !user.name)) {
-    return null;
+    return (
+      <Box
+        height="40px"
+        width="40px"
+        round="full"
+        align="center"
+        justify="center"
+      >
+       <User />
+      </Box>
+    );
   }
   if (user.profileImage) {
     return (
