@@ -118,6 +118,30 @@ export class Project extends React.PureComponent {
                 </Box>
                 <Box fill="horizontal">
                   <Heading level={5}>
+                    Privacy settings
+                  </Heading>
+                  <Box
+                    margin={{ vertical: 'small' }}
+                    direction="row"
+                    justify="between"
+                  >
+                    <Box direction="row" align="center" gap="small">
+                      Allow public to view builds and snapshots
+                    </Box>
+                    <CheckBox
+                      data-test-id="toggle-firefox"
+                      checked={this.props.project.public}
+                      onChange={() => this.props.onSave('public', !this.props.project.public)}
+                      disabled={
+                        this.props.isUpdating || !isAdmin
+                      }
+                      reverse
+                      toggle
+                    />
+                  </Box>
+                </Box>
+                <Box fill="horizontal">
+                  <Heading level={5}>
                     Default browsers (at least one required)
                   </Heading>
                   <Box
