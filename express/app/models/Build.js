@@ -54,7 +54,7 @@ class Build extends BaseModel {
         .query()
         .joinRelation('project')
         .whereIn(
-          'organizationId',
+          'build.organizationId',
           user.organizations.map(o => o.id),
           );
 

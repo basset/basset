@@ -69,24 +69,29 @@ export default [
       },
       {
         path: '/projects',
+        public: true,
         children: projects,
       },
       {
         path: '/builds/:id/:snapshotId?',
+        public: true,
         load: () =>
           import(/* webpackChunkName: 'build-single' */ './app/builds/route.jsx'),
       },
       {
         path: '/snapshots',
+        public: true,
         children: snapshots,
       },
       {
         path: '/oauth-error/',
+        public: true,
         load: () =>
           import(/* webpackChunkName: 'oauth-error' */ './app/oauth-error/route.jsx'),
       },
       {
         path: '(.*)',
+        public: true,
         load: () =>
           import(/* webpackChunkName: 'not-found' */ './app/404/route.jsx'),
       },

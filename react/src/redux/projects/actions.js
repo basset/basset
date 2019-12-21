@@ -4,6 +4,7 @@ import getProjectQuery from '../../graphql/query/getProject.js';
 import linkProviderToProjectMutation from '../../graphql/mutate/linkProviderToProject.js';
 import unlinkProviderToProjectMutation from '../../graphql/mutate/unlinkProviderToProject.js';
 import editProjectMutation from '../../graphql/mutate/editProject.js';
+import { setCurrentOrganization } from '../organizations/actions';
 
 import { changeOrganization } from '../organizations/actions.js';
 import { getBuilds, setCurrentBuild, clearBuilds } from '../builds/actions.js';
@@ -44,6 +45,7 @@ export const updatePageInfo = data => ({
 
 export const getProject = id => async (dispatch, getState) => {
   const { currentOrganizationId } = getState().organizations;
+  const { projects } = getState().projects;
   try {
     dispatch(isLoadingSingle());
     const { data } = await ApolloClient.query({
@@ -55,6 +57,11 @@ export const getProject = id => async (dispatch, getState) => {
     if (data.project) {
       const { project } = data;
       dispatch(setCurrentProject(id));
+      if (projects.length === 0) {
+        await dispatch(addProject(project));
+        await dispatch(setCurrentOrganization(project.organizationId));
+        await dispatch(getBuilds());
+      }
       if (currentOrganizationId !== project.organizationId) {
         await dispatch(changeOrganization({ id: project.organizationId }));
       }

@@ -13,6 +13,8 @@ export class Project extends React.PureComponent {
   static propTypes = {
     buildCount: PropTypes.number.isRequired,
     project: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired,
+    organization: PropTypes.object.isRequired,
     onSave: PropTypes.func.isRequired,
     isUpdating: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
@@ -43,6 +45,8 @@ export class Project extends React.PureComponent {
   };
 
   render() {
+    const isUser = !!this.props.user.id;
+    const isAdmin = (this.props.organization && this.props.organization.admin) || false;
     if (this.props.isLoading) {
       return <Loader />;
     }
@@ -54,110 +58,112 @@ export class Project extends React.PureComponent {
               <Builds />
             </Box>
           </Tab>
-          <Tab data-test-id="project-configuration" title="Configuration">
-            {this.props.error && this.renderError(this.props.error)}
-            <Box pad="medium" fill="horizontal">
-              {!this.props.organization.admin && (
-                <Box
-                  pad="medium"
-                  background="light-1"
-                  direction="row"
-                  gap="small"
-                >
-                  <UserAdmin color="status-warning" />
-                  <Text color="status-warning">
-                    Only admins can edit these settings.
-                  </Text>
-                </Box>
-              )}
-              <Heading level={3}>Project details</Heading>
-              <InlineField
-                testId="project-name"
-                canChange={this.props.organization.admin}
-                title="Project name"
-                value={this.props.project.name}
-                onSubmit={value => this.props.onSave('name', value)}
-                isUpdating={this.props.isUpdating}
-              />
-              <InlineField
-                testId="project-branch"
-                canChange={this.props.organization.admin}
-                title="Default branch"
-                value={this.props.project.defaultBranch}
-                onSubmit={value => this.props.onSave('defaultBranch', value)}
-                isUpdating={this.props.isUpdating}
-              />
-              <InlineField
-                testId="project-widths"
-                canChange={this.props.organization.admin}
-                title="Default widths (comma separated)"
-                value={this.props.project.defaultWidth}
-                onSubmit={value => this.props.onSave('defaultWidth', value)}
-                isUpdating={this.props.isUpdating}
-              />
-              <InlineField
-                testId="project-hide-selectors"
-                canChange={this.props.organization.admin}
-                title="Default hide selectors (comma separated)"
-                value={this.props.project.hideSelectors}
-                onSubmit={value => this.props.onSave('hideSelectors', value)}
-                isUpdating={this.props.isUpdating}
-              />
-              <Box
-                margin={{ vertical: 'small' }}
-                direction="row"
-                justify="between"
-              >
-                <Text>Api key</Text>
-                <Text>{this.props.project.key}</Text>
-              </Box>
-              <Box fill="horizontal">
-                <Heading level={5}>
-                  Default browsers (at least one required)
-                </Heading>
+          {isUser && (
+            <Tab data-test-id="project-configuration" title="Configuration">
+              {this.props.error && this.renderError(this.props.error)}
+              <Box pad="medium" fill="horizontal">
+                {!isAdmin && (
+                  <Box
+                    pad="medium"
+                    background="light-1"
+                    direction="row"
+                    gap="small"
+                  >
+                    <UserAdmin color="status-warning" />
+                    <Text color="status-warning">
+                      Only admins can edit these settings.
+                    </Text>
+                  </Box>
+                )}
+                <Heading level={3}>Project details</Heading>
+                <InlineField
+                  testId="project-name"
+                  canChange={isAdmin}
+                  title="Project name"
+                  value={this.props.project.name}
+                  onSubmit={value => this.props.onSave('name', value)}
+                  isUpdating={this.props.isUpdating}
+                />
+                <InlineField
+                  testId="project-branch"
+                  canChange={isAdmin}
+                  title="Default branch"
+                  value={this.props.project.defaultBranch}
+                  onSubmit={value => this.props.onSave('defaultBranch', value)}
+                  isUpdating={this.props.isUpdating}
+                />
+                <InlineField
+                  testId="project-widths"
+                  canChange={isAdmin}
+                  title="Default widths (comma separated)"
+                  value={this.props.project.defaultWidth}
+                  onSubmit={value => this.props.onSave('defaultWidth', value)}
+                  isUpdating={this.props.isUpdating}
+                />
+                <InlineField
+                  testId="project-hide-selectors"
+                  canChange={isAdmin}
+                  title="Default hide selectors (comma separated)"
+                  value={this.props.project.hideSelectors}
+                  onSubmit={value => this.props.onSave('hideSelectors', value)}
+                  isUpdating={this.props.isUpdating}
+                />
                 <Box
                   margin={{ vertical: 'small' }}
                   direction="row"
                   justify="between"
                 >
-                  <Box direction="row" align="center" gap="small">
-                    <Firefox color="plain" /> Firefox
-                  </Box>
-                  <CheckBox
-                    data-test-id="toggle-firefox"
-                    checked={this.hasBrowser('firefox')}
-                    onChange={this.handleToggleBrowser('firefox')}
-                    disabled={
-                      this.props.isUpdating || !this.props.organization.admin
-                    }
-                    reverse
-                    toggle
-                  />
+                  <Text>Api key</Text>
+                  <Text>{this.props.project.key}</Text>
                 </Box>
-                <Box
-                  margin={{ vertical: 'small' }}
-                  direction="row"
-                  justify="between"
-                  align="center"
-                >
-                  <Box direction="row" align="center" gap="small">
-                    <Chrome color="plain" /> Chrome
+                <Box fill="horizontal">
+                  <Heading level={5}>
+                    Default browsers (at least one required)
+                  </Heading>
+                  <Box
+                    margin={{ vertical: 'small' }}
+                    direction="row"
+                    justify="between"
+                  >
+                    <Box direction="row" align="center" gap="small">
+                      <Firefox color="plain" /> Firefox
+                    </Box>
+                    <CheckBox
+                      data-test-id="toggle-firefox"
+                      checked={this.hasBrowser('firefox')}
+                      onChange={this.handleToggleBrowser('firefox')}
+                      disabled={
+                        this.props.isUpdating || !isAdmin
+                      }
+                      reverse
+                      toggle
+                    />
                   </Box>
-                  <CheckBox
-                    data-test-id="toggle-chrome"
-                    checked={this.hasBrowser('chrome')}
-                    onChange={this.handleToggleBrowser('chrome')}
-                    disabled={
-                      this.props.isUpdating || !this.props.organization.admin
-                    }
-                    reverse
-                    toggle
-                  />
+                  <Box
+                    margin={{ vertical: 'small' }}
+                    direction="row"
+                    justify="between"
+                    align="center"
+                  >
+                    <Box direction="row" align="center" gap="small">
+                      <Chrome color="plain" /> Chrome
+                    </Box>
+                    <CheckBox
+                      data-test-id="toggle-chrome"
+                      checked={this.hasBrowser('chrome')}
+                      onChange={this.handleToggleBrowser('chrome')}
+                      disabled={
+                        this.props.isUpdating || !isAdmin
+                      }
+                      reverse
+                      toggle
+                    />
+                  </Box>
                 </Box>
+                <Integration />
               </Box>
-              <Integration />
-            </Box>
-          </Tab>
+            </Tab>
+          )}
         </Tabs>
       </Box>
     );

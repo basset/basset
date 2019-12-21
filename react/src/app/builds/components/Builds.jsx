@@ -44,6 +44,9 @@ export class Builds extends React.PureComponent {
   }
 
   get snapshotsExceeded() {
+    if (!this.props.organization) {
+      return false;
+    }
     const { organization } = this.props;
     return organization.enforceSnapshotLimit && organization.currentSnapshotCount >= organization.monthlySnapshotLimit;
   }

@@ -20,5 +20,6 @@ fragment projectFragment on Project {
   slackActive
   slackVariable
   hideSelectors
+  public
   organizationId
 }`;
