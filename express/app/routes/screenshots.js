@@ -44,14 +44,13 @@ router.get('/diff/:diffId', async (req, res) => {
 
 router.get('/:snapshotId', async (req, res) => {
   const { snapshotId } = req.params;
-  let query = Snapshot.query().findById(snapshotId);
+  let query;
   if (!req.isAuthenticated || !req.isAuthenticated() || !req.user) {
-    query = query.joinRelation('project').andWhere('project.public', true);
+    query = Snapshot.query().joinRelation('project').andWhere('project.public', true);
   } else {
-    query = Snapshot.authorizationFilter(req.user).mergeContext(query);
+    query = Snapshot.authorizationFilter(req.user);
   }
-
-  const snapshot = await query;
+  const snapshot = await query.findById(snapshotId);
   if (!snapshot) {
     return res.send(404);
   }
