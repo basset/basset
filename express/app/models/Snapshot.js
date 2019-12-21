@@ -10,7 +10,12 @@ class Snapshot extends BaseModel {
 
   async canRead(user) {
     if (!user) {
-
+      const project = this.project || await this.$relatedQuery('project');
+      if (project.public) {
+        const organization = this.organization || await this.$relatedQuery('organization');
+        return organization.allowPublicProjects;
+      }
+      return project.public;
     }
     return user.organizations.map(o => o.id).includes(this.organizationId);
   }
@@ -144,7 +149,9 @@ class Snapshot extends BaseModel {
     if (!user) {
       return this.query()
         .joinRelation('project')
+        .joinRelation('organization')
         .where('project.public', true)
+        .where('organization.allowPublicProjects', true)
     }
     return this.query().whereIn(
       'snapshot.organizationId',

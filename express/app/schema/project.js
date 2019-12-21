@@ -81,6 +81,10 @@ const resolvers = {
       const { user } = context.req;
       const project = await getModelLoader(context, Project).load(id);
       if (!user && project.public) {
+        const organization = await project.$relatedQuery('organization');
+        if (!organization.allowPublicProjects) {
+          throw new Error('not authorized')
+        }
         return {
           id: project.id,
           name: project.name,
@@ -232,7 +236,12 @@ const resolvers = {
       } else {
         scmConfig = project.scmConfig;
       }
-
+      if (projectInput.hasOwnProperty('public')) {
+        const organization = await project.$relatedQuery('organization');
+        if (!organization.allowPublicProjects) {
+          throw new Error('This organization does not have permission to make projects public.');
+        }
+      }
       return project.$query().updateAndFetch({
         name: projectInput.name || project.name,
         scmConfig: JSON.stringify(scmConfig),

@@ -7,10 +7,24 @@ class SnapshotFlake extends BaseModel {
   }
 
   async canRead(user) {
+    if (!user) {
+      const project = this.project || await this.$relatedQuery('project');
+      if (project.public) {
+        const organization = this.organization || await this.$relatedQuery('organization');
+        return organization.allowPublicProjects;
+      }
+    }
     return user.organizations.map(o => o.id).includes(this.organizationId);
   }
 
   static authorizationFilter(user) {
+    if (!user) {
+      return this.query()
+        .joinRelation('project')
+        .joinRelation('organization')
+        .where('project.public', true)
+        .where('organization.allowPublicProjects', true)
+    }
     return this.query().whereIn(
       'organizationId',
       user.organizations.map(o => o.id),
