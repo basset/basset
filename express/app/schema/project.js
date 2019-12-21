@@ -87,7 +87,10 @@ const resolvers = {
           public: project.public,
           organizationId: project.organizationId,
         }
-      }if (await project.canRead(user)) {
+      } else if (!user) {
+        return null;
+      }
+      if (await project.canRead(user)) {
         return project;
       }
       return null;
