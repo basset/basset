@@ -25,9 +25,13 @@ class Build extends BaseModel {
   }
 
   async canRead(user) {
+    const project = this.project || await this.$relatedQuery('project');
+    if (project.public) {
+      const organization = this.organization || await this.$relatedQuery('organization');
+      return organization.allowPublicProjects;
+    }
     if (!user) {
-      const project = this.project || await this.$relatedQuery('project');
-      return project.public;
+      return false;
     }
     return user.organizations.map(o => o.id).includes(this.organizationId);
   }
@@ -49,21 +53,29 @@ class Build extends BaseModel {
   }
 
   static authorizationFilter(user) {
-    if (user) {
-      return this
-        .query()
-        .joinRelation('project')
-        .whereIn(
-          'build.organizationId',
-          user.organizations.map(o => o.id),
-          );
-
-
-    }
-    return this
+    const query = this
       .query()
       .joinRelation('project')
-      .where('project.public', true);
+      .joinRelation('organization');
+
+    if (!user) {
+      return query
+        .where('project.public', true)
+        .where('organization.allowPublicProjects', true)
+    }
+    return query
+      .where(builder =>
+        builder
+          .whereIn(
+            'build.organizationId',
+            user.organizations.map(o => o.id),
+          )
+          .orWhere(builder =>
+            builder
+              .where('project.public', true)
+              .where('organization.allowPublicProjects', true)
+          )
+      )
   }
 
   async notifyPending(project = null) {

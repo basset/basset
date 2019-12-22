@@ -9,13 +9,13 @@ class Snapshot extends BaseModel {
   }
 
   async canRead(user) {
+    const project = this.project || await this.$relatedQuery('project');
+    if (project.public) {
+      const organization = this.organization || await this.$relatedQuery('organization');
+      return organization.allowPublicProjects;
+    }
     if (!user) {
-      const project = this.project || await this.$relatedQuery('project');
-      if (project.public) {
-        const organization = this.organization || await this.$relatedQuery('organization');
-        return organization.allowPublicProjects;
-      }
-      return project.public;
+      return false;
     }
     return user.organizations.map(o => o.id).includes(this.organizationId);
   }
@@ -146,17 +146,29 @@ class Snapshot extends BaseModel {
   }
 
   static authorizationFilter(user) {
+    const query = this
+      .query()
+      .joinRelation('project')
+      .joinRelation('organization');
+
     if (!user) {
-      return this.query()
-        .joinRelation('project')
-        .joinRelation('organization')
+      return query
         .where('project.public', true)
         .where('organization.allowPublicProjects', true)
     }
-    return this.query().whereIn(
-      'snapshot.organizationId',
-      user.organizations.map(o => o.id),
-    );
+    return query
+      .where(builder =>
+        builder
+          .whereIn(
+            'snapshot.organizationId',
+            user.organizations.map(o => o.id),
+          )
+          .orWhere(builder =>
+            builder
+              .where('project.public', true)
+              .where('organization.allowPublicProjects', true)
+          )
+      )
   }
 
   static get relationMappings() {
