@@ -6,12 +6,14 @@ const { createProject } = require('../../utils/project');
 const { createBuild } = require('../../utils/build');
 const {
   createOrganization,
-  addUserToOrganization,
 } = require('../../utils/organization');
-const { createUser } = require('../../utils/user');
+const settings = require('../../../app/settings');
 
 describe('stream transformer', () => {
   let organization, project, assets, build, baseUrl, assetPath;
+  beforeEach(() => {
+    settings.s3.privateAssets = false;
+  });
   beforeAll(async () => {
     organization = await createOrganization('awesometest');
     project = await createProject('yay', organization.id);
@@ -145,6 +147,25 @@ describe('stream transformer', () => {
       const data = await readStream(returnedStream);
       expect(data).toBe(
         `<html><head><link hef="broke" /><script>console.log('test');</script><body><div>Test</div><img scr="whoops"/></body></html>`,
+      );
+    });
+    it('should properly set the url when private assets is enabled', async () => {
+      settings.s3.privateAssets = true;
+      const stream = new Readable();
+      stream.push(
+        `<html><head><style>body { background-image: url("path/to/file.js"); }</style><<link rel="stylesheet" href="some/different/path/to/file.css"></head><body><img src="another/path/to/file.png"></body></html>`,
+      );
+      stream.push(null);
+
+      const returnedStream = transform.transformHTML(assets, baseUrl, '');
+      stream.pipe(returnedStream);
+      const data = await readStream(returnedStream);
+      expect(data).toBe(
+        `<html><head><style>body { background-image: url(${baseUrl}/${
+          assetPath[0]
+        }?token=${settings.token}); }</style><<link rel="stylesheet" href="some/different/path/to/file.css"></head><body><img src="${baseUrl}/${
+          assetPath[2]
+        }?token=${settings.token}"></body></html>`,
       );
     });
   });
