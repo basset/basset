@@ -52,7 +52,7 @@ class ProcessMessage(unittest.TestCase):
         flake_matched = False
 
         render_snapshot_mock.return_value = io.BytesIO(), None
-        diff_snapshot_mock.return_value = diff_location, difference, image_location, diff_sha, flake_matched
+        diff_snapshot_mock.return_value = diff_location, difference, image_location, diff_sha, flake_matched, []
 
         self.body['compareSnapshot'] = True
         body = json.dumps(self.body)
@@ -67,6 +67,7 @@ class ProcessMessage(unittest.TestCase):
             'diffLocation': diff_location,
             'diffSha': diff_sha,
             'flakeMatched': False,
+            'centers': [],
         })
         render_snapshot_mock.assert_called()
         diff_snapshot_mock.assert_called()
@@ -79,7 +80,7 @@ class ProcessMessage(unittest.TestCase):
         flake_matched = True
 
         render_snapshot_mock.return_value = io.BytesIO(), None
-        diff_snapshot_mock.return_value = diff_location, difference, image_location, diff_sha, flake_matched
+        diff_snapshot_mock.return_value = diff_location, difference, image_location, diff_sha, flake_matched, []
 
         self.body['compareSnapshot'] = True
         body = json.dumps(self.body)
@@ -92,6 +93,7 @@ class ProcessMessage(unittest.TestCase):
             'difference': False,
             'diffSha': diff_sha,
             'flakeMatched': True,
+            'centers': [],
         })
         render_snapshot_mock.assert_called()
         diff_snapshot_mock.assert_called()

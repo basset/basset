@@ -33,11 +33,22 @@ def compare(old_snapshot, new_snapshot):
     diff_data = cv2.absdiff(img1, img2)
     color_diff = np.mean(diff_data, axis=2)
     mse = np.float64(np.sqrt((diff_data ** 2).mean())).item()
+
     thresh = 10
     diff_data[:, :, :4][color_diff <= thresh] = ALPHA_COLOR
     diff_data[:, :, :4][color_diff > thresh] = DIFF_COLOR
+    _, diff_image = cv2.imencode('.png', diff_data)
+
+    image = cv2.cvtColor(diff_data, cv2.COLOR_RGB2GRAY)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 20))
+    morph_image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+    _, thresh_image = cv2.threshold(morph_image, 0, thresh, cv2.THRESH_BINARY)
+    contours, h = cv2.findContours(thresh_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    centers = [None] * len(contours)
+    for i, c in enumerate(contours):
+        contours_poly = cv2.approxPolyDP(c, 10, True)
+        centers[i], _ = cv2.minEnclosingCircle(contours_poly)
 
     diff_pixel_count = np.sum(diff_data == [DIFF_COLOR[1], None, None, None])
 
-    _, diff_image = cv2.imencode('.png', diff_data)
-    return diff_image, mse, diff_pixel_count
+    return diff_image, mse, diff_pixel_count, centers
