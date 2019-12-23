@@ -9,6 +9,14 @@ class Snapshot extends BaseModel {
   }
 
   async canRead(user) {
+    const project = this.project || await this.$relatedQuery('project');
+    if (project.public) {
+      const organization = this.organization || await this.$relatedQuery('organization');
+      return organization.allowPublicProjects;
+    }
+    if (!user) {
+      return false;
+    }
     return user.organizations.map(o => o.id).includes(this.organizationId);
   }
 
@@ -138,16 +146,36 @@ class Snapshot extends BaseModel {
   }
 
   static authorizationFilter(user) {
-    return this.query().whereIn(
-      'snapshot.organizationId',
-      user.organizations.map(o => o.id),
-    );
+    const query = this
+      .query()
+      .joinRelation('project')
+      .joinRelation('organization');
+
+    if (!user) {
+      return query
+        .where('project.public', true)
+        .where('organization.allowPublicProjects', true)
+    }
+    return query
+      .where(builder =>
+        builder
+          .whereIn(
+            'snapshot.organizationId',
+            user.organizations.map(o => o.id),
+          )
+          .orWhere(builder =>
+            builder
+              .where('project.public', true)
+              .where('organization.allowPublicProjects', true)
+          )
+      )
   }
 
   static get relationMappings() {
     const Organization = require('./Organization');
     const OrganizationMember = require('./OrganizationMember');
     const Build = require('./Build');
+    const Project = require('./Project');
     return {
       snapshotFlake: {
         relation: Model.HasOneRelation,
@@ -213,6 +241,14 @@ class Snapshot extends BaseModel {
           to: 'build.id',
         },
       },
+      project: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Project,
+        join: {
+          from: 'snapshot.projectId',
+          to: 'project.id'
+        }
+      }
     };
   }
 

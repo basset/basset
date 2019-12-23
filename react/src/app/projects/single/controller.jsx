@@ -11,6 +11,7 @@ import {
 import { getBuilds } from '../../../redux/builds/selectors.js';
 import { getUser } from '../../../redux/user/selectors.js';
 import { saveProject } from '../../../redux/projects/actions.js';
+import { goLogin } from '../../../redux/router/actions.js';
 import { getCurrentOrganization } from '../../../redux/organizations/selectors.js';
 
 import Project from './Project.jsx';
@@ -33,6 +34,10 @@ export class ProjectController extends React.Component {
   render() {
     if (this.props.isLoading) {
       return <Loader />;
+    }
+    if (!this.props.project && !this.props.user.id) {
+      goLogin();
+      return null;
     }
     if (!this.props.project) {
       return null;

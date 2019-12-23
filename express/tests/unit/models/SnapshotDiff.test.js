@@ -65,12 +65,18 @@ describe('SnapshotDiff', () => {
   test('authorizationFilter', async () => {
     const snapshotDiffs = await SnapshotDiff.authorizationFilter(user);
     expect(snapshotDiffs).toHaveLength(1);
-    expect(snapshotDiffs).toEqual([snapshotDiff]);
+    expect(snapshotDiffs).toEqual([{
+      ...snapshotDiff,
+      project: undefined,
+    }]);
 
     const otherSnapshotDiffs = await SnapshotDiff.authorizationFilter(
       otherUser,
     );
     expect(otherSnapshotDiffs).toHaveLength(1);
-    expect(otherSnapshotDiffs).toEqual([otherSnapshotDiff]);
+    expect(otherSnapshotDiffs).toEqual([{
+      ...otherSnapshotDiff,
+      project: undefined,
+    }]);
   });
 });

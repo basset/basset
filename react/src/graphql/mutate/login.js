@@ -1,6 +1,8 @@
 import gql from 'graphql-tag';
+import organizationFragment from '../fragments/organization.js';
 
 export default gql`
+  ${organizationFragment}
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       id
@@ -13,9 +15,7 @@ export default gql`
       organizations(first: 100) {
         edges {
           node {
-            id
-            name
-            admin
+            ...organizationFragment
           }
         }
       }

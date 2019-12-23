@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { goLogin } from '../../../redux/router/actions';
 
 import {
   getSnapshots,
@@ -11,11 +12,16 @@ import {
 import { approveSnapshot } from '../../../redux/snapshots/actions.js';
 
 import Loader from '../../../components/Loader/Loader.jsx';
+import { getUser } from '../../../redux/user/selectors.js';
 import Snapshots from './components/Snapshots.jsx';
 
-export const SnapshotHistoryController = ({ isLoading, snapshots }) => {
+export const SnapshotHistoryController = ({ isLoading, snapshots, user }) => {
   if (isLoading) {
     return <Loader />;
+  }
+  if (snapshots.length === 0 && !user.id) {
+    goLogin();
+    return null;
   }
   return <Snapshots snapshots={snapshots} />;
 };
@@ -27,6 +33,7 @@ const mapState = state => {
     snapshots: getSnapshots(state).history,
     pageInfo: getPageInfo(state).history,
     isApproving: getIsApproving(state),
+    user: getUser(state),
   };
 };
 

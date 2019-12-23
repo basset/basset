@@ -18,6 +18,7 @@ type Organization implements Node {
   enforceSnapshotLimit: Boolean
   buildRetentionPeriod: Int
   enforceBuildRetention: Boolean
+  allowPublicProjects: Boolean
   projects(first: Int, last: Int, after: String, before: String): ProjectConnection @cost(multipliers: ["first", "last"], complexity: 1)
   organizationMembers(first: Int, last: Int, after: String, before: String): OrganizationMemberConnection @cost(multipliers: ["first", "last"], complexity: 1)
 }

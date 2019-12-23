@@ -46,13 +46,17 @@ describe('Snapshot', () => {
   });
 
   test('authorizationFilter', async () => {
-    const snapshots = await Snapshot.authorizationFilter(user);
-    expect(snapshots).toHaveLength(2);
-    expect(snapshots).toEqual(expect.arrayContaining([snapshot, snapshot2]));
+    const userSnapshots = await Snapshot.authorizationFilter(user);
+    expect(userSnapshots).toHaveLength(2);
+    const snapshots = [snapshot2, snapshot].map(snapshot => ({
+      ...snapshot,
+      project: undefined,
+    }));
+    expect(userSnapshots).toEqual(expect.arrayContaining(snapshots));
 
     const otherSnapshots = await Snapshot.authorizationFilter(otherUser);
     expect(otherSnapshots).toHaveLength(1);
-    expect(otherSnapshots[0]).toEqual(otherSnapshot);
+    expect(otherSnapshots[0]).toEqual({...otherSnapshot, project: undefined});
   });
 
   test('getModifiedFromBuild', async () => {

@@ -31,7 +31,8 @@ describe('<Project />', () => {
     projectActions.saveProject = jest.fn(() => (dispatch, getState) => {});
     store.dispatch(
       userActions.receiveUser({
-        name: '',
+        id: '1234',
+        name: 'billy',
         providers: {
           edges: [],
         },
@@ -157,7 +158,8 @@ describe('<Project />', () => {
   test('set github scm integration', async () => {
     store.dispatch(
       userActions.receiveUser({
-        name: '',
+        id: '1234',
+        name: 'billy',
         providers: {
           edges: [{ node: { providerId: 1234, provider: 'github' } }],
         },

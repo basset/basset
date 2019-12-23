@@ -5,7 +5,7 @@ import { loginUser } from '../redux/user/actions.js';
 import { getIsAuthenticated } from '../redux/user/selectors.js';
 
 export default async (
-  { next, pathname },
+  { next, pathname, route },
   params,
   history,
   dispatch,
@@ -24,12 +24,14 @@ export default async (
   if (!isAuthenticated) {
     await dispatch(verify());
     isAuthenticated = getIsAuthenticated(getState());
-    if (!isAuthenticated) {
+
+    if (isAuthenticated || route.public) {
+      return true;
+    } else {
       return redirect;
     }
-    return next();
   }
-  return next();
+  return true;
 };
 
 export const verify = () => async dispatch => {

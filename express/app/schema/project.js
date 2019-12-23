@@ -27,6 +27,7 @@ type Project implements Node {
   slackWebhook: String
   slackVariable: String
   hideSelectors: String
+  public: Boolean
   organization: Organization
   organizationId: ID
 }
@@ -41,7 +42,7 @@ type ProjectEdge {
 }
 extend type Query {
   projects(first: Int, last: Int, after: String, before: String, organizationId: ID!): ProjectConnection @authField @cost(multipliers: ["first", "last"], complexity: 1)
-  project(id: ID!): Project @authField
+  project(id: ID!): Project
 }
 
 input SCMConfigInput {
@@ -63,6 +64,7 @@ input ProjectInput {
   slackWebhook: String
   slackVariable: String
   hideSelectors: String
+  public: Boolean
 }
 extend type Mutation {
   unlinkProviderToProject(id: ID!, provider: String): Project @authField
@@ -78,6 +80,20 @@ const resolvers = {
     project: async (object, { id }, context, info) => {
       const { user } = context.req;
       const project = await getModelLoader(context, Project).load(id);
+      if (!user && project.public) {
+        const organization = await project.$relatedQuery('organization');
+        if (!organization.allowPublicProjects) {
+          throw new Error('not authorized')
+        }
+        return {
+          id: project.id,
+          name: project.name,
+          public: project.public,
+          organizationId: project.organizationId,
+        }
+      } else if (!user) {
+        return null;
+      }
       if (await project.canRead(user)) {
         return project;
       }
@@ -220,7 +236,12 @@ const resolvers = {
       } else {
         scmConfig = project.scmConfig;
       }
-
+      if (projectInput.hasOwnProperty('public')) {
+        const organization = await project.$relatedQuery('organization');
+        if (!organization.allowPublicProjects) {
+          throw new Error('This organization does not have permission to make projects public.');
+        }
+      }
       return project.$query().updateAndFetch({
         name: projectInput.name || project.name,
         scmConfig: JSON.stringify(scmConfig),
@@ -236,6 +257,9 @@ const resolvers = {
           : project.slackActive,
         slackVariable: projectInput.slackVariable || project.slackVariable,
         hideSelectors: projectInput.hideSelectors || project.hideSelectors,
+        public: projectInput.hasOwnProperty('public')
+          ? projectInput.public
+          : project.public,
       });
     },
   },

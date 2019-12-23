@@ -111,10 +111,23 @@ class Project extends BaseModel {
       });
   }
   static authorizationFilter(user) {
-    return this.query().whereIn(
-      'project.organizationId',
-      user.organizations.map(o => o.id),
-    );
+    const query = this.query()
+      .joinRelation('organization');
+    if (!user) {
+      return query
+        .where('public', true)
+        .where('organization.allowPublicProjects', true)
+    }
+    return query
+      .where(builder =>
+        builder
+          .where('public', true)
+          .where('organization.allowPublicProjects', true)
+      )
+      .orWhereIn(
+        'project.organizationId',
+        user.organizations.map(o => o.id),
+      );
   }
 
   static get relationMappings() {

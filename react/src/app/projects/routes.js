@@ -6,6 +6,7 @@ export default [
   },
   {
     path: '/:id',
+    public: true,
     load: () =>
       import(/* webpackChunkName: 'project-single' */ './single/route.jsx'),
   },

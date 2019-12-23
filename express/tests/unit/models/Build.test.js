@@ -81,10 +81,14 @@ describe('Build', () => {
   test('authorizationFilter', async () => {
     const userBuilds = await Build.authorizationFilter(user);
     expect(userBuilds).toHaveLength(2);
-    expect(userBuilds).toEqual(expect.arrayContaining([build, build2]));
+    const builds = [build2, build].map(build => ({
+      ...build,
+      project: undefined,
+    }));
+    expect(userBuilds).toEqual(expect.arrayContaining(builds));
     const otherUserBuilds = await Build.authorizationFilter(otherUser);
     expect(otherUserBuilds).toHaveLength(1);
-    expect(otherUserBuilds).toEqual([otherBuild]);
+    expect(otherUserBuilds).toEqual([{ ...otherBuild, project: undefined }]);
   });
 
   test('create', async () => {

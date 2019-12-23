@@ -52,44 +52,51 @@ export default [
   },
   {
     path: '/',
-    action: verifyAuthenticated,
-    children: [
-      {
-        path: '/',
-        load: () => import(/* webpackChunkName: 'home' */ './app/route.jsx'),
-      },
-      {
-        path: '/organizations',
-        children: organizations,
-      },
-      {
-        path: '/profile',
-        load: () =>
-          import(/* webpackChunkName: 'home' */ './app/profile/route.jsx'),
-      },
-      {
-        path: '/projects',
-        children: projects,
-      },
-      {
-        path: '/builds/:id/:snapshotId?',
-        load: () =>
-          import(/* webpackChunkName: 'build-single' */ './app/builds/route.jsx'),
-      },
-      {
-        path: '/snapshots',
-        children: snapshots,
-      },
-      {
-        path: '/oauth-error/',
-        load: () =>
-          import(/* webpackChunkName: 'oauth-error' */ './app/oauth-error/route.jsx'),
-      },
-      {
-        path: '(.*)',
-        load: () =>
-          import(/* webpackChunkName: 'not-found' */ './app/404/route.jsx'),
-      },
-    ],
+    verifyAuthentication: true,
+    load: () => import(/* webpackChunkName: 'home' */ './app/route.jsx'),
+  },
+  {
+    path: '/organizations',
+    verifyAuthentication: true,
+    children: organizations,
+  },
+  {
+    path: '/profile',
+    verifyAuthentication: true,
+    load: () =>
+      import(/* webpackChunkName: 'home' */ './app/profile/route.jsx'),
+  },
+  {
+    path: '/projects',
+    verifyAuthentication: true,
+    public: true,
+    children: projects,
+  },
+  {
+    path: '/builds/:id/:snapshotId?',
+    verifyAuthentication: true,
+    public: true,
+    load: () =>
+      import(/* webpackChunkName: 'build-single' */ './app/builds/route.jsx'),
+  },
+  {
+    path: '/snapshots',
+    verifyAuthentication: true,
+    public: true,
+    children: snapshots,
+  },
+  {
+    path: '/oauth-error/',
+    verifyAuthentication: true,
+    public: true,
+    load: () =>
+      import(/* webpackChunkName: 'oauth-error' */ './app/oauth-error/route.jsx'),
+  },
+  {
+    path: '(.*)',
+    verifyAuthentication: true,
+    load: () =>
+      import(/* webpackChunkName: 'not-found' */ './app/404/route.jsx'),
+
   },
 ];

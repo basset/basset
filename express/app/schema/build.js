@@ -62,8 +62,8 @@ type BuildEdge {
   node: Build
 }
 extend type Query {
-  builds(first: Int, last: Int, after: String, before: String, organizationId: ID, projectId: ID, orderBy: String, order: String): BuildConnection @authField @cost(multipliers: ["first, last"], complexity: 4)
-  build(id: ID!): Build @authField
+  builds(first: Int, last: Int, after: String, before: String, organizationId: ID, projectId: ID, orderBy: String, order: String): BuildConnection @cost(multipliers: ["first, last"], complexity: 4)
+  build(id: ID!): Build
 }
 extend type Mutation {
   cancelBuild(id: ID!): Build
@@ -151,11 +151,11 @@ const resolvers = {
       let query = Build.authorizationFilter(user);
 
       if (organizationId) {
-        query = query.where('organizationId', organizationId);
+        query = query.where('build.organizationId', organizationId);
       }
 
       if (projectId) {
-        query = query.where('projectId', projectId);
+        query = query.where('build.projectId', projectId);
       }
 
       const select = ['build.*'];
