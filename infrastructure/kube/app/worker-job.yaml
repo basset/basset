@@ -10,7 +10,7 @@ spec:
         spec:
           containers:
             - name: basset-worker
-              image: getbasset/basset-app:release-1.0.0-beta-13
+              image: getbasset/basset-app:release-1.0.0-beta-14
               command: ["node"]
               args: ["app/tasks/cron.js", "every-5-minutes"]
               envFrom:
@@ -30,7 +30,7 @@ spec:
         spec:
           containers:
             - name: basset-worker
-              image: getbasset/basset-app:release-1.0.0-beta-13
+              image: getbasset/basset-app:release-1.0.0-beta-14
               command: ["node"]
               args: ["app/tasks/cron.js", "daily"]
               envFrom:
