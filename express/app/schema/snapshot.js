@@ -1,6 +1,7 @@
 const Snapshot = require('../models/Snapshot');
 const SnapshotDiff = require('../models/SnapshotDiff');
 const SnapshotFlake = require('../models/SnapshotFlake');
+const SnapshotDiffCenter = require('../models/SnapshotDiffCenter');
 const Build = require('../models/Build');
 const Asset = require('../models/Asset');
 const Organization = require('../models/Organization');
@@ -11,7 +12,7 @@ const settings = require('../settings');
 const { paginateQuery } = require('../utils/graphql/paginate');
 const {
   getModelLoader,
-  getRelatedLoader,
+  getRelatedModelLoader,
 } = require('../utils/graphql/dataloader');
 const { copySnapshotDiffToFlake } = require('../utils/upload');
 
@@ -37,6 +38,13 @@ type SnapshotDiff implements Node {
   url: String
   snapshotToId: ID
   snapshotFromId: ID
+  centers: [SnapshotDiffCenter]
+}
+type SnapshotDiffCenter implements Node {
+  id: ID!
+  x: Float
+  y: Float
+  radius: Float
 }
 type Snapshot implements Node {
   id: ID!
@@ -369,6 +377,10 @@ const resolvers = {
       settings.s3.privateScreenshots
         ? `/screenshots/diff/${snapshotDiff.id}`
         : snapshotDiff.imageLocation,
+    centers: (snapshotDiff, args, context, info) =>
+      getRelatedModelLoader(context, SnapshotDiffCenter, { prop: 'snapshotDiffId'}).load(
+        snapshotDiff.id
+      )
   },
   SnapshotFlake: {
     url: (snapshotFlake, args, context, info) =>

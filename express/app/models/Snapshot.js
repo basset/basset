@@ -1,6 +1,7 @@
 const { Model, transaction } = require('objection');
 const BaseModel = require('./BaseModel');
 const SnapshotDiff = require('./SnapshotDiff');
+const SnapshotDiffCenter = require('./SnapshotDiffCenter');
 const SnapshotFlake = require('./SnapshotFlake');
 
 class Snapshot extends BaseModel {
@@ -66,6 +67,7 @@ class Snapshot extends BaseModel {
     differenceAmount,
     diffSha,
     flakeMatched,
+    centers,
   ) {
     let trx;
     try {
@@ -100,10 +102,9 @@ class Snapshot extends BaseModel {
       }
 
       await this.$query(trx).update(update);
-
       if (diffLocation) {
         if (difference) {
-          await SnapshotDiff.query(trx).insert({
+          const snapshotDiff = await SnapshotDiff.query(trx).insert({
             imageLocation: diffLocation,
             differenceAmount,
             sha: diffSha,
@@ -112,6 +113,20 @@ class Snapshot extends BaseModel {
             buildId: this.buildId,
             organizationId: this.organizationId,
           });
+          if (centers && centers.length > 0) {
+            await Promise.all(
+              centers.map(center =>
+                SnapshotDiffCenter.query(trx).insert({
+                  x: center.x,
+                  y: center.y,
+                  radius: center.radius,
+                  snapshotDiffId: snapshotDiff.id,
+                  buildId: this.buildId,
+                  organizationId: this.organizationId,
+                })
+              )
+            );
+          }
         }
       }
 

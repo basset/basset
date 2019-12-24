@@ -1,9 +1,9 @@
 const { Model } = require('objection');
 const BaseModel = require('./BaseModel');
 
-class SnapshotDiff extends BaseModel {
+class SnapshotDiffCenter extends BaseModel {
   static get tableName() {
-    return 'snapshotDiff';
+    return 'snapshotDiffCenter';
   }
 
   async canRead(user) {
@@ -19,41 +19,33 @@ class SnapshotDiff extends BaseModel {
 
   static get relationMappings() {
     const Organization = require('./Organization');
-    const Snapshot = require('./Snapshot');
-    const SnapshotDiffCenter = require('./SnapshotDiffCenter');
+    const Build = require('./Build');
+    const SnapshotDiff = require('./SnapshotDiff');
     return {
       organization: {
         relation: Model.BelongsToOneRelation,
         modelClass: Organization,
         join: {
-          from: 'snapshotDiff.organizationId',
+          from: 'snapshotDiffCenter.organizationId',
           to: 'organization.id',
         },
       },
-      snapshotFrom: {
+      snapshotDiff: {
         relation: Model.BelongsToOneRelation,
-        modelClass: Snapshot,
+        modelClass: SnapshotDiff,
         join: {
-          from: 'snapshotDiff.snapshotFromId',
-          to: 'snapshot.id',
+          from: 'snapshotDiffCenter.snapshotDiffId',
+          to: 'snapshotDiff.id',
         },
       },
-      snapshotTo: {
+      build: {
         relation: Model.BelongsToOneRelation,
-        modelClass: Snapshot,
+        modelClass: Build,
         join: {
-          from: 'snapshotDiff.snapshotToId',
-          to: 'snapshot.id',
+          from: 'snapshotDiffCenter.buildId',
+          to: 'build.id',
         },
       },
-      centers: {
-        relation: Model.HasManyRelation,
-        modelClass: SnapshotDiffCenter,
-        join: {
-          from: 'snapshotDiff.id',
-          to: 'snapshotDiffCenter.snapshotDiffId',
-        }
-      }
     };
   }
 
@@ -62,11 +54,10 @@ class SnapshotDiff extends BaseModel {
       type: 'object',
       required: [],
       properties: {
-        id: { type: 'integer' },
-        location: { type: 'string' },
+        id: { type: 'string', format: 'uuid' },
       },
     };
   }
 }
 
-module.exports = SnapshotDiff;
+module.exports = SnapshotDiffCenter;

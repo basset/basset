@@ -223,6 +223,7 @@ router.post('/compared', async (req, res) => {
       differenceAmount,
       diffSha,
       flakeMatched,
+      centers,
     } = req.body;
     const snapshot = await Snapshot.query()
       .eager('build')
@@ -237,6 +238,7 @@ router.post('/compared', async (req, res) => {
       differenceAmount,
       diffSha,
       flakeMatched,
+      centers,
     );
 
     return res.json({ received: true });

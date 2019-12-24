@@ -8,7 +8,7 @@ const {
 const { createProject } = require('../../utils/project');
 const { createBuild } = require('../../utils/build');
 const { createSnapshot } = require('../../utils/snapshot');
-const { createSnapshotDiff } = require('../../utils/snapshot-diff');
+const { createSnapshotDiff, createSnapshotDiffCenter } = require('../../utils/snapshot-diff');
 
 jest.mock('../../../app/utils/upload', () => ({
   copySnapshotDiffToFlake: jest.fn(() => 'imageLocation'),
@@ -217,6 +217,17 @@ describe('snapshot schema', () => {
           group: null,
         }),
       ];
+      await createSnapshotDiffCenter(snapshotDiffs[0], newBuild, {
+        x: 100,
+        y: 25,
+        radius: 50,
+      });
+      await createSnapshotDiffCenter(snapshotDiffs[0], newBuild, {
+        x: 1,
+        y: 1,
+        radius: 150,
+      });
+
       const query = `
       query modifiedSnapshotGroups($first: Int, $after: String, $buildId: ID!, $limit: Int!, $offset: Int!) {
         modifiedSnapshotGroups(limit: $limit, offset: $offset, buildId: $buildId) {
@@ -263,6 +274,11 @@ describe('snapshot schema', () => {
                       snapshotFromId
                       snapshotToId
                       url
+                      centers {
+                        x
+                        y
+                        radius
+                      }
                     }
                   }
                 }
@@ -283,6 +299,13 @@ describe('snapshot schema', () => {
       expect(groups.totalCount).toBe(4);
       const groupOne = groups.edges.find(edge => edge.node.group === 1);
       expect(groupOne.node.snapshots.totalCount).toBe(2);
+      expect(groupOne.node.snapshots.edges[0].node.snapshotDiff.centers).toHaveLength(2);
+      expect(groupOne.node.snapshots.edges[0].node.snapshotDiff.centers).toEqual(
+        expect.arrayContaining([
+          {x: 100, y: 25, radius: 50},
+          {x: 1, y: 1, radius: 150},
+        ])
+      );
       expect(groups.totalCount).toBe(4);
       const groupTwo = groups.edges.find(edge => edge.node.group === 2);
       expect(groupTwo.node.snapshots.totalCount).toBe(3);
