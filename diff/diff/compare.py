@@ -51,7 +51,12 @@ def compare(old_snapshot, new_snapshot):
     centers = [None] * len(contours)
     for i, c in enumerate(contours):
         contours_poly = cv2.approxPolyDP(c, 10, True)
-        centers[i], _ = cv2.minEnclosingCircle(contours_poly)
+        point, radius = cv2.minEnclosingCircle(contours_poly)
+        centers[i] = {
+            'x': point[0],
+            'y': point[1],
+            'radius': radius,
+        }
 
     diff_pixel_count = np.sum(diff_data == [DIFF_COLOR[1], None, None, None])
 
