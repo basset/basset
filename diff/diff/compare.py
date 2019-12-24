@@ -31,12 +31,16 @@ def compare(old_snapshot, new_snapshot):
                                   value=[0, 0, 0, 0])
 
     diff_data = cv2.absdiff(img1, img2)
+    diff_data = cv2.medianBlur(diff_data, 3)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    diff_data = cv2.morphologyEx(diff_data, cv2.MORPH_GRADIENT, kernel)
     color_diff = np.mean(diff_data, axis=2)
     mse = np.float64(np.sqrt((diff_data ** 2).mean())).item()
 
     thresh = 10
     diff_data[:, :, :4][color_diff <= thresh] = ALPHA_COLOR
     diff_data[:, :, :4][color_diff > thresh] = DIFF_COLOR
+
     _, diff_image = cv2.imencode('.png', diff_data)
 
     image = cv2.cvtColor(diff_data, cv2.COLOR_RGB2GRAY)
