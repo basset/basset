@@ -237,6 +237,9 @@ const SnapshotHeader = React.memo(
     };
 
     const renderChangesActions = () => {
+      if (!snapshot.snapshotDiff || !snapshot.snapshotDiff.centers || (snapshot.snapshotDiff.centers && snapshot.snapshotDiff.centers.length === 0)) {
+        return null;
+      }
       return (
         <Box direction="row" align="center" gap="small">
           <Box>
@@ -360,7 +363,7 @@ const SnapshotHeader = React.memo(
               />
             </Box>
           )}
-        {showDiff && renderChangesActions()}
+        {canShrink && showDiff && renderChangesActions()}
         </Box>
       );
     };
