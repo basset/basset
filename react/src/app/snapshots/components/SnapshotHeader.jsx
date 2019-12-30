@@ -319,6 +319,7 @@ const SnapshotHeader = React.memo(
           {canShrink && (
             <Box>
               <DropButton
+                data-test-id="change-view"
                 icon={<View />}
                 label={viewLabel}
                 dropAlign={{ top: 'bottom', left: 'left' }}

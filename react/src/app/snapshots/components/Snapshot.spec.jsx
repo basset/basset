@@ -87,6 +87,7 @@ describe('<Snapshot />', () => {
     const { getByTestId, queryAllByTestId, getAllByTestId } = render(
       <Snapshot {...PROPS} snapshot={snapshotWithPrevious} />,
     );
+    fireEvent.click(getByTestId('change-view'));
     fireEvent.click(getByTestId('show-original'));
     expect(getAllByTestId('snapshot')).toHaveLength(1);
     expect(queryAllByTestId('snapshot-overlay')).toHaveLength(0);
@@ -97,7 +98,8 @@ describe('<Snapshot />', () => {
   test('show only the new snapshot', () => {
     const { getByTestId, getAllByTestId } = render(
       <Snapshot {...PROPS} snapshot={snapshotWithPrevious} />,
-    );
+    )
+    fireEvent.click(getByTestId('change-view'));
     fireEvent.click(getByTestId('show-new'));
     expect(getAllByTestId('snapshot')).toHaveLength(1);
     expect(getAllByTestId('snapshot-overlay')).toHaveLength(1);
