@@ -74,8 +74,6 @@ const SnapshotImage = ({ snapshot, diff, onToggleDiff, center }) => {
     setHeight(target.naturalHeight);
     setLoaded(true);
   };
-  console.log(!diff && center);
-  console.log(!diff && snapshot)
 
   return (
     <Box pad={{ horizontal: 'small' }} margin={{ top: 'medium' }} flex>
