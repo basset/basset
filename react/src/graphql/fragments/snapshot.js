@@ -22,6 +22,7 @@ fragment snapshotFragment on Snapshot {
     url
     approved
     approvedOn
+    width
     approvedBy {
       user {
         id
@@ -34,6 +35,11 @@ fragment snapshotFragment on Snapshot {
     url
     snapshotFromId
     snapshotToId
+    centers {
+      x
+      y
+      radius
+    }
   }
   snapshotFlake {
     id
