@@ -32,8 +32,8 @@ def compare(old_snapshot, new_snapshot):
 
     diff_data = cv2.absdiff(img1, img2)
     diff_data = cv2.medianBlur(diff_data, 3)
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    diff_data = cv2.morphologyEx(diff_data, cv2.MORPH_GRADIENT, kernel)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+    diff_data = cv2.morphologyEx(diff_data, cv2.MORPH_OPEN, kernel)
     color_diff = np.mean(diff_data, axis=2)
     mse = np.float64(np.sqrt((diff_data ** 2).mean())).item()
 
@@ -53,9 +53,9 @@ def compare(old_snapshot, new_snapshot):
         contours_poly = cv2.approxPolyDP(c, 10, True)
         point, radius = cv2.minEnclosingCircle(contours_poly)
         centers[i] = {
-            'x': point[0],
-            'y': point[1],
-            'radius': radius,
+            'x': int(point[0]),
+            'y': int(point[1]),
+            'radius': int(radius),
         }
 
     diff_pixel_count = np.sum(diff_data == [DIFF_COLOR[1], None, None, None])
