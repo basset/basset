@@ -20,7 +20,7 @@ def diff_snapshot(snapshot, organization_id, project_id, build_id, browser, titl
                   flake_sha_list, save_snapshot=False):
     snapshot_key = urlparse(compare_snapshot).path.split('/', 2)[2]
     old_snapshot = get_file(snapshot_key)
-    diffed_snapshot, difference, diff_pixels = compare(old_snapshot, snapshot)
+    diffed_snapshot, difference, diff_pixels, centers = compare(old_snapshot, snapshot)
     snapshot_location = compare_snapshot
     key_path = '{}/{}/{}'.format(organization_id, project_id, build_id)
 
@@ -59,4 +59,4 @@ def diff_snapshot(snapshot, organization_id, project_id, build_id, browser, titl
         snapshot.close()
 
     print("Diffed snapshot: [diff: {}] [flake: {}]".format(difference > 0.1, flake_matched))
-    return diff_location, difference, snapshot_location, diff_hash, flake_matched
+    return diff_location, difference, snapshot_location, diff_hash, flake_matched, centers

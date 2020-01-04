@@ -18,6 +18,9 @@ import {
   StatusGood,
   Multiple,
   History,
+  View,
+  Next,
+  Previous,
 } from 'grommet-icons';
 
 import Tooltip from '../../../components/Tooltip/Tooltip.jsx';
@@ -73,6 +76,10 @@ const SnapshotHeader = React.memo(
     isApproving,
     canShrink,
     canExpand,
+    center,
+    showDiff,
+    onChangeCenter,
+    onResetCenter,
     onApprove,
     onApproveGroup,
     onShrink,
@@ -229,6 +236,35 @@ const SnapshotHeader = React.memo(
       );
     };
 
+    const renderChangesActions = () => {
+      if (!snapshot.snapshotDiff || !snapshot.snapshotDiff.centers || (snapshot.snapshotDiff.centers && snapshot.snapshotDiff.centers.length === 0)) {
+        return null;
+      }
+      return (
+        <Box direction="row" align="center" gap="small">
+          <Box>
+            <Button
+              label="All Changes"
+              color="accent"
+              onClick={onResetCenter}
+              active={center === null}
+              disabled={center=== null}
+            />
+          </Box>
+          <Button
+            icon={<Previous />}
+            color="accent"
+            onClick={() => onChangeCenter(-1)}
+          />
+          <Button
+            icon={<Next />}
+            color="accent"
+            onClick={() => onChangeCenter(1)}
+          />
+        </Box>
+      )
+    }
+
     const renderTitle = size => {
       const props = {};
       if (size !== 'small') {
@@ -268,42 +304,66 @@ const SnapshotHeader = React.memo(
       if (size !== 'small') {
         props.flex = true;
       }
+      let viewLabel;
+      switch (view) {
+        case VIEWS.original:
+          viewLabel = 'Original';
+          break;
+        case VIEWS.new:
+          viewLabel = 'New';
+          break;
+        case VIEWS.both:
+          viewLabel = 'Comparison';
+          break;
+      }
+
       return (
-        <Box direction="row" justify="center" {...props} wrap>
+        <Box direction="row" justify="center" align="center" {...props} gap="small" wrap>
           {canShrink && (
-            <React.Fragment>
-              <Button
-                data-test-id="show-original"
-                disabled={!canShow.original}
-                label="Original"
-                round={{ corner: 'left' }}
-                active={view === VIEWS.original}
-                onClick={() => onChangeView(VIEWS.original)}
-                margin="small"
-                color="accent"
+            <Box>
+              <DropButton
+                data-test-id="change-view"
+                icon={<View />}
+                label={viewLabel}
+                dropAlign={{ top: 'bottom', left: 'left' }}
+                dropContent={(
+                  <Box>
+                    <Button
+                      data-test-id="show-original"
+                      disabled={!canShow.original}
+                      label="Original"
+                      round={{ corner: 'left' }}
+                      active={view === VIEWS.original}
+                      onClick={() => onChangeView(VIEWS.original)}
+                      margin="small"
+                      color="accent"
+                    />
+                    <Button
+                      data-test-id="show-new"
+                      disabled={!canShow.new}
+                      border="vertical"
+                      label="New"
+                      active={view === VIEWS.new}
+                      onClick={() => onChangeView(VIEWS.new)}
+                      margin="small"
+                      color="accent"
+                    />
+                    <Button
+                      data-test-id="show-both"
+                      disabled={!canShow.both}
+                      label="Comparison"
+                      border="right"
+                      active={view === VIEWS.both}
+                      onClick={() => onChangeView(VIEWS.both)}
+                      margin="small"
+                      color="accent"
+                    />
+                  </Box>
+                )}
               />
-              <Button
-                data-test-id="show-new"
-                disabled={!canShow.new}
-                border="vertical"
-                label="New"
-                active={view === VIEWS.new}
-                onClick={() => onChangeView(VIEWS.new)}
-                margin="small"
-                color="accent"
-              />
-              <Button
-                data-test-id="show-both"
-                disabled={!canShow.both}
-                label="Difference"
-                border="right"
-                active={view === VIEWS.both}
-                onClick={() => onChangeView(VIEWS.both)}
-                margin="small"
-                color="accent"
-              />
-            </React.Fragment>
+            </Box>
           )}
+        {canShrink && showDiff && renderChangesActions()}
         </Box>
       );
     };

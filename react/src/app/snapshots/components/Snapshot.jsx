@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Box, Heading } from 'grommet';
+import { Box, Button, Heading } from 'grommet';
+import { Impact } from 'grommet-icons';
 
 import SnapshotHeader, { VIEWS } from './SnapshotHeader.jsx';
 import SnapshotImage from './SnapshotImage.jsx';
@@ -28,6 +29,7 @@ class Snapshot extends React.PureComponent {
     isExpanded: this.props.isExpanded,
     view: this.getDefaultView,
     showDiff: true,
+    center: null,
   };
 
   static defaultProps = {
@@ -108,9 +110,43 @@ class Snapshot extends React.PureComponent {
     }
   };
 
-  renderLabel(text) {
+  handleResetCenter = () => {
+    if (this.state.center !== null) {
+      this.setState({
+        center: null,
+      });
+    }
+  };
+
+  handleChangeCenter = direction => {
+    if (this.state.center === null) {
+      this.setState({
+        center: 0,
+      });
+      return;
+    }
+    const centersLength = this.props.snapshot.snapshotDiff.centers.length - 1;
+    this.setState(state => {
+      let center = state.center + direction;
+      if (center > centersLength) {
+        center = 0;
+      } else if (center < 0) {
+        center = centersLength ;
+      }
+      return {
+        center,
+      }
+    })
+
+  };
+
+  renderLabel(text, full=false) {
+    const props = {};
+    if (full) {
+      props.basis = "50%";
+    }
     return (
-      <Box align="center" flex>
+      <Box align="center" {...props}>
         <Heading size="small" level={5}>
           {text}
         </Heading>
@@ -140,8 +176,16 @@ class Snapshot extends React.PureComponent {
       <React.Fragment>
         {showBoth && (
           <Box className="image-labels" direction="row" justify="between">
-            {showOriginal && this.renderLabel('Original')}
-            {showNew && this.renderLabel(showDiff ? 'Diff' : 'New')}
+            {showOriginal && this.renderLabel('Original', true)}
+            {showNew && (
+              <Box direction="row" align="center" justify="center" basis="50%" gap="small">
+                <Button
+                  icon={<Impact />}
+                  onClick={() => this.onToggleDiff(this.props.snapshot)}
+                />
+                {this.renderLabel(showDiff ? 'Difference' : 'New')}
+              </Box>
+            )}
           </Box>
         )}
         <Box className="images" direction="row" flex>
@@ -150,14 +194,19 @@ class Snapshot extends React.PureComponent {
               snapshot={previousApproved}
               diff={false}
               onToggleDiff={this.onToggleDiff}
+              center={showBoth && this.props.snapshot.snapshotDiff && this.props.snapshot.snapshotDiff.centers && this.state.center !== null && this.props.snapshot.snapshotDiff.centers[this.state.center]}
+
             />
           )}
           {showNew && (
-            <SnapshotImage
-              snapshot={this.props.snapshot}
-              diff={showDiff}
-              onToggleDiff={this.onToggleDiff}
-            />
+            <React.Fragment>
+              <SnapshotImage
+                snapshot={this.props.snapshot}
+                diff={showDiff}
+                onToggleDiff={this.onToggleDiff}
+                center={this.props.snapshot.snapshotDiff && this.props.snapshot.snapshotDiff.centers && this.state.center !== null && this.props.snapshot.snapshotDiff.centers[this.state.center]}
+              />
+            </React.Fragment>
           )}
         </Box>
       </React.Fragment>
@@ -193,6 +242,10 @@ class Snapshot extends React.PureComponent {
           onChangeView={this.handleChangeView}
           type={this.props.type}
           isApproving={this.props.isApproving}
+          center={this.state.center}
+          showDiff={(this.state.view === VIEWS.both || this.state.view === VIEWS.new) && this.state.showDiff}
+          onResetCenter={this.handleResetCenter}
+          onChangeCenter={this.handleChangeCenter}
           onShowMoreFromGroup={this.props.onShowMoreFromGroup}
           onToggleFlake={this.props.onToggleFlake}
         />

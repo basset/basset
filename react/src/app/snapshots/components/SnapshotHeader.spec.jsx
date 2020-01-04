@@ -124,12 +124,14 @@ describe('<SnapshotHeader />', () => {
   describe('original view button', () => {
     it('should be disabled if type is not removed', () => {
       const { getByTestId } = render(<SnapshotHeader {...PROPS} />);
+      fireEvent.click(getByTestId('change-view'));
       expect(getByTestId('show-original').hasAttribute('disabled')).toBe(true);
     });
     it('should be enabled if type is removed', () => {
       const { getByTestId } = render(
         <SnapshotHeader {...PROPS} type="removed" />,
       );
+      fireEvent.click(getByTestId('change-view'));
       expect(getByTestId('show-original').hasAttribute('disabled')).toBe(false);
     });
     it('should be enabled if there is a previous snapshot', () => {
@@ -142,6 +144,7 @@ describe('<SnapshotHeader />', () => {
       const { getByTestId } = render(
         <SnapshotHeader {...PROPS} snapshot={snapshot} />,
       );
+      fireEvent.click(getByTestId('change-view'));
       expect(getByTestId('show-original').hasAttribute('disabled')).toBe(false);
     });
     it('sets the view to original snapshot', () => {
@@ -154,6 +157,7 @@ describe('<SnapshotHeader />', () => {
       const { getByTestId } = render(
         <SnapshotHeader {...PROPS} snapshot={snapshot} />,
       );
+      fireEvent.click(getByTestId('change-view'));
       fireEvent.click(getByTestId('show-original'));
       expect(PROPS.onChangeView).toHaveBeenCalledWith(VIEWS.original);
     });
@@ -164,10 +168,12 @@ describe('<SnapshotHeader />', () => {
       const { getByTestId } = render(
         <SnapshotHeader {...PROPS} type="removed" />,
       );
+      fireEvent.click(getByTestId('change-view'));
       expect(getByTestId('show-new').hasAttribute('disabled')).toBe(true);
     });
     it('sets the view to new', () => {
       const { getByTestId } = render(<SnapshotHeader {...PROPS} />);
+      fireEvent.click(getByTestId('change-view'));
       fireEvent.click(getByTestId('show-new'));
       expect(PROPS.onChangeView).toHaveBeenCalledWith(VIEWS.new);
     });
@@ -178,10 +184,12 @@ describe('<SnapshotHeader />', () => {
       const { getByTestId } = render(
         <SnapshotHeader {...PROPS} type="removed" />,
       );
+      fireEvent.click(getByTestId('change-view'));
       expect(getByTestId('show-both').hasAttribute('disabled')).toBe(true);
     });
     it('should be disabled if there is no previous snapshot', () => {
       const { getByTestId } = render(<SnapshotHeader {...PROPS} />);
+      fireEvent.click(getByTestId('change-view'));
       expect(getByTestId('show-both').hasAttribute('disabled')).toBe(true);
     });
     it('sets the view to both', () => {
@@ -194,6 +202,7 @@ describe('<SnapshotHeader />', () => {
       const { getByTestId } = render(
         <SnapshotHeader {...PROPS} snapshot={snapshot} />,
       );
+      fireEvent.click(getByTestId('change-view'));
       fireEvent.click(getByTestId('show-both'));
       expect(PROPS.onChangeView).toHaveBeenCalledWith(VIEWS.both);
     });

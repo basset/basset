@@ -13,9 +13,9 @@ from diff import diff
 class DiffTest(unittest.TestCase):
 
     def test_diff(self, get_sha1_mock, uuid_mock, upload_file_mock, get_file_mock, compare_mock):
-        compare_mock.return_value = [b'', 0, 0]
+        compare_mock.return_value = [b'', 0, 0, []]
         uuid_mock.return_value = Mock(hex="1234")
-        diff_location, difference, image_location, diff_hash, flake_matched = diff.diff_snapshot(io.BytesIO(),
+        diff_location, difference, image_location, diff_hash, flake_matched, centers  = diff.diff_snapshot(io.BytesIO(),
                                                                                                  'organization_id',
                                                                                                  'project_id',
                                                                                                  'build_id', 'browser',
@@ -30,10 +30,10 @@ class DiffTest(unittest.TestCase):
         assert not get_sha1_mock.called
 
     def test_flake_matched(self, get_sha1_mock, uuid_mock, upload_file_mock, get_file_mock, compare_mock):
-        compare_mock.return_value = [b'', 0.2, 0.02]
+        compare_mock.return_value = [b'', 0.2, 0.02, []]
         uuid_mock.return_value = Mock(hex="1234")
         get_sha1_mock.return_value = '1234ea'
-        diff_location, difference, image_location, diff_hash, flake_matched = diff.diff_snapshot(io.BytesIO(),
+        diff_location, difference, image_location, diff_hash, flake_matched, centers = diff.diff_snapshot(io.BytesIO(),
                                                                                                  'organization_id',
                                                                                                  'project_id',
                                                                                                  'build_id', 'browser',
@@ -49,10 +49,10 @@ class DiffTest(unittest.TestCase):
 
     def test_snapshot_saved(self, get_sha1_mock, uuid_mock, upload_file_mock, get_file_mock, compare_mock):
         get_file_mock.return_value = b''
-        compare_mock.return_value = [b'', 0.2, 0.02]
+        compare_mock.return_value = [b'', 0.2, 0.02, []]
         uuid_mock.return_value = Mock(hex="1234")
         get_sha1_mock.return_value = '1234ea'
-        diff_location, difference, image_location, diff_hash, flake_matched = diff.diff_snapshot(io.BytesIO(),
+        diff_location, difference, image_location, diff_hash, flake_matched, centers = diff.diff_snapshot(io.BytesIO(),
                                                                                                  'organization_id',
                                                                                                  'project_id',
                                                                                                  'build_id', 'browser',

@@ -1,4 +1,5 @@
 const Snapshot = require('../../../app/models/Snapshot');
+const SnapshotDiffCenter = require('../../../app/models/SnapshotDiffCenter');
 
 const { createSnapshot } = require('../../utils/snapshot');
 const { createBuild } = require('../../utils/build');
@@ -77,7 +78,7 @@ describe('Snapshot', () => {
     let newSnapshot = await createSnapshot('new snap', newBuild);
     let newSnapshot2 = await createSnapshot('new snap2', newBuild);
 
-    await newSnapshot.compared('imageLocation', 0, 'this will be null anyways');
+    await newSnapshot.compared('imageLocation', 0, 'this will be null anyways', []);
     newSnapshot = await newSnapshot.$query();
     expect(newSnapshot.imageLocation).toBe('imageLocation');
     expect(newSnapshot.diff).toBe(false);
@@ -85,13 +86,15 @@ describe('Snapshot', () => {
     expect(newBuild.compared).not.toHaveBeenCalled();
 
     newSnapshot2.build = newBuild;
-    await newSnapshot2.compared('imageLocation', 1, 'diffLocation');
+    await newSnapshot2.compared('imageLocation', 1, 'diffLocation', null, null, null, [{ x: 1, y: 1, radius: 1 }, { x: 2, y: 2, radius: 2 }]);
     newSnapshot2 = await newSnapshot2.$query();
     expect(newSnapshot2.diff).toBe(true);
     const diff = await newSnapshot2.$relatedQuery('snapshotDiff');
     expect(diff).toBeDefined();
     expect(diff.imageLocation).toBe('diffLocation');
     expect(newBuild.compared).toHaveBeenCalled();
+    const centers = await diff.$relatedQuery('centers');
+    expect(centers).toHaveLength(2);
   });
 
   test('createSnapshots', async () => {

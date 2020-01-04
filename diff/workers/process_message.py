@@ -39,7 +39,7 @@ def process_message(body):
             'id': id,
         }
         if compare_snapshot:
-            diff_location, difference, image_location, diff_sha, flake_matched = diff_snapshot(
+            diff_location, difference, image_location, diff_sha, flake_matched, centers = diff_snapshot(
                 snapshot_image,
                 organization_id,
                 project_id,
@@ -58,6 +58,7 @@ def process_message(body):
             message['diffSha'] = diff_sha
             message['difference'] = not flake_matched and difference > 0.1
             message['flakeMatched'] = flake_matched
+            message['centers'] = centers
 
         message['imageLocation'] = image_location
 
