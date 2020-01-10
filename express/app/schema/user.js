@@ -78,6 +78,7 @@ extend type Mutation {
   editUser(name: String!): User @authField
   deleteUser(id: ID!): Boolean @authField
   changePassword(password: String!): Boolean @authField
+  loginAs(email: String): User @authField
 }
 `;
 
@@ -189,6 +190,26 @@ const resolvers = {
         await trx.rollback();
         throw err;
       }
+    },
+    loginAs: async (object, { email }, context, info) => {
+      const { user } = context.req;
+      if (!user.admin) {
+        throw new Error('Unauthorized');
+      }
+      const loginUser = await User.query()
+        .where('email', email)
+        .first();
+      if (!loginUser) {
+        throw new Error(`User (email: ${email}) not found`);
+      }
+      return new Promise((resolve, reject) => {
+        context.req.login(loginUser, error => {
+          if (error) {
+            return reject(error);
+          }
+          return resolve(loginUser);
+        })
+      });
     },
     resendActivationEmail: async (object, { email }, context, info) => {
       const user = await User.query()

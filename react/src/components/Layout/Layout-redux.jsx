@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import { getUser } from '../../redux/user/selectors.js';
-import { logout } from '../../redux/user/actions.js';
+import { logout, loginUser } from '../../redux/user/actions.js';
 
 import Layout from './Layout.jsx';
 
@@ -10,6 +10,7 @@ const mapState = state => ({
 });
 const mapActions = dispatch => ({
   onLogout: () => dispatch(logout()),
+  onLoginAs: (user) => dispatch(loginUser(user))
 });
 
 export default connect(
