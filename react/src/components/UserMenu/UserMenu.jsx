@@ -118,7 +118,7 @@ class UserMenu extends React.PureComponent {
             <Form onSubmit={this.handleLoginAs}>
               <FormField label="Email">
                 <TextInput
-                  data-test-id="invite-email-input"
+                  data-test-id="login-email-input"
                   placeholder="user@basset.io"
                   value={this.state.email}
                   onChange={this.handleChangeEmail}
@@ -211,7 +211,7 @@ class UserMenu extends React.PureComponent {
                 <Button
                   onClick={this.handleOpenLoginAs}
                   hoverIndicator="background"
-                  data-test-id="logout"
+                  data-test-id="login-as"
                 >
                   <Box
                     margin={{ vertical: 'small', horizontal: 'medium' }}
