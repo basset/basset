@@ -84,6 +84,50 @@ describe('user schema', () => {
   });
 
   describe('mutation', () => {
+    describe('loginAs', () => {
+      let user, loginAsUser, query, context;
+      beforeAll(async () => {
+        query = `
+        mutation changePassword($email: String!) {
+          loginAs(email: $email) {
+            email
+          }
+        }
+        `;
+        user = await createUser('loginuser@basset.io', { admin: true });
+        loginAsUser = await createUser('loginasme@basset.io');
+        context = {
+          req: {
+            isAuthenticated: () => true,
+            login: jest.fn((user, cb) => {
+              cb();
+            }),
+            user: user,
+          },
+        };
+      });
+      afterAll(async () => {
+        await user.$query().delete();
+      });
+      test('only admins can login as', async () => {
+        const variables = {
+          email: loginAsUser.email,
+        };
+        const { data } = await runQuery(query, user, variables, context);
+        expect(data.loginAs).toBeDefined();
+        expect(data.loginAs.email).toBe(loginAsUser.email);
+      });
+      test('non admins cannot login as', async () => {
+        const variables = {
+          email: user.email,
+        };
+        context.req.user = loginAsUser;
+        const result = await runQuery(query, loginAsUser, variables, context);
+        expect(result.errors[0].message).toBe(
+          'Unauthorized',
+        );
+      })
+    });
     describe('changePassword', () => {
       let user, query;
       beforeAll(async () => {
