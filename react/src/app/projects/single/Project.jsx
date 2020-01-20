@@ -211,18 +211,18 @@ export class Project extends React.PureComponent {
               <Integration />
             </Box>
           </Tab>
-          <Tab title="Setup">
+          <Tab data-test-id="project-setup" title="Setup">
             <Box margin={{top: 'medium'}} align="center">
               <Text>Basset currently has library support for Node and Python. To submit snapshots to Basset with other languages please see the API documentation here</Text>
               <Text margin={{top: 'small'}}>Below are snippets for the included libraries. For testing frameworks which run in parallel the suggestion is to save snapshots (HTML source) into a temporary folder and then upload snapshots once all tests have completed</Text>
               <Box width="xlarge">
                 <Tabs margin={{top: 'medium'}} justify="start">
-                  <Tab title="Node">
+                  <Tab data-test-id="node-setup" title="Node">
                     <SyntaxHighlighter language="javascript" style={docco}>
                       {nodeCode(this.props.project.key)}
                     </SyntaxHighlighter>
                   </Tab>
-                  <Tab title="Python">
+                  <Tab data-test-id="python-setup" title="Python">
                     <SyntaxHighlighter language="python" style={docco}>
                       {pythonCode(this.props.project.key)}
                     </SyntaxHighlighter>
