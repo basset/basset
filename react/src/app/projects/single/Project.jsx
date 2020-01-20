@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Text, Tabs, Tab, Heading, CheckBox } from 'grommet';
 import { UserAdmin, Firefox, Chrome } from 'grommet-icons';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
 import Builds from '../../builds/components/Builds.jsx';
 import Integration from './components/Integration.jsx';
