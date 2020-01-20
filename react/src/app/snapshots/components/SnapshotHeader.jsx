@@ -134,7 +134,7 @@ const SnapshotHeader = React.memo(
         return null;
       }
       if (snapshot.approved) {
-        const approvedBy = snapshot.approvedBy.user.name;
+        const approvedBy = snapshot.approvedBy ? snapshot.approvedBy.user.name : 'Unknown';
         const approvedOn = moment(parseInt(snapshot.approvedOn)).format(
           'YYYY-MM-DD hh:mm a',
         );
