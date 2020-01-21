@@ -155,11 +155,11 @@ describe('projects', () => {
     const configExamples = await findByTestId('project-setup');
     await configExamples.click();
 
-    await snapshot('Project - Node setup');
+    await snapshot('Project - Node setup', { widths: '1280' });
 
     const pythonExample = await findByTestId('python-setup');
     await pythonExample.click();
 
-    await snapshot('Project - Python setup');
+    await snapshot('Project - Python setup', { widths: '1280' });
   })
 });
