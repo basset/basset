@@ -2,12 +2,65 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Text, Tabs, Tab, Heading, CheckBox } from 'grommet';
 import { UserAdmin, Firefox, Chrome } from 'grommet-icons';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
 import Builds from '../../builds/components/Builds.jsx';
 import Integration from './components/Integration.jsx';
 import Notification from '../../../components/Notification/Notification.jsx';
 import InlineField from '../../../components/InlineField/InlineField.jsx';
 import Loader from '../../../components/Loader/Loader.jsx';
+
+function nodeCode(key) {
+  return `// npm install @getbasset/node-client
+const Basset = require('@getbasset/node-client');
+
+const BASSET_TOKEN = '${key}'; // project API key
+const BASSET_URL = '${window.__BASSET__.site}'
+const BASSET_ASSETS = 'static';
+
+const basset = new Basset(BASSET_TOKEN, BASSET_ASSETS, BASSET_URL, {
+  baseUrl: 'assets',
+  ignoreExtensions: '.js,.map',
+});
+
+await basset.buildStart(); // initialize build and submit assets
+
+const snapshot = {
+  title: 'test_snapshot',
+  width: '1280',
+  browser: 'chrome',
+  hideSelectors: null,
+  selectors: null,
+};
+await basset.uploadSnapshotFile(snapshot, 'path/to/snapshot.html');
+
+await basset.buildFinish();
+`;
+}
+
+function pythonCode(key) {
+  return `# pip install basset-python-client
+from basset_client.basset import Basset
+
+BASSET_TOKEN = '${key}' # project API key
+BASSET_URL = '${window.__BASSET__.site}'
+BASSET_ASSETS = 'static'
+
+basset = Basset(BASSET_TOKEN, BASSET_ASSETS, BASSET_URL, 'assets')
+
+basset.build_start() # initialize build and submit assets
+snapshot = [
+    '1280', # widths
+    'test snapshot', # title
+    'firefox', # browser
+    '', # hide_selectors
+    '', # selectors
+]
+basset.upload_snapshot_file(snapshot, 'path_to/snapshot.html')
+basset.build_finish()
+`;
+}
 
 export class Project extends React.PureComponent {
   static propTypes = {
@@ -156,6 +209,26 @@ export class Project extends React.PureComponent {
                 </Box>
               </Box>
               <Integration />
+            </Box>
+          </Tab>
+          <Tab data-test-id="project-setup" title="Setup">
+            <Box margin={{top: 'medium'}} align="center">
+              <Text>Basset currently has library support for Node and Python. To submit snapshots to Basset with other languages please see the API documentation here</Text>
+              <Text margin={{top: 'small'}}>Below are snippets for the included libraries. For testing frameworks which run in parallel the suggestion is to save snapshots (HTML source) into a temporary folder and then upload snapshots once all tests have completed</Text>
+              <Box width="xlarge">
+                <Tabs margin={{top: 'medium'}} justify="start">
+                  <Tab data-test-id="node-setup" title="Node">
+                    <SyntaxHighlighter language="javascript" style={docco}>
+                      {nodeCode(this.props.project.key)}
+                    </SyntaxHighlighter>
+                  </Tab>
+                  <Tab data-test-id="python-setup" title="Python">
+                    <SyntaxHighlighter language="python" style={docco}>
+                      {pythonCode(this.props.project.key)}
+                    </SyntaxHighlighter>
+                  </Tab>
+                </Tabs>
+              </Box>
             </Box>
           </Tab>
         </Tabs>

@@ -143,4 +143,23 @@ describe('projects', () => {
 
     await snapshot('Project configuration - filled', { widths: '1280' });
   });
+  test('config examples', async () => {
+    const project = await createProject('Config Example', organization.id, {
+      scmToken: 'TOKEN',
+      name: 'New project',
+      slackWebhook: 'webhook',
+      slackVariable: 'variable',
+    });
+    await driver.get(`${home}projects/${project.id}`);
+    await waitForLoader();
+    const configExamples = await findByTestId('project-setup');
+    await configExamples.click();
+
+    await snapshot('Project - Node setup', { widths: '1280' });
+
+    const pythonExample = await findByTestId('python-setup');
+    await pythonExample.click();
+
+    await snapshot('Project - Python setup', { widths: '1280' });
+  })
 });
