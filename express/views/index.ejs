@@ -28,6 +28,7 @@
         },
         private: <%= settings.site.private %>,
         saml: <%= settings.saml.enabled %>,
+        site: '<%= settings.site.url %>',
       }
     </script>
     <% if (settings.env === 'production') { %>

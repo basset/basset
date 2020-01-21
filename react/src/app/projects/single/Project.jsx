@@ -16,7 +16,7 @@ function nodeCode(key) {
 const Basset = require('@getbasset/node-client');
 
 const BASSET_TOKEN = '${key}'; // project API key
-const BASSET_URL = '${window.location.origin}'
+const BASSET_URL = '${window.__BASSET__.site}'
 const BASSET_ASSETS = 'static';
 
 const basset = new Basset(BASSET_TOKEN, BASSET_ASSETS, BASSET_URL, {
@@ -44,7 +44,7 @@ function pythonCode(key) {
 from basset_client.basset import Basset
 
 BASSET_TOKEN = '${key}' # project API key
-BASSET_URL = '${window.location.origin}'
+BASSET_URL = '${window.__BASSET__.site}'
 BASSET_ASSETS = 'static'
 
 basset = Basset(BASSET_TOKEN, BASSET_ASSETS, BASSET_URL, 'assets')

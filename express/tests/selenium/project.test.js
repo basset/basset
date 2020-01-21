@@ -144,6 +144,12 @@ describe('projects', () => {
     await snapshot('Project configuration - filled', { widths: '1280' });
   });
   test('config examples', async () => {
+    const project = await createProject('Config Example', organization.id, {
+      scmToken: 'TOKEN',
+      name: 'New project',
+      slackWebhook: 'webhook',
+      slackVariable: 'variable',
+    });
     await driver.get(`${home}projects/${project.id}`);
     await waitForLoader();
     const configExamples = await findByTestId('project-setup');
