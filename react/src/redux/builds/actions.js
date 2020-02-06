@@ -57,6 +57,32 @@ export const updatePageInfo = data => ({
   data,
 });
 
+export const updateBuilds = builds => ({
+  type: actionTypes.updateBuilds,
+  builds,
+});
+
+export const setTimerId = timerId => ({
+  type: actionTypes.setTimerId,
+  timerId,
+});
+
+export const startPolling = () => dispatch => {
+  const timer = setInterval(
+    () => dispatch(poll()),
+    5000
+  );
+  dispatch(setTimerId(timer));
+};
+
+export const stopPolling = () => (dispatch, getState) => {
+  const timerId = getState().builds.timerId;
+  if (timerId !== null) {
+    clearInterval(timerId);
+    dispatch(setTimerId(null));
+  }
+};
+
 export const getBuilds = () => async (dispatch, getState) => {
   const state = getState();
   const { currentOrganizationId } = state.organizations;
@@ -190,6 +216,32 @@ export const loadMore = () => async (dispatch, getState) => {
     dispatch(doneLoadingMore());
   }
 };
+
+export const poll = () => async (dispatch, getState) => {
+  const state = getState();
+  const { currentOrganizationId } = state.organizations;
+  const { currentProjectId } = state.projects;
+  const { builds } = state.builds;
+  if (!currentOrganizationId || !currentProjectId) {
+    return;
+  }
+  const maxBuilds = builds.length > 100 ? 100 : builds.length;
+  try {
+    const { data } = await ApolloClient.query({
+      query: getBuildsQuery,
+      variables: {
+        organizationId: currentOrganizationId,
+        projectId: currentProjectId,
+        first: maxBuilds > 25 ? maxBuilds : 25,
+      },
+    });
+    if (data.builds && data.builds.edges.length > 0) {
+      dispatch(updateBuilds(data.builds.edges.map(e => e.node)));
+    }
+  } catch (error) {
+    dispatch(setError(error));
+  }
+}
 
 export const setLocationKey = locationKey => ({
   type: actionTypes.setLocationKey,

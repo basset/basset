@@ -11,6 +11,7 @@ import {
 import { getBuilds } from '../../../redux/builds/selectors.js';
 import { getUser } from '../../../redux/user/selectors.js';
 import { saveProject } from '../../../redux/projects/actions.js';
+import { startPolling, stopPolling } from '../../../redux/builds/actions';
 import { getCurrentOrganization } from '../../../redux/organizations/selectors.js';
 
 import Project from './Project.jsx';
@@ -24,11 +25,21 @@ export class ProjectController extends React.Component {
     error: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     organization: PropTypes.object,
     onSave: PropTypes.func.isRequired,
+    startPolling: PropTypes.func.isRequired,
+    stopPolling: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     project: null,
   };
+
+  componentDidMount() {
+    this.props.startPolling();
+  }
+
+  componentWillUnmount() {
+    this.props.stopPolling();
+  }
 
   render() {
     if (this.props.isLoading) {
@@ -64,6 +75,8 @@ const mapState = state => ({
 
 const mapActions = dispatch => ({
   onSave: (item, value) => dispatch(saveProject({ [item]: value })),
+  startPolling: () => dispatch(startPolling()),
+  stopPolling: () => dispatch(stopPolling()),
 });
 
 export default connect(
