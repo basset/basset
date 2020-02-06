@@ -8,6 +8,7 @@ import Logo from '../Logo/Logo.jsx';
 import Link from '../Link/Link.jsx';
 import UserMenu from '../UserMenu/UserMenu.jsx';
 import OrganizationSwitcher from '../OrganizationSwitcher/OrganizationSwitcher-redux.jsx';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary.jsx';
 
 class Layout extends React.PureComponent {
   static propTypes = {
@@ -142,20 +143,22 @@ class Layout extends React.PureComponent {
                 </Box>
               )}
             </AppBar>
-            <Box direction="row" flex>
-              {this.renderSidebar(size)}
-              <Box
-                fill
-                align="center"
-                justify="start"
-                pad="small"
-                overflow={
-                  size !== 'small' && this.props.sidebar ? 'auto' : 'none'
-                }
-              >
-                {this.props.children}
+            <ErrorBoundary>
+              <Box direction="row" flex>
+                {this.renderSidebar(size)}
+                <Box
+                  fill
+                  align="center"
+                  justify="start"
+                  pad="small"
+                  overflow={
+                    size !== 'small' && this.props.sidebar ? 'auto' : 'none'
+                  }
+                >
+                  {this.props.children}
+                </Box>
               </Box>
-            </Box>
+            </ErrorBoundary>
           </Box>
         )}
       </ResponsiveContext.Consumer>
