@@ -13,3 +13,5 @@ export const addBuilds = 'app/builds/addBuilds';
 export const updatePageInfo = 'app/builds/updatePageInfo';
 export const updateBuild = 'app/builds/updateBuild';
 export const setLocationKey = 'app/builds/setLocationKey';
+export const updateBuilds = 'app/builds/updateBuilds';
+export const setTimerId = 'app/builds/setTimerId';

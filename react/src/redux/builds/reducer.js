@@ -13,6 +13,7 @@ const initialState = {
   },
   currentBuildId: null,
   currentCursor: null,
+  timerId: null,
 };
 
 const handler = {
@@ -91,9 +92,29 @@ const handler = {
     currentCursor:
       data.edges.length > 0 ? data.edges[data.edges.length - 1].cursor : null,
   }),
+  [actionTypes.updateBuilds]: (state, { builds }) => {
+    const newBuilds = builds[0].id !== state.builds[0].id;
+    const buildsHash = builds.reduce((hash, build) => {
+      hash[build.id] = build;
+      return hash;
+    }, {});
+    let allBuilds = state.builds;
+    if (newBuilds) {
+      const index = builds.findIndex(build => build.id === state.builds[0].id);
+      allBuilds = [...builds.slice(0, index), ...state.builds];
+    }
+    return {
+      ...state,
+      builds: allBuilds.map(build => buildsHash[build.id] || build),
+    };
+  },
   [actionTypes.setLocationKey]: (state, { locationKey }) => ({
     ...state,
     locationKey,
+  }),
+  [actionTypes.setTimerId]: (state, { timerId }) => ({
+    ...state,
+    timerId,
   }),
 };
 
