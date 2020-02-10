@@ -1,6 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const GitHubStrategy = require('passport-github').Strategy;
+const GitHubStrategy = require('passport-github2').Strategy;
 const BitbucketStrategy = require('passport-bitbucket-oauth2').Strategy;
 const GitLabStrategy = require('passport-gitlab2').Strategy;
 const SamlStrategy = require('passport-saml').Strategy;
