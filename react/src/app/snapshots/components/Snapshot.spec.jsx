@@ -3,6 +3,10 @@ import { render, fireEvent, cleanup } from 'react-testing-library';
 
 import Snapshot from './Snapshot.jsx';
 
+beforeAll(() => {
+  global.window.scrollTo = () => {}
+});
+
 afterEach(cleanup);
 
 describe('<Snapshot />', () => {

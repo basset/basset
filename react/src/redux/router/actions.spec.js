@@ -1,4 +1,5 @@
 import * as actions from './actions';
+import routes from '../../routes.js';
 jest.mock('../../history.js', () => ({
   history: {
     replace: jest.fn(),
@@ -51,7 +52,7 @@ test('setComponent', () => {
 });
 
 test('setupRouter', async () => {
-  await store.dispatch(actions.setupRouter());
+  await store.dispatch(actions.setupRouter(routes));
   const state = store.getState().router;
   expect(state.router).toBeDefined();
   expect(history.listen).toHaveBeenCalled();
@@ -59,7 +60,7 @@ test('setupRouter', async () => {
 });
 
 test('locationChange', async () => {
-  const router = configureRouter(history, store.dispatch, store.getState);
+  const router = configureRouter(routes, history, store.dispatch, store.getState);
   store.dispatch(actions.setRouter(router));
   const location = {
     pathname: '/forgot',
@@ -71,7 +72,7 @@ test('locationChange', async () => {
 });
 
 test('locationChange error', async () => {
-  const router = configureRouter(history, store.dispatch, store.getState);
+  const router = configureRouter(routes, history, store.dispatch, store.getState);
   store.dispatch(actions.setRouter(router));
   try {
     const location = {};
