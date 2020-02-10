@@ -3,6 +3,10 @@ import { render, fireEvent, cleanup } from 'react-testing-library';
 
 import SnapshotHeader, { VIEWS } from './SnapshotHeader.jsx';
 
+beforeAll(() => {
+  global.window.scrollTo = () => {}
+});
+
 afterEach(cleanup);
 
 describe('<SnapshotHeader />', () => {

@@ -14,6 +14,7 @@ if (!process.env.TEST) {
 const settings = require('./settings');
 const { passport } = require('./utils/auth/strategy');
 const ApolloServer = require('./utils/graphql/protected-apollo-server');
+const plugins = require('./plugins');
 
 
 const app = express();
@@ -173,5 +174,6 @@ app.get('*', csrfProtection, (req, res) => {
 });
 
 const render = ['index', {settings}];
+plugins(app);
 
 module.exports = app;
