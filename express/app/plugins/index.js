@@ -11,4 +11,4 @@ module.exports = async function importPlugins(app) {
       await init(app);
     }
   }
-}
+};
