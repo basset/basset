@@ -17,6 +17,10 @@ jest.mock('../../../graphql/client.js', () => {
   };
 });
 
+beforeAll(() => {
+  global.window.scrollTo = () => {}
+});
+
 afterEach(cleanup);
 
 describe('<Project />', () => {
