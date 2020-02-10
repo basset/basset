@@ -1,7 +1,6 @@
 import Router from 'universal-router';
-import routes from './routes.js';
 
-export const configureRouter = (history, dispatch, getState) => {
+export const configureRouter = (routes, history, dispatch, getState) => {
   return new Router(routes, {
     resolveRoute(context, params) {
       if (typeof context.route.load === 'function') {

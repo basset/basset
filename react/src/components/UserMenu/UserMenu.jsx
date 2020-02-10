@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { Box, Button, DropButton, Form, FormField, Layer, Text, TextInput } from 'grommet';
-
 import { Alert, Logout, Login, UserSettings, Performance } from 'grommet-icons';
 import ApolloClient from '../../graphql/client.js';
 import loginAsMutation from '../../graphql/mutate/loginAs.js';
+import customUserMenu from '../../customUserMenu';
 
 import Link from '../Link/Link.jsx';
 import ProfileImage from '../ProfileImage/ProfileImage.jsx';
@@ -224,6 +223,11 @@ class UserMenu extends React.PureComponent {
                   </Box>
                 </Button>
               )}
+              {customUserMenu.map((item, index) => (
+                <React.Fragment key={index}>
+                  {item.component}
+                </React.Fragment>
+              ))}
             </Box>
           }
           dropAlign={{ top: 'bottom', right: 'right' }}
@@ -238,8 +242,13 @@ class UserMenu extends React.PureComponent {
 
 UserMenu.propTypes = {
   user: PropTypes.object.isRequired,
+  customMenu: PropTypes.array,
   onLogout: PropTypes.func.isRequired,
   onLoginAs: PropTypes.func.isRequired,
+};
+
+UserMenu.defaultProps = {
+  customMenu: [],
 };
 
 export default UserMenu;

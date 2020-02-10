@@ -23,8 +23,8 @@ export const setRouter = router => ({
   router,
 });
 
-export const setupRouter = () => async (dispatch, getState) => {
-  const router = configureRouter(history, dispatch, getState);
+export const setupRouter = (routes) => async (dispatch, getState) => {
+  const router = configureRouter(routes, history, dispatch, getState);
   dispatch(setRouter(router));
   history.listen((location, action) => {
     dispatch(locationChange(location, action));
