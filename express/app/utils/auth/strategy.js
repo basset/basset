@@ -101,7 +101,6 @@ const githubLoginStrategy = async (
   const profileImage = profile.photos.map(p => p.value)[0];
 
   const email = profile.emails
-    .filter(email => email.primary)
     .map(email => email.value)[0];
 
   const userInfo = {
