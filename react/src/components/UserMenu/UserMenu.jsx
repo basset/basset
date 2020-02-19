@@ -147,8 +147,15 @@ class UserMenu extends React.PureComponent {
     )
   };
 
+  showItem = item => {
+    if (typeof item.show === 'function') {
+      return item.show;
+    }
+    return () => item.show !== false;
+  }
+
   render() {
-    const { user, onLogout } = this.props;
+    const { user, organization, onLogout } = this.props;
     return (
       <React.Fragment>
         <DropButton
@@ -191,6 +198,11 @@ class UserMenu extends React.PureComponent {
                   <Text>Organization</Text>
                 </Box>
               </Link.Button>
+              {customUserMenu.filter(item => this.showItem(item)(user, organization)).map((item, index) => (
+                <Box key={index} onClick={this.handleClose}>
+                  {item.component}
+                </Box>
+              ))}
               <Button
                 onClick={onLogout}
                 hoverIndicator="background"
@@ -223,11 +235,6 @@ class UserMenu extends React.PureComponent {
                   </Box>
                 </Button>
               )}
-              {customUserMenu.map((item, index) => (
-                <React.Fragment key={index}>
-                  {item.component}
-                </React.Fragment>
-              ))}
             </Box>
           }
           dropAlign={{ top: 'bottom', right: 'right' }}

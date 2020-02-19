@@ -49,7 +49,7 @@ class Invites extends React.PureComponent {
           disabled={this.props.isRequesting}
         >
           <Box margin={{ vertical: 'small', horizontal: 'medium' }}>
-            <Text size="small">Resent invite</Text>
+            <Text size="small">Resend invite</Text>
           </Box>
         </Button>
       </Box>
