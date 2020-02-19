@@ -111,6 +111,10 @@ const saml = {
   },
 };
 
+const header = {
+  scripts: [],
+};
+
 module.exports = {
   mail,
   database,
@@ -127,5 +131,6 @@ module.exports = {
   session,
   saml,
   enforceSnapshotLimit,
-  enforceBuildRetention
+  enforceBuildRetention,
+  header,
 };

@@ -168,12 +168,13 @@ app.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/login');
 });
-app.get('*', csrfProtection, (req, res) => {
-  res.cookie('_bcsrf', req.csrfToken());
-  res.render(...render);
+plugins(app).then(() => {
+  app.get('*', csrfProtection, (req, res) => {
+    res.cookie('_bcsrf', req.csrfToken());
+    res.render(...render);
+  });
 });
 
 const render = ['index', {settings}];
-plugins(app);
 
 module.exports = app;

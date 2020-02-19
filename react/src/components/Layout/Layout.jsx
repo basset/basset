@@ -124,7 +124,12 @@ class Layout extends React.PureComponent {
                 </Link.Normal>
                 {size !== 'small' && <OrganizationSwitcher />}
               </Box>
-              <UserMenu user={this.props.user} onLogout={this.props.onLogout} onLoginAs={this.props.onLoginAs} />
+              <UserMenu
+                user={this.props.user}
+                organization={this.props.organization}
+                onLogout={this.props.onLogout}
+                onLoginAs={this.props.onLoginAs}
+              />
               {size === 'small' && (
                 <Box
                   margin={{ left: 'small' }}

@@ -145,10 +145,12 @@ describe('projects', () => {
   });
   test('config examples', async () => {
     const project = await createProject('Config Example', organization.id, {
-      scmToken: 'TOKEN',
       name: 'New project',
       slackWebhook: 'webhook',
       slackVariable: 'variable',
+    });
+    await project.$query().update({
+      key: 'apikey',
     });
     await driver.get(`${home}projects/${project.id}`);
     await waitForLoader();

@@ -16,6 +16,7 @@ jobs:
         environment:
           POSTGRES_USER: basset
           POSTGRES_DB: bassettest
+          POSTGRES_PASSWORD: basset
     environment:
       JEST_JUNIT_OUTPUT_DIR: /tmp/test-results/
     steps:
@@ -122,6 +123,7 @@ jobs:
         environment:
           POSTGRES_USER: basset
           POSTGRES_DB: bassettest
+          POSTGRES_PASSWORD: basset
     environment:
       JEST_JUNIT_OUTPUT_DIR: /tmp/test-results/
     steps:
