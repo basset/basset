@@ -3,6 +3,7 @@ const { Model } = require('objection');
 const BaseModel = require('./BaseModel');
 const Asset = require('./Asset');
 const { getSCM } = require('../integrations/scm');
+const { allowableBrowsers } = require('../settings');
 
 class Project extends BaseModel {
   $beforeInsert(queryContext) {
@@ -10,7 +11,7 @@ class Project extends BaseModel {
     return super.$beforeInsert(queryContext);
   }
   static get allowedBrowsers() {
-    return ['firefox', 'chrome'];
+    return Object.entries(allowableBrowsers).filter(([key, value]) => value === true).map(([key]) => key);
   }
 
   static get tableName() {
