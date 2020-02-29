@@ -13,8 +13,18 @@ const configureQueue = () => {
     sqs = new aws.SQS({apiVersion: '2012-11-05'});
   } else if (settings.amqp.use && !process.env.TEST) {
     const connection = getConnection();
+    const queuesByName = Object.entries(settings.amqp.buildQueue).reduce((queues, [key, value]) => {
+      queues[value] = key;
+      return queues;
+    }, {});
     channelWrapper = connection.createChannel({
-      setup: (channel) => channel.assertQueue(settings.amqp.buildQueue, {durable: true}),
+      setup: (channel) => {
+        return Promise.all(
+          Object
+            .keys(queuesByName)
+            .map(queue => channel.assertQueue(queue, { durable: true}))
+        )
+      }
     })
   }
 };
@@ -58,7 +68,7 @@ const queueCompareSnapshots = async messages => {
     for await (const messageData of messages) {
       const message = JSON.stringify(messageData);
       await channelWrapper.sendToQueue(
-        settings.amqp.buildQueue,
+        settings.amqp.buildQueue[messageData.browser],
         Buffer.from(message),
         {
           deliveryMode: true,
