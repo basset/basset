@@ -5,7 +5,7 @@ RUN groupadd --gid 1000 python \
 
 WORKDIR /basset/
 
-RUN apt-get update && apt-get install -y unzip wget python3 python3-pip ttf-dejavu
+RUN apt-get update && apt-get install -y unzip wget python3 python3-pip ttf-dejavu fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf
 # libglib2 required for opencv
 # RUN apt-get update && apt-get -y install unzip wget; apt-get clean
 

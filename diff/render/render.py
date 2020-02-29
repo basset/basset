@@ -33,8 +33,12 @@ class Render(object):
         self.is_open = True
         if browser == 'firefox':
             self.driver = webdriver.Firefox(service_log_path='/tmp/firefox.log', options=self.firefox_options)
-        else:
+        if browser == 'chrome':
             self.driver = webdriver.Chrome(service_log_path='/tmp/chrome.log', options=self.chrome_options)
+        if browser == 'ie':
+            self.driver = webdriver.Ie()
+        if browser == 'edge':
+            self.driver = webdriver.Edge()
 
     def close_browser(self):
         self.is_open = False
@@ -47,13 +51,13 @@ class Render(object):
                 self.driver.execute_script(
                     """
                     let height = 0;
-                    document.querySelectorAll('*').forEach(e => {
+                    Array.prototype.slice.call(document.querySelectorAll('*')).forEach(function (e) {
                         let rect = e.getClientRects();
                         if (rect.length > 0) {
                             const style = window.getComputedStyle(e);
                             let marginTop = parseInt(style.marginTop || 0);
                             let marginBottom = parseInt(style.marginBottom || 0);
-                            let calcHeight = rect[0].y + rect[0].height + marginTop + marginBottom;
+                            let calcHeight = rect[0].top + rect[0].height + marginTop + marginBottom;
                             if (calcHeight > height) {
                                 height = calcHeight;
                             }
@@ -75,7 +79,7 @@ class Render(object):
                 let hideSelectors = arguments[0];
                 let hideStyle = document.createElement('style');
                 hideStyle.innerText = hideSelectors + ' { visibility: hidden };';
-                document.body.prepend(hideStyle);
+                document.body.insertBefore(hideStyle, document.body.childNodes[0]);
                 return hideStyle.innerText;
                 """,
                 selectors
@@ -93,7 +97,7 @@ class Render(object):
                 """
                 let animationStyle = document.createElement('style');
                 animationStyle.innerText = "* {-o-transition-property: none !important;-moz-transition-property: none !important;-ms-transition-property: none !important;-webkit-transition-property: none !important;transition-property: none !important;;-webkit-animation: none !important;-moz-animation: none !important;-o-animation: none !important;-ms-animation: none !important;animation: none !important;}"
-                document.body.prepend(animationStyle);
+                document.body.insertBefore(animationStyle, document.body.childNodes[0]);
                 """
             )
         except JavascriptException as ex:
@@ -125,6 +129,10 @@ class Render(object):
 
         if self.browser == 'firefox':
             height += 84
+        if self.browser == 'ie':
+            height += 86
+        if self.browser == 'edge':
+            height += 134
         print('setting window to height {}'.format(height))
         self.driver.set_window_size(width, height)
 

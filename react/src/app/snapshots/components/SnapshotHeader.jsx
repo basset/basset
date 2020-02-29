@@ -21,6 +21,8 @@ import {
   View,
   Next,
   Previous,
+  Edge,
+  InternetExplorer,
 } from 'grommet-icons';
 
 import Tooltip from '../../../components/Tooltip/Tooltip.jsx';
@@ -41,6 +43,20 @@ const getBrowserType = browser => {
     return (
       <Box title="Firefox">
         <Firefox color="plain" />
+      </Box>
+    );
+  }
+  if (browser === 'edge') {
+    return (
+      <Box title="Edge">
+        <Edge color="plain" />
+      </Box>
+    );
+  }
+  if (browser === 'ie') {
+    return (
+      <Box title="Internet Explorer">
+        <InternetExplorer color="plain" />
       </Box>
     );
   }

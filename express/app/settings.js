@@ -115,6 +115,13 @@ const header = {
   scripts: [],
 };
 
+const allowableBrowsers = {
+  firefox: true,
+  chrome: true,
+  ie: parseInt(process.env.ENABLE_IE) === 1,
+  edge: parseInt(process.env.ENABLE_EDGE) === 1,
+};
+
 module.exports = {
   mail,
   database,
@@ -133,4 +140,5 @@ module.exports = {
   enforceSnapshotLimit,
   enforceBuildRetention,
   header,
+  allowableBrowsers,
 };
