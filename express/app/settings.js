@@ -80,10 +80,17 @@ const awsBatch = {
   JobDefinition: process.env.AWS_BATCH_JOB_DEFINITION,
   jobQueue: process.env.AWS_BATCH_JOB_QUEUE,
 };
+
+const defaultBuildQueue = process.env.AMQP_BUILD_QUEUE;
 const amqp = {
   use: parseInt(process.env.USE_SQS) !== 1,
   host: process.env.AMQP_HOST,
-  buildQueue: process.env.AMQP_BUILD_QUEUE,
+  buildQueue: {
+    firefox: process.env.AMQP_FIREFOX_BUILD_QUEUE || defaultBuildQueue,
+    chrome: process.env.AMQP_CHROME_BUILD_QUEUE || defaultBuildQueue,
+    ie: process.env.AMQP_IE_BUILD_QUEUE || defaultBuildQueue,
+    edge: process.env.AMQP_EDGE_BUILD_QUEUE || defaultBuildQueue,
+  },
   taskQueue: process.env.AMQP_TASK_QUEUE,
 };
 
