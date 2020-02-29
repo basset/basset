@@ -32,7 +32,7 @@
         private: <%= settings.site.private %>,
         saml: <%= settings.saml.enabled %>,
         site: '<%= settings.site.url %>',
-        allowableBrowsers: <%= JSON.stringify(settings.allowableBrowsers) %>,
+        allowableBrowsers: <%- JSON.stringify(settings.allowableBrowsers) %>,
       }
     </script>
     <% if (settings.env === 'production') { %>
