@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Text, Tabs, Tab, Heading, CheckBox } from 'grommet';
-import { UserAdmin, Firefox, Chrome } from 'grommet-icons';
+import { UserAdmin, Firefox, Chrome, Edge, InternetExplorer } from 'grommet-icons';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
@@ -207,6 +207,50 @@ export class Project extends React.PureComponent {
                     toggle
                   />
                 </Box>
+                {__BASSET__.allowableBrowsers.ie && (
+                  <Box
+                    margin={{ vertical: 'small' }}
+                    direction="row"
+                    justify="between"
+                    align="center"
+                  >
+                    <Box direction="row" align="center" gap="small">
+                      <InternetExplorer color="plain" /> Internet Explorer
+                    </Box>
+                    <CheckBox
+                      data-test-id="toggle-ie"
+                      checked={this.hasBrowser('ie')}
+                      onChange={this.handleToggleBrowser('ie')}
+                      disabled={
+                        this.props.isUpdating || !this.props.organization.admin
+                      }
+                      reverse
+                      toggle
+                    />
+                  </Box>
+                )}
+                {__BASSET__.allowableBrowsers.edge && (
+                  <Box
+                    margin={{ vertical: 'small' }}
+                    direction="row"
+                    justify="between"
+                    align="center"
+                  >
+                    <Box direction="row" align="center" gap="small">
+                      <Edge color="plain" /> Edge
+                    </Box>
+                    <CheckBox
+                      data-test-id="toggle-edge"
+                      checked={this.hasBrowser('edge')}
+                      onChange={this.handleToggleBrowser('edge')}
+                      disabled={
+                        this.props.isUpdating || !this.props.organization.admin
+                      }
+                      reverse
+                      toggle
+                    />
+                  </Box>
+                )}
               </Box>
               <Integration />
             </Box>

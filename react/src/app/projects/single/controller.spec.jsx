@@ -31,6 +31,12 @@ describe('<Project />', () => {
         gitlab: false,
         bitbucket: false,
       },
+      allowableBrowsers: {
+        chrome: true,
+        firefox: true,
+        ie: false,
+        edge: false,
+      }
     };
     projectActions.saveProject = jest.fn(() => (dispatch, getState) => {});
     store.dispatch(
