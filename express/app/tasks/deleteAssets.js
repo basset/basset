@@ -23,6 +23,10 @@ const deleteFiles = async (bucket, keysToDelete) => {
   }
 };
 
+const mapKeys = keys => keys.map(key => ({
+  Key: key,
+}));
+
 const getKeys = locations => locations.map(location => url
   .parse(location)
   .path.split('/')
@@ -64,10 +68,10 @@ const run = async () => {
         ],
       );
 
-    keys = [
+    keys = mapKeys([
       ...keys,
       ...getKeys(assets.map(asset => asset.location)),
-    ];
+    ]);
     console.log(`[removeSnapshotData] found ${keys.length} snapshots and assets to remove`)
     await deleteFiles(settings.s3.assetsBucket, keys);
   }
