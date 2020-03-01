@@ -178,6 +178,18 @@ plugins.import(app).then(async () => {
   });
 
   await plugins.afterControllers(app);
+
+  app.use(function errorHandler(error, req, res, next) {
+    if (req.route && req.route.path) {
+      const notInPublicUrls = !public_urls.includes(req.route.path);
+      const notLogout = req.route.path !== 'logout';
+      const notFallback = req.route.path !== '*';
+      if (notFallback && notInPublicUrls && notLogout) {
+        res.status(error.statusCode || 500).json({ error: error.message || error })
+      }
+    }
+    next(error);
+  })
 });
 
 module.exports = app;
