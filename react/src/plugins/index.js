@@ -8,13 +8,13 @@ function importAll (r) {
 
 importAll(require.context('./', true, /^\.\/(?!index\.jsx?).+\.jsx?/));
 
-export default async function initializePlugins({ routes, customUserMenu, store}) {
+export default async function initializePlugins({ routes, pluginOptions, store}) {
   for (const key in cache) {
     const mod = cache[key];
     if (mod.default && typeof mod.default === 'function') {
       await mod.default({
         routes,
-        customUserMenu,
+        pluginOptions,
         store
       });
     }

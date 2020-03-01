@@ -9,7 +9,7 @@ import * as serviceWorker from './serviceWorker';
 import routes from './routes.js';
 import App from './App-redux.jsx';
 import initializePlugins from './plugins';
-import customUserMenu from './customUserMenu';
+import * as pluginOptions from './plugin-options.js';
 
 ReactDOM.render(
   <Provider store={store}>
@@ -21,7 +21,7 @@ ReactDOM.render(
 serviceWorker.unregister();
 initializePlugins({
   routes,
-  customUserMenu,
+  pluginOptions,
   store,
 }).then(() => {
   store.dispatch(setupRouter(routes));

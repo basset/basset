@@ -4,7 +4,7 @@ import { Box, Button, DropButton, Form, FormField, Layer, Text, TextInput } from
 import { Alert, Logout, Login, UserSettings, Performance } from 'grommet-icons';
 import ApolloClient from '../../graphql/client.js';
 import loginAsMutation from '../../graphql/mutate/loginAs.js';
-import customUserMenu from '../../customUserMenu';
+import { customUserMenu } from '../../plugin-options.js';
 
 import Link from '../Link/Link.jsx';
 import ProfileImage from '../ProfileImage/ProfileImage.jsx';
