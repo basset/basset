@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Heading, Text } from 'grommet';
 import { Alert } from 'grommet-icons';
 import Logo from '../Logo/Logo.jsx';
+import { errorHandlers } from '../../plugin-options.js';
 
 export default class ErrorBoundary extends React.PureComponent {
   static getDerivedStateFromError(error) {
@@ -12,6 +13,12 @@ export default class ErrorBoundary extends React.PureComponent {
     hasError: false,
     error: '',
   };
+
+  async componentDidCatch(error, errorInfo) {
+    for await (const handler of errorHandlers) {
+      await handler(error, errorInfo);
+    }
+  }
 
   render() {
     if (this.state.hasError) {
