@@ -19,7 +19,7 @@
     "amqp-connection-manager": "^3.0.0",
     "amqplib": "^0.5.5",
     "apollo-server-express": "^2.3.1",
-    "aws-sdk": "^2.400.0",
+    "aws-sdk": "^2.814.0",
     "bcrypt": "^3.0.4",
     "connect-redis": "^3.4.1",
     "connect-session-knex": "^1.4.0",
