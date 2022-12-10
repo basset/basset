@@ -28,7 +28,7 @@
     "dataloader": "^1.4.0",
     "ejs": "^2.6.1",
     "email-templates": "^5.0.3",
-    "express": "^4.17.0",
+    "express": "^4.17.3",
     "express-session": "^1.16.1",
     "graphql": "^14.0.2",
     "graphql-cost-analysis": "^1.0.3",
